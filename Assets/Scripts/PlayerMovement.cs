@@ -70,7 +70,7 @@ public class PlayerMovement : MonoBehaviour
         moveVector.y = 0f;
 
         // If the movement vector is too small, don't rotate the model and remain in the current rotation
-        if (moveVector.magnitude < 0.1f) return;
+        if (moveVector.magnitude < 0.1f) return; //without this line as soon as we stop pressing the movement keys, the model will snap back to the quaternion identity rotation because the moveVector will be (0, 0, 0)
 
         // Return an angle that rotates the model to face the direction of movement
         Quaternion targetRotation = Quaternion.LookRotation(moveVector);
