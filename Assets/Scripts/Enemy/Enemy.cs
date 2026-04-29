@@ -21,6 +21,9 @@ public abstract class Enemy : MonoBehaviour
     private Transform _playerTransform; // Reference to the player's Transform component
     private Vector3 _patrolOrigin;
 
+    [Header("Gizmos")]
+    [SerializeField] private bool _showMoveRadius;
+
     // Public properties to access private fields
     public float IdleTime => _idleTime; 
     public float PatrolRadius => _patrolRadius; 
@@ -38,6 +41,23 @@ public abstract class Enemy : MonoBehaviour
         _playerTransform = GameObject.FindWithTag("Player").transform; // Find the player in the scene by tag and get its Transform
     }
 
+    private void OnDrawGizmos()
+    {
 
+
+        if (_showMoveRadius)
+        {
+            if(_patrolOrigin == Vector3.zero)
+            {
+                _patrolOrigin = transform.position;
+            }
+
+            Gizmos.color = Color.yellow;
+            Gizmos.DrawWireSphere(_patrolOrigin, _patrolRadius);
+
+        }
+
+        
+    }
 
 }
