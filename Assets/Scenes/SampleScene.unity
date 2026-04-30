@@ -494,7 +494,7 @@ GameObject:
   - component: {fileID: 410071647}
   - component: {fileID: 410071646}
   - component: {fileID: 410071649}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Player
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -1704,7 +1704,10 @@ MonoBehaviour:
   _patrolRadius: 20
   _stoppingDistance: 1
   _detectionRange: 10
+  _fieldOfView: 10
+  _fovRange: 3
   _moveSpeed: 5
+  _showMoveRadius: 0
 --- !u!136 &1755183289
 CapsuleCollider:
   m_ObjectHideFlags: 0

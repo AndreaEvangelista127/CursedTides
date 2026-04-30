@@ -4,7 +4,12 @@ public class ChaseState : BaseState
 {
     public override void OnStateEnter()
     {
-        throw new System.NotImplementedException();
+        
+    }
+
+    public override void OnStateUpdate()
+    {
+        //
     }
 
     public override void OnStateExit()
@@ -12,20 +17,6 @@ public class ChaseState : BaseState
         throw new System.NotImplementedException();
     }
 
-    public override void OnStateUpdate()
-    {
-        throw new System.NotImplementedException();
-    }
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    
 }
