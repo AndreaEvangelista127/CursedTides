@@ -11,6 +11,19 @@ public class IdleState : BaseState
     }
     public override void OnStateUpdate()
     {
+        if (_enemy.CheckIfInFOV())
+        {
+            _fsm.SwitchState(EStates.Chase);
+            return;
+        }
+
+        if (_enemy.CheckIfInDetectionRange())
+        {
+            _fsm.SwitchState(EStates.Alert);
+            return;
+        }
+
+
         _idleTimer += Time.deltaTime; // Increment the idle timer by the time elapsed since the last frame
         if (_idleTimer >= _enemy.IdleTime) // Check if the idle time has elapsed
         {

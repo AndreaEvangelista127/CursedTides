@@ -4,6 +4,7 @@ public enum EStates
 {
     Idle,
     Patrol,
-    Chase
+    Chase,
+    Alert
 }
     

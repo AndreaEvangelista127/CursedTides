@@ -1,4 +1,5 @@
 using System;
+using Unity.Mathematics;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -13,8 +14,22 @@ public class PatrolState : BaseState
 
     public override void OnStateUpdate()
     {
+        if (_enemy.CheckIfInFOV())
+        {
+            _fsm.SwitchState(EStates.Chase);
+            return;
+        }
+
+        if (_enemy.CheckIfInDetectionRange())
+        {
+            _fsm.SwitchState(EStates.Alert);
+            return;
+        }
+
         Vector3 direction = _destination - _enemy.transform.position; // Get the direction from the enemy to the destination
         Vector3 moveVector = direction.normalized * _enemy.MoveSpeed; // Calculate the movement vector based on the enemy's move speed and the time elapsed since the last frame
+
+        RotateToDirection(direction);
 
         _enemy.EnemyRb.linearVelocity = moveVector;
 
@@ -33,6 +48,11 @@ public class PatrolState : BaseState
        
     }
 
+    private void RotateToDirection(Vector3 moveVector)
+    {
+        Quaternion targetRotation = Quaternion.LookRotation(moveVector); // Get the target rotation based on the movement vector
+        _enemy.transform.rotation = Quaternion.Lerp(_enemy.transform.rotation, targetRotation, Time.deltaTime * _enemy.RotationSpeed); // Smoothly rotate the enemy towards the target rotation
+    }
 
     private Vector3 GetRandomPatrolPoint()
     {

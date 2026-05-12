@@ -1377,7 +1377,7 @@ Transform:
   m_GameObject: {fileID: 1424757107}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 1, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1703,11 +1703,16 @@ MonoBehaviour:
   _idleTime: 2
   _patrolRadius: 20
   _stoppingDistance: 1
+  _alertTime: 3
+  _alertRotationSpeed: 120
+  _alertRadius: 7
   _detectionRange: 10
-  _fieldOfView: 10
-  _fovRange: 3
+  _fieldOfView: 100
+  _fovRange: 8
   _moveSpeed: 5
-  _showMoveRadius: 0
+  _rotationSpeed: 5
+  _showMoveRadius: 1
+  _showFOVRadius: 1
 --- !u!136 &1755183289
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -1730,7 +1735,7 @@ CapsuleCollider:
   m_Radius: 0.5
   m_Height: 2
   m_Direction: 1
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Center: {x: 0, y: 1, z: 0}
 --- !u!54 &1755183290
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -1767,7 +1772,7 @@ Transform:
   m_GameObject: {fileID: 1755183287}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -27.14, y: 1, z: 0}
+  m_LocalPosition: {x: -27.14, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
