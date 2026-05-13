@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -16,6 +17,7 @@ public abstract class Enemy : MonoBehaviour
     [SerializeField] private float _alertTime = 3f; // Time the enemy will stay in the alert state before switching back to patrol if it doesn't see the player again
     [SerializeField] private float _alertRotationSpeed = 120f; // Rotation speed of the enemy when it's in the alert state, it will rotate to look for the player
     [SerializeField] private float _alertRadius = 1f;
+    [SerializeField] [Range(30f, 360f)] private float _minRotation, _maxRotation;
 
     [Header("Chase Settings")]
     [SerializeField] private float _detectionRange = 10f; // Range within which the enemy can detect the player
@@ -46,6 +48,8 @@ public abstract class Enemy : MonoBehaviour
     // ALERT
     public float AlertTime => _alertTime;
     public float AlertRotationSpeed => _alertRotationSpeed;
+    public float MinRotation => _minRotation;
+    public float MaxRotation => _maxRotation;
     // CHASE
     public float DetectionRange => _detectionRange;
     // SIGHT

@@ -16,12 +16,14 @@ public class PatrolState : BaseState
     {
         if (_enemy.CheckIfInFOV())
         {
+            Debug.Log("Player in FOV");
             _fsm.SwitchState(EStates.Chase);
             return;
         }
 
         if (_enemy.CheckIfInDetectionRange())
         {
+            Debug.Log("Player close to me");
             _fsm.SwitchState(EStates.Alert);
             return;
         }
@@ -51,7 +53,8 @@ public class PatrolState : BaseState
     private void RotateToDirection(Vector3 moveVector)
     {
         Quaternion targetRotation = Quaternion.LookRotation(moveVector); // Get the target rotation based on the movement vector
-        _enemy.transform.rotation = Quaternion.Lerp(_enemy.transform.rotation, targetRotation, Time.deltaTime * _enemy.RotationSpeed); // Smoothly rotate the enemy towards the target rotation
+        //_enemy.transform.rotation = Quaternion.Lerp(_enemy.transform.rotation, targetRotation, Time.deltaTime * _enemy.RotationSpeed); // Smoothly rotate the enemy towards the target rotation
+        _enemy.transform.rotation = Quaternion.RotateTowards(_enemy.transform.rotation, targetRotation, 360f * Time.deltaTime * _enemy.RotationSpeed);
     }
 
     private Vector3 GetRandomPatrolPoint()
