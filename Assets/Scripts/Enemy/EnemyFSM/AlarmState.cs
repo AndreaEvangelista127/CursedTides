@@ -16,44 +16,59 @@ public class AlertState : BaseState
 
     public override void OnStateEnter()
     {
+        _enemy.SetIfIsInAlert(true);
         _alertTimer = 0f;
-        _enemy.EnemyRb.linearVelocity = Vector3.zero;
+        _enemy.Rb.linearVelocity = Vector3.zero; // Stop the enemy's movement when entering the alert state
+        Debug.Log("Entering Alert State");
     }
     public override void OnStateUpdate()
     {
-        //Always check if the player is in FOV
-        if (_enemy.CheckIfInFOV())
-        {
-            _fsm.SwitchState(EStates.Chase);
-        }
+        bool playerInRange = _enemy.CheckIfInDetectionRange();
+        bool playerInFOV = _enemy.CheckIfInFOV();
 
-        //The Player is not in FOV go back to Patrol
-        _alertTimer += Time.deltaTime;
-        if( _alertTimer >= _enemy.AlertTime)
+        if (playerInRange)
         {
-            _fsm.SwitchState(EStates.Patrol);
-        }
-        
-        // ---ALARM STATE---
-        if (_isRotating)
-        {
-            RotateTowardsTarget();
+            _alertTimer += Time.deltaTime;
+            if (_alertTimer >= _enemy.AlertTime)
+            {
+                _fsm.SwitchState(EStates.Chase);
+                return;
+            }
         }
         else
         {
-            WaitTimeBeforeRotation(_waitTime);
+            _fsm.SwitchState(EStates.Patrol);
+            return;
+        }
+
+        if(playerInFOV)
+        {
+            _fsm.SwitchState(EStates.Chase);
+            return;
+        }
+
+        // ---ALARM STATE---
+        if (_isRotating)
+        {
+            RotateTowardsTarget(); // Rotate towards the target rotation
+        }
+        else
+        {
+            WaitTimeBeforeRotation(_waitTime); // Wait for a certain time before generating a new target rotation
         }
     }
 
     public override void OnStateExit()
     {
-        _fsm.SwitchState(EStates.Patrol);
+        _enemy.SetIfIsInAlert(false);
     }
 
+    // Rotate the enemy to a random angle within the specified rotation range
     private void RotateTowardsTarget()
     {
         _enemy.transform.rotation = Quaternion.RotateTowards(_enemy.transform.rotation, _targetRotation, 90f * Time.deltaTime);
 
+        // Check if the enemy has reached the target rotation
         if (Quaternion.Angle(_enemy.transform.rotation, _targetRotation) < 1f)
         {
             _pauseTime = _waitTime;

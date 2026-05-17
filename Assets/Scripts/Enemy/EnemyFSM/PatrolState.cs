@@ -10,6 +10,8 @@ public class PatrolState : BaseState
     public override void OnStateEnter()
     {
         _destination = GetRandomPatrolPoint();
+        _enemy.SetIfIsPatrolling(true);
+        Debug.Log("Entering Patrol State, new destination: " + _destination);
     }
 
     public override void OnStateUpdate()
@@ -23,7 +25,7 @@ public class PatrolState : BaseState
 
         if (_enemy.CheckIfInDetectionRange())
         {
-            Debug.Log("Player close to me");
+            Debug.Log("Player is around me");
             _fsm.SwitchState(EStates.Alert);
             return;
         }
@@ -31,30 +33,23 @@ public class PatrolState : BaseState
         Vector3 direction = _destination - _enemy.transform.position; // Get the direction from the enemy to the destination
         Vector3 moveVector = direction.normalized * _enemy.MoveSpeed; // Calculate the movement vector based on the enemy's move speed and the time elapsed since the last frame
 
-        RotateToDirection(direction);
+        _enemy.RotateToDirection(direction);
 
-        _enemy.EnemyRb.linearVelocity = moveVector;
+        _enemy.Rb.linearVelocity = moveVector;
 
         // Check if the enemy is within the stopping distance of the destination
         float distanceSqr = direction.sqrMagnitude; // Use squared magnitude for performance reasons
 
-        if(distanceSqr < _enemy.StoppingDistance * _enemy.StoppingDistance) // Compare with the squared stopping distance
+        if(distanceSqr < _enemy.DistanceBuffer * _enemy.DistanceBuffer) // Compare with the squared stopping distance
         {
-            _enemy.EnemyRb.linearVelocity = Vector3.zero; // Stop the enemy's movement
+            _enemy.Rb.linearVelocity = Vector3.zero; // Stop the enemy's movement
             _fsm.SwitchState(EStates.Idle); // Switch to the idle state after reaching the destination
         }
     }
 
     public override void OnStateExit()
     {
-       
-    }
-
-    private void RotateToDirection(Vector3 moveVector)
-    {
-        Quaternion targetRotation = Quaternion.LookRotation(moveVector); // Get the target rotation based on the movement vector
-        //_enemy.transform.rotation = Quaternion.Lerp(_enemy.transform.rotation, targetRotation, Time.deltaTime * _enemy.RotationSpeed); // Smoothly rotate the enemy towards the target rotation
-        _enemy.transform.rotation = Quaternion.RotateTowards(_enemy.transform.rotation, targetRotation, 360f * Time.deltaTime * _enemy.RotationSpeed);
+       _enemy.SetIfIsPatrolling(false);
     }
 
     private Vector3 GetRandomPatrolPoint()

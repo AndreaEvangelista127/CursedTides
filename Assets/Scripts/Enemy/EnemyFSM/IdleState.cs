@@ -8,6 +8,7 @@ public class IdleState : BaseState
     public override void OnStateEnter()
     {
         _idleTimer = 0f; // Reset the idle timer when entering the idle state
+        Debug.Log("Entering Idle State");
     }
     public override void OnStateUpdate()
     {

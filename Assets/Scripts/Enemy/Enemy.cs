@@ -1,4 +1,5 @@
 using System;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -11,7 +12,7 @@ public abstract class Enemy : MonoBehaviour
 
     [Header("Patrol Settings")]
     [SerializeField] private float _patrolRadius = 5f; // Radius within which the enemy will patrol
-    [SerializeField] private float _stoppingDistance = 1f; // Distance at which the enemy will stop, idle and then calculate a new patrol point
+    [SerializeField] private float _distanceBuffer = 1f; // Distance at which the enemy will stop, idle and then calculate a new patrol point
 
     [Header("Alert Settings")]
     [SerializeField] private float _alertTime = 3f; // Time the enemy will stay in the alert state before switching back to patrol if it doesn't see the player again
@@ -21,6 +22,7 @@ public abstract class Enemy : MonoBehaviour
 
     [Header("Chase Settings")]
     [SerializeField] private float _detectionRange = 10f; // Range within which the enemy can detect the player
+    [SerializeField] private float _maxChaseDistance = 20f; // Maximum distance the enemy will chase the player before giving up and returning to patrol
 
     [Header("Sight Settings")]
     [SerializeField] private float _fieldOfView = 120;
@@ -30,21 +32,24 @@ public abstract class Enemy : MonoBehaviour
     [SerializeField] private float _moveSpeed;
     [SerializeField] private float _rotationSpeed;
 
-    private Rigidbody _enemyRb; // Reference to the enemy's Rigidbody component
+    private Rigidbody _rb; // Reference to the enemy's Rigidbody component
     private Transform _playerTransform; // Reference to the player's Transform component
     private Vector3 _patrolOrigin;
     private float _halfFov; // To be able to have 2 different lines that wil shows the right and left end of the FOV
+    private Animator _animator; // Reference to the enemy's Animator component
 
     [Header("Gizmos")]
     [SerializeField] private bool _showMoveRadius;
     [SerializeField] private bool _showFOVRadius;
+    [SerializeField] private bool _showProximityRadius;
 
     // --- PUBLIC PROPERTIES ---
     // IDLE
     public float IdleTime => _idleTime;
     // PATROL
+    public Vector3 PatrolOrigin => _patrolOrigin;
     public float PatrolRadius => _patrolRadius;
-    public float StoppingDistance => _stoppingDistance;
+    public float DistanceBuffer => _distanceBuffer;
     // ALERT
     public float AlertTime => _alertTime;
     public float AlertRotationSpeed => _alertRotationSpeed;
@@ -52,6 +57,7 @@ public abstract class Enemy : MonoBehaviour
     public float MaxRotation => _maxRotation;
     // CHASE
     public float DetectionRange => _detectionRange;
+    public float MaxChaseDistance => _maxChaseDistance;
     // SIGHT
     public float FieldOfView => _fieldOfView;
     public float FovRange => _fovRange;
@@ -59,15 +65,15 @@ public abstract class Enemy : MonoBehaviour
     public float MoveSpeed => _moveSpeed;
     public float RotationSpeed => _rotationSpeed;
     public Transform PlayerTransform => _playerTransform;
-    public Vector3 PatrolOrigin => _patrolOrigin;
-    public Rigidbody EnemyRb => _enemyRb;
+    public Rigidbody Rb => _rb;
 
     protected virtual void Awake()
     {
-        _enemyRb = GetComponent<Rigidbody>();
+        _rb = GetComponent<Rigidbody>();
         _patrolOrigin = transform.position; // Set the patrol origin to the enemy's initial position
         _playerTransform = GameObject.FindWithTag("Player").transform; // Find the player in the scene by tag and get its Transform
         _halfFov = _fieldOfView / 2.0f; // Calculate half of the field of view for later use in FOV checks
+        _animator = GetComponent<Animator>();
     }
 
     public virtual bool CheckIfInFOV()
@@ -109,6 +115,28 @@ public abstract class Enemy : MonoBehaviour
         }
     }
 
+    public void RotateToDirection(Vector3 direction)
+    {
+        direction.y = 0; // Ensure the enemy only rotates on the xz plane, so we set the y component to 0
+        Quaternion targetRotation = Quaternion.LookRotation(direction); // Get the target rotation based on the direction vector
+        transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, 360f * Time.deltaTime * RotationSpeed); // Smoothly rotate the enemy towards the target rotation
+    }
+
+    public void SetIfIsPatrolling(bool isPatrolling)
+    {
+        _animator.SetBool("isPatrolling", isPatrolling);
+    }
+
+    public void SetIfIsInAlert(bool isInAlert)
+    {
+        _animator.SetBool("isInAlert", isInAlert);
+    }
+
+    public void SetIfIsChasing(bool isChasing)
+    {
+        _animator.SetBool("isChasing", isChasing);
+    }
+
     private void OnDrawGizmos()
     {
         // ---- GIZMOS FOR PATROL RADIUS ----
@@ -127,8 +155,15 @@ public abstract class Enemy : MonoBehaviour
         if (_showFOVRadius)
         {
             float halfFov = _fieldOfView / 2.0f;
-
-            Gizmos.color = Color.red;
+            if (_playerTransform == null) return;
+            if(CheckIfInFOV())
+            {
+                Gizmos.color = Color.green;
+            }
+            else
+            {
+                Gizmos.color = Color.red;
+            }
             Quaternion leftRayRotation = Quaternion.AngleAxis(-halfFov, Vector3.up);
             Quaternion rightRayRotation = Quaternion.AngleAxis(halfFov, Vector3.up);
             Vector3 leftRayDirection = leftRayRotation * transform.forward;
@@ -150,10 +185,12 @@ public abstract class Enemy : MonoBehaviour
                 Gizmos.DrawLine(previousPoint, nextPoint);
                 previousPoint = nextPoint;
             }
+
+            
         }
 
         // ---- GIZMOS FOR PROXIMITY CHECK ----
-        if (_showFOVRadius)
+        if (_showProximityRadius)
         {
             Gizmos.color = Color.blue;
             Gizmos.DrawWireSphere(transform.position, _alertRadius);
@@ -164,4 +201,5 @@ public abstract class Enemy : MonoBehaviour
 
     }
 
+    
 }
