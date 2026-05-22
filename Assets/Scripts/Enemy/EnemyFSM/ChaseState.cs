@@ -9,18 +9,22 @@ public class ChaseState : BaseState
 
     public override void OnStateEnter()
     {
+        _enemy.ResetWeaponDrawn(); // Reset the weapon drawn state to ensure the enemy can draw its weapon again when it enters the chase state
         _enemy.SetIfIsChasing(true);
-        Debug.Log("Entering Chase State, last position: " + _lastPosition);
+        //Debug.Log("Entering Chase State, last position: " + _lastPosition);
+        _enemy.GetComponent<Animator>().SetTrigger("drawWeapon");
     }
 
     public override void OnStateUpdate()
     {
+        // Wait until the enemy has drawn its weapon before starting to chase the player
+        if (!_enemy.IsWeaponDrawn) return;
+
         SaveLastPositionInRadius(); // Here we have 
 
         bool hasReachedTheLimit = Vector3.Distance(_enemy.PlayerTransform.position, _lastPosition) > _enemy.MaxChaseDistance;
         // If it's too far away from the last position where it still was inside the detection range, go back to patrol
         
-        //NEED TO ADD EVEN THE 
         if(hasReachedTheLimit)
         {
             Debug.Log("Player is too far away from last position, going back to last position in MoveRadius");

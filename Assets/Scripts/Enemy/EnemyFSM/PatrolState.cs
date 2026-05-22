@@ -9,6 +9,17 @@ public class PatrolState : BaseState
 
     public override void OnStateEnter()
     {
+        if (_enemy.IsWeaponDrawn)
+        {
+            _enemy.ResetSheathingComplete();
+            _enemy.GetComponent<Animator>().SetTrigger("sheathing");
+            _enemy.Rb.linearVelocity = Vector3.zero; // Stop the enemy's movement while sheathing its weapon
+        }
+        else
+        {
+            _enemy.SetSheathingComplete();
+        }
+
         _destination = GetRandomPatrolPoint();
         _enemy.SetIfIsPatrolling(true);
         Debug.Log("Entering Patrol State, new destination: " + _destination);
@@ -16,6 +27,9 @@ public class PatrolState : BaseState
 
     public override void OnStateUpdate()
     {
+        //if the enemy is still sheathing its weapon, it should not move or check for the player
+        if (!_enemy.IsSheathingComplete) return;
+
         if (_enemy.CheckIfInFOV())
         {
             Debug.Log("Player in FOV");

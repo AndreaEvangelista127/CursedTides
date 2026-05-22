@@ -1,4 +1,5 @@
 using System;
+using System.Security.Cryptography;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -28,6 +29,10 @@ public abstract class Enemy : MonoBehaviour
     [SerializeField] private float _fieldOfView = 120;
     [SerializeField] private float _fovRange = 3.0f; // Range of the FOV detection, max distance at which the enemy sees the player
 
+    [Header("Weapon Settings")]
+    [SerializeField] private GameObject _daggerHolster; // Dagger on the hip
+    [SerializeField] private GameObject _daggerInHand; // Dagger in the enemy's hand, active when the enemy is in the chase state
+
     [Header("General Settings")]
     [SerializeField] private float _moveSpeed;
     [SerializeField] private float _rotationSpeed;
@@ -37,6 +42,8 @@ public abstract class Enemy : MonoBehaviour
     private Vector3 _patrolOrigin;
     private float _halfFov; // To be able to have 2 different lines that wil shows the right and left end of the FOV
     private Animator _animator; // Reference to the enemy's Animator component
+    private bool _isWeaponDrawn = false;
+    private bool _isSheathingComplete = true;
 
     [Header("Gizmos")]
     [SerializeField] private bool _showMoveRadius;
@@ -61,6 +68,9 @@ public abstract class Enemy : MonoBehaviour
     // SIGHT
     public float FieldOfView => _fieldOfView;
     public float FovRange => _fovRange;
+    // WEAPON
+    public bool IsWeaponDrawn => _isWeaponDrawn;
+    public bool IsSheathingComplete => _isSheathingComplete;
     // GENERAL
     public float MoveSpeed => _moveSpeed;
     public float RotationSpeed => _rotationSpeed;
@@ -135,6 +145,46 @@ public abstract class Enemy : MonoBehaviour
     public void SetIfIsChasing(bool isChasing)
     {
         _animator.SetBool("isChasing", isChasing);
+    }
+
+    // === WEAPON ANIMATION EVENTS ===
+
+    // When the animation reaches the point where the event is called, unity calls this function.
+    public void OnWeaponUnsheathed()
+    {
+        Debug.Log("Weapon unsheathed, switching to chase state");
+        _daggerHolster.SetActive(false);
+        _daggerInHand.SetActive(true);
+    }
+
+    public void OnWeaponDrawn()
+    {
+        Debug.Log("Weapon drawn, starting to chase the player");
+        _isWeaponDrawn = true;
+    }
+
+    public void ResetWeaponDrawn()
+    {
+        _isWeaponDrawn = false;
+    }
+
+    public void OnWeaponSheathed()
+    {
+        Debug.Log("Weapon sheathed, switching to patrol state");
+        _daggerHolster.SetActive(true);
+        _daggerInHand.SetActive(false);
+        _isSheathingComplete = true;
+        _isWeaponDrawn = false;
+    }
+
+    public void ResetSheathingComplete()
+    {
+        _isSheathingComplete = false;
+    }
+
+    public void SetSheathingComplete()
+    {
+        _isSheathingComplete = true;
     }
 
     private void OnDrawGizmos()
