@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-public class PlayerHealth : MonoBehaviour
+public class PlayerHealth : MonoBehaviour, IDamageable
 {
     [SerializeField] private float maxHealth = 100f;
     [SerializeField] private float currentHealth;
@@ -33,6 +33,7 @@ public class PlayerHealth : MonoBehaviour
             Die();
         }
     }
+
 
     private void Die()
     {

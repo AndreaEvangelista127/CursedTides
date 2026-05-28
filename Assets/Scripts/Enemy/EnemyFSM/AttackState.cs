@@ -2,7 +2,9 @@ using UnityEngine;
 
 public class AttackState : BaseState
 {
+    
     private float _attackTimer; // Timer to track the duration of the attack animation
+
 
     public override void OnStateEnter()
     {
@@ -41,5 +43,13 @@ public class AttackState : BaseState
     {
     }
 
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Player"))
+        {
+            //_playerHealth.TakeDamage(50);
+            
+        }
+    }
 
 }
