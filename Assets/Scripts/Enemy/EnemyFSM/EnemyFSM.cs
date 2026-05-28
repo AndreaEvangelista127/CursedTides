@@ -18,7 +18,8 @@ public class EnemyFSM
             [EStates.Idle] = new IdleState(),
             [EStates.Patrol] = new PatrolState(),
             [EStates.Chase] = new ChaseState(),
-            [EStates.Alert] = new AlertState()
+            [EStates.Alert] = new AlertState(),
+            [EStates.Attack] = new AttackState()
         };
 
         // Giving each state a reference to the enemy and the FSM itself so they can interact with each other

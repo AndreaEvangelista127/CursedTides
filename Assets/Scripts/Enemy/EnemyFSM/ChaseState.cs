@@ -9,16 +9,26 @@ public class ChaseState : BaseState
 
     public override void OnStateEnter()
     {
-        _enemy.ResetWeaponDrawn(); // Reset the weapon drawn state to ensure the enemy can draw its weapon again when it enters the chase state
+        _lastPosition = _enemy.transform.position; // Save the current position as the last position where the enemy was still inside the patrol radius
         _enemy.SetIfIsChasing(true);
-        //Debug.Log("Entering Chase State, last position: " + _lastPosition);
-        _enemy.GetComponent<Animator>().SetTrigger("drawWeapon");
+
+        if (!_enemy.IsWeaponDrawn)
+        {
+            _enemy.ResetWeaponDrawn(); // Reset the weapon drawn state to ensure the enemy can draw its weapon again when it enters the chase state
+            _enemy.GetComponent<Animator>().SetTrigger("drawWeapon");
+        }
     }
 
     public override void OnStateUpdate()
     {
         // Wait until the enemy has drawn its weapon before starting to chase the player
         if (!_enemy.IsWeaponDrawn) return;
+
+        if(_enemy.CheckIfPlayerIsInAttackRange())
+        {
+            _fsm.SwitchState(EStates.Attack);
+            return;
+        }
 
         SaveLastPositionInRadius(); // Here we have 
 

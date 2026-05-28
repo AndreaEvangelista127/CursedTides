@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class CheckPointManager : MonoBehaviour
 {
+
     [SerializeField] private GameObject _player;
     private Vector3 _respawnPosition;
 

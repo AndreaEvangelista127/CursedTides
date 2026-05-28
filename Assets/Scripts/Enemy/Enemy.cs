@@ -29,6 +29,10 @@ public abstract class Enemy : MonoBehaviour
     [SerializeField] private float _fieldOfView = 120;
     [SerializeField] private float _fovRange = 3.0f; // Range of the FOV detection, max distance at which the enemy sees the player
 
+    [Header("Attack Settings")]
+    [SerializeField] private float _attackRange = 2f; // Range within which the enemy can attack the player
+    [SerializeField] private float _attackCooldown = 1.5f; // Time between each attack
+
     [Header("Weapon Settings")]
     [SerializeField] private GameObject _daggerHolster; // Dagger on the hip
     [SerializeField] private GameObject _daggerInHand; // Dagger in the enemy's hand, active when the enemy is in the chase state
@@ -36,6 +40,8 @@ public abstract class Enemy : MonoBehaviour
     [Header("General Settings")]
     [SerializeField] private float _moveSpeed;
     [SerializeField] private float _rotationSpeed;
+    [SerializeField] private Collider _daggerCollider;
+    [SerializeField] private float _meleeDamage = 10f;
 
     private Rigidbody _rb; // Reference to the enemy's Rigidbody component
     private Transform _playerTransform; // Reference to the player's Transform component
@@ -49,6 +55,7 @@ public abstract class Enemy : MonoBehaviour
     [SerializeField] private bool _showMoveRadius;
     [SerializeField] private bool _showFOVRadius;
     [SerializeField] private bool _showProximityRadius;
+    [SerializeField] private bool _showAttackRange;
 
     // --- PUBLIC PROPERTIES ---
     // IDLE
@@ -68,6 +75,9 @@ public abstract class Enemy : MonoBehaviour
     // SIGHT
     public float FieldOfView => _fieldOfView;
     public float FovRange => _fovRange;
+    // ATTACK
+    public float AttackRange => _attackRange;
+    public float AttackCooldown => _attackCooldown;
     // WEAPON
     public bool IsWeaponDrawn => _isWeaponDrawn;
     public bool IsSheathingComplete => _isSheathingComplete;
@@ -132,6 +142,13 @@ public abstract class Enemy : MonoBehaviour
         transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, 360f * Time.deltaTime * RotationSpeed); // Smoothly rotate the enemy towards the target rotation
     }
 
+    public bool CheckIfPlayerIsInAttackRange()
+    {
+        return Vector3.Distance(transform.position, _playerTransform.position) <= _attackRange;
+    }
+
+    // === ANIMATION METHODS ===
+
     public void SetIfIsPatrolling(bool isPatrolling)
     {
         _animator.SetBool("isPatrolling", isPatrolling);
@@ -145,6 +162,11 @@ public abstract class Enemy : MonoBehaviour
     public void SetIfIsChasing(bool isChasing)
     {
         _animator.SetBool("isChasing", isChasing);
+    }
+
+    public void SetIsInAttackRange(bool value)
+    {
+        _animator.SetBool("isInAttackRange", value);
     }
 
     // === WEAPON ANIMATION EVENTS ===
@@ -161,6 +183,7 @@ public abstract class Enemy : MonoBehaviour
     {
         Debug.Log("Weapon drawn, starting to chase the player");
         _isWeaponDrawn = true;
+        DisableWeaponHitBox(); 
     }
 
     public void ResetWeaponDrawn()
@@ -187,6 +210,11 @@ public abstract class Enemy : MonoBehaviour
         _isSheathingComplete = true;
     }
 
+    // ===COLLISION EVENTS===
+    public void EnableWeaponHitBox() => _daggerCollider.enabled = true;
+    public void DisableWeaponHitBox() => _daggerCollider.enabled = false;
+
+    // === GIZMOS ===
     private void OnDrawGizmos()
     {
         // ---- GIZMOS FOR PATROL RADIUS ----
@@ -199,6 +227,20 @@ public abstract class Enemy : MonoBehaviour
 
             Gizmos.color = Color.yellow;
             Gizmos.DrawWireSphere(_patrolOrigin, _patrolRadius);
+        }
+
+        // ---- GIZMOS FOR PROXIMITY CHECK ----
+        if (_showProximityRadius)
+        {
+            Gizmos.color = Color.blue;
+            Gizmos.DrawWireSphere(transform.position, _alertRadius);
+        }
+
+        // ---- GIZMOS FOR ATTACK RANGE ----
+        if (_showAttackRange)
+        {
+            Gizmos.color = Color.magenta;
+            Gizmos.DrawWireSphere(transform.position, _attackRange);
         }
 
         // ---- GIZMOS FOR FOV ----
@@ -235,21 +277,9 @@ public abstract class Enemy : MonoBehaviour
                 Gizmos.DrawLine(previousPoint, nextPoint);
                 previousPoint = nextPoint;
             }
-
-            
         }
-
-        // ---- GIZMOS FOR PROXIMITY CHECK ----
-        if (_showProximityRadius)
-        {
-            Gizmos.color = Color.blue;
-            Gizmos.DrawWireSphere(transform.position, _alertRadius);
-        }
-
-
-
 
     }
 
-    
+
 }

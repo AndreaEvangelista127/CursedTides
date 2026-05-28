@@ -1053,7 +1053,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bf6b2e5959368c34aad52adf76200e98, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerCollisions
-  _checkPointManager: {fileID: 562381993}
 --- !u!1 &410087039
 GameObject:
   m_ObjectHideFlags: 0

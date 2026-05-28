@@ -5,6 +5,7 @@ public enum EStates
     Idle,
     Patrol,
     Chase,
-    Alert
+    Alert,
+    Attack
 }
     
