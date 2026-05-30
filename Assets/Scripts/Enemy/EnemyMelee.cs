@@ -85,8 +85,10 @@ public class EnemyMelee : Enemy
     public void SetIsInAttackRange(bool value) =>
         GetComponent<Animator>().SetBool("isInAttackRange", value);
 
-    private void OnDrawGizmos()
+    protected override void OnDrawGizmos()
     {
+        base.OnDrawGizmos();
+
         if (_showAttackRange)
         {
             Gizmos.color = Color.magenta;

@@ -123,6 +123,16 @@ public abstract class Enemy : MonoBehaviour
         transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, 360f * Time.deltaTime * RotationSpeed); // Smoothly rotate the enemy towards the target rotation
     }
 
+    public Vector3 GetRandomPatrolPoint()
+    {
+        // Get a random point within a sphere with the radius of the patrol radius
+        Vector3 randomDest = UnityEngine.Random.insideUnitSphere * _patrolRadius + _patrolOrigin; //Added patrol origin so that the enemy patrols around its initial position instead of around the world origin
+
+        randomDest.y = 0; // The enemy should only patrol on the xz plane, so we set the y component to 0
+
+        return randomDest;
+    }
+
     // === ANIMATION METHODS ===
 
     public void SetIfIsPatrolling(bool isPatrolling)
@@ -140,13 +150,8 @@ public abstract class Enemy : MonoBehaviour
         _animator.SetBool("isChasing", isChasing);
     }
 
-    public void SetIsInAttackRange(bool value)
-    {
-        _animator.SetBool("isInAttackRange", value);
-    }
-
     // === GIZMOS ===
-    private void OnDrawGizmos()
+    protected virtual void OnDrawGizmos()
     {
         // ---- GIZMOS FOR PATROL RADIUS ----
         if (_showMoveRadius)
@@ -171,15 +176,12 @@ public abstract class Enemy : MonoBehaviour
         if (_showFOVRadius)
         {
             float halfFov = _fieldOfView / 2.0f;
-            if (_playerTransform == null) return;
-            if(CheckIfInFOV())
-            {
+
+            if (_playerTransform != null && CheckIfInFOV())
                 Gizmos.color = Color.green;
-            }
             else
-            {
                 Gizmos.color = Color.red;
-            }
+
             Quaternion leftRayRotation = Quaternion.AngleAxis(-halfFov, Vector3.up);
             Quaternion rightRayRotation = Quaternion.AngleAxis(halfFov, Vector3.up);
             Vector3 leftRayDirection = leftRayRotation * transform.forward;

@@ -19,7 +19,7 @@ public class MeleeAttackState : BaseMeleeState
     {
        if(_enemyMelee.CheckIfPlayerIsInAttackRange())
         {
-            _enemy.SetIsInAttackRange(true);
+            _enemyMelee.SetIsInAttackRange(true);
             _enemy.RotateToDirection(_enemyMelee.PlayerTransform.position - _enemy.transform.position); // Rotate towards the player while attacking
 
             _attackTimer += Time.deltaTime; // Increment the attack timer
@@ -34,7 +34,7 @@ public class MeleeAttackState : BaseMeleeState
         {
             Debug.Log("Player is out of attack range, switching back to chase state.");
             Debug.Log("Enemy dagger is drawn?" + _enemyMelee.IsWeaponDrawn);
-            _enemy.SetIsInAttackRange(false);
+            _enemyMelee.SetIsInAttackRange(false);
             _fsm.SwitchState(EStates.MeleeChase); // If the player is out of attack range, switch back to chase state
         }
     }

@@ -20,8 +20,8 @@ public class MeleePatrolState : BaseMeleeState
             _enemyMelee.SetSheathingComplete();
         }
 
-        _destination = GetRandomPatrolPoint();
-        _enemyMelee.SetIfIsPatrolling(true);
+        _destination = _enemy.GetRandomPatrolPoint();
+        _enemy.SetIfIsPatrolling(true);
         Debug.Log("Entering Patrol State, new destination: " + _destination);
     }
 
@@ -30,14 +30,14 @@ public class MeleePatrolState : BaseMeleeState
         //if the enemy is still sheathing its weapon, it should not move or check for the player
         if (!_enemyMelee.IsSheathingComplete) return;
 
-        if (_enemyMelee.CheckIfInFOV())
+        if (_enemy.CheckIfInFOV())
         {
             Debug.Log("Player in FOV");
             _fsm.SwitchState(EStates.MeleeChase);
             return;
         }
 
-        if (_enemyMelee.CheckIfInDetectionRange())
+        if (_enemy.CheckIfInDetectionRange())
         {
             Debug.Log("Player is around me");
             _fsm.SwitchState(EStates.MeleeAlert);
@@ -47,9 +47,9 @@ public class MeleePatrolState : BaseMeleeState
         Vector3 direction = _destination - _enemy.transform.position; // Get the direction from the enemy to the destination
         Vector3 moveVector = direction.normalized * _enemy.MoveSpeed; // Calculate the movement vector based on the enemy's move speed and the time elapsed since the last frame
 
-        _enemy.RotateToDirection(direction);
+        _enemy.RotateToDirection(direction); //Rotate each frame to face the direction of movement
 
-        _enemy.Rb.linearVelocity = moveVector;
+        _enemy.Rb.linearVelocity = moveVector; // Set the enemy's velocity to move towards the destination
 
         // Check if the enemy is within the stopping distance of the destination
         float distanceSqr = direction.sqrMagnitude; // Use squared magnitude for performance reasons
@@ -63,19 +63,9 @@ public class MeleePatrolState : BaseMeleeState
 
     public override void OnStateExit()
     {
-       _enemyMelee.SetIfIsPatrolling(false);
+        _enemy.SetIfIsPatrolling(false);
+
     }
-
-    private Vector3 GetRandomPatrolPoint()
-    {
-        // Get a random point within a sphere with the radius of the patrol radius
-        Vector3 randomDest = UnityEngine.Random.insideUnitSphere * _enemyMelee.PatrolRadius + _enemyMelee.PatrolOrigin; //Added patrol origin so that the enemy patrols around its initial position instead of around the world origin
-
-        randomDest.y = 0; // The enemy should only patrol on the xz plane, so we set the y component to 0
-
-        return randomDest;
-    }
-
     
 
 

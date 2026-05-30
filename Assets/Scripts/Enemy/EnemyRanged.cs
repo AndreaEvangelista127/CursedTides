@@ -8,6 +8,13 @@ public class EnemyRanged : Enemy
     [SerializeField] private float _tooCloseRange = 3f;
     [SerializeField] private float _shootCooldown = 2f;
 
+    [Header("Alarm State settings")]
+    private bool _hasFinishedLookingAround = false;
+    private bool _hasShrugFinished = false;
+
+    // --- PUBLIC PROPERTIES ---
+    public bool HasFinishedLookingAround => _hasFinishedLookingAround;
+    public bool HasShrugFinished => _hasShrugFinished;
     public float ShootRange => _shootRange;
     public float TooCloseRange => _tooCloseRange;
     public float ShootCooldown => _shootCooldown;
@@ -40,4 +47,31 @@ public class EnemyRanged : Enemy
 
     public bool CheckIfPlayerIsTooClose() =>
         Vector3.Distance(transform.position, PlayerTransform.position) <= _tooCloseRange;
+
+    public void OnLookAroundFinished()
+    {
+        _hasFinishedLookingAround = true;
+        Debug.Log("Look around finished");
+    }
+
+    public void ResetLookAroundFinished()
+    {
+        _hasFinishedLookingAround = false;
+    }
+
+    public void OnShrugFinished()
+    {
+        _hasShrugFinished = true;
+        Debug.Log("Shrugging finished");
+    }
+
+    public void ResetShrugFinished()
+    {
+        _hasShrugFinished = false;
+    }
+
+    protected override void OnDrawGizmos()
+    {
+        base.OnDrawGizmos();
+    }
 }

@@ -20,7 +20,6 @@ public class RangedIdleState : BaseRangedState
 
     public override void OnStateExit()
     {
-        throw new System.NotImplementedException();
     }
 
 
