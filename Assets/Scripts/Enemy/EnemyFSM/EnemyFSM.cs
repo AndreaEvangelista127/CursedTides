@@ -10,25 +10,17 @@ public class EnemyFSM
 
     private BaseState _currentState; // The current state of the enemy
 
-    public void Initialize(Enemy enemy)
+    public void Initialize(Enemy enemy, Dictionary<EStates, BaseState> states, EStates initialState)
     {
-        // Initialize the states 
-        _states = new()
-        {
-            [EStates.Idle] = new IdleState(),
-            [EStates.Patrol] = new PatrolState(),
-            [EStates.Chase] = new ChaseState(),
-            [EStates.Alert] = new AlertState(),
-            [EStates.Attack] = new AttackState()
-        };
+        _states = states;
 
-        // Giving each state a reference to the enemy and the FSM itself so they can interact with each other
         foreach (BaseState state in _states.Values)
         {
             state.Setup(enemy, this);
         }
 
-        _currentState = _states[EStates.Idle];
+        _currentState = _states[initialState];
+        _currentState.OnStateEnter();
     }
 
     // Method to change the current state of the enemy

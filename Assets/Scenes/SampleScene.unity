@@ -366,6 +366,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 147482757}
+  - component: {fileID: 147482759}
+  - component: {fileID: 147482758}
+  - component: {fileID: 147482760}
   m_Layer: 0
   m_Name: EnemyRanged
   m_TagString: Untagged
@@ -382,13 +385,85 @@ Transform:
   m_GameObject: {fileID: 147482756}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -25.49, y: 0, z: 0}
+  m_LocalPosition: {x: 3.96, y: 0, z: -41.5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 904911605}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!136 &147482758
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 147482756}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.2
+  m_Height: 1.6
+  m_Direction: 1
+  m_Center: {x: 0, y: 1, z: 0}
+--- !u!54 &147482759
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 147482756}
+  serializedVersion: 5
+  m_Mass: 1
+  m_LinearDamping: 0
+  m_AngularDamping: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 1
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 116
+  m_CollisionDetection: 0
+--- !u!95 &147482760
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 147482756}
+  m_Enabled: 1
+  m_Avatar: {fileID: 9000000, guid: 47d445364fdde5e4ea2c0a20ecaae6cb, type: 3}
+  m_Controller: {fileID: 9100000, guid: f3bcdd209a0a6a8498948b975790b6de, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &152519232
 GameObject:
   m_ObjectHideFlags: 0
@@ -923,17 +998,17 @@ MonoBehaviour:
   _maxChaseDistance: 20
   _fieldOfView: 100
   _fovRange: 8
-  _attackRange: 2
-  _attackCooldown: 1.5
-  _daggerHolster: {fileID: 1817763426}
-  _daggerInHand: {fileID: 1005660261}
   _moveSpeed: 3.5
   _rotationSpeed: 0.8
-  _daggerCollider: {fileID: 1005660263}
-  _meleeDamage: 10
   _showMoveRadius: 1
   _showFOVRadius: 1
   _showProximityRadius: 1
+  _daggerHolster: {fileID: 1817763426}
+  _daggerInHand: {fileID: 1005660261}
+  _daggerCollider: {fileID: 1005660263}
+  _attackRange: 2
+  _attackCooldown: 1.5
+  _attackCommitRange: 3
   _showAttackRange: 1
 --- !u!136 &368647856
 CapsuleCollider:
@@ -954,8 +1029,8 @@ CapsuleCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.5
-  m_Height: 2
+  m_Radius: 0.2
+  m_Height: 1.6
   m_Direction: 1
   m_Center: {x: 0, y: 1, z: 0}
 --- !u!54 &368647857
@@ -1988,7 +2063,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4842603885351172, guid: c2c0f67a5016e1448a02a52083dbe372, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 1.52
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4842603885351172, guid: c2c0f67a5016e1448a02a52083dbe372, type: 3}
       propertyPath: m_LocalPosition.y
@@ -1996,7 +2071,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4842603885351172, guid: c2c0f67a5016e1448a02a52083dbe372, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 6.63
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4842603885351172, guid: c2c0f67a5016e1448a02a52083dbe372, type: 3}
       propertyPath: m_LocalRotation.w
@@ -3968,7 +4043,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: -0}
-  m_LocalScale: {x: 10, y: 10, z: 10}
+  m_LocalScale: {x: 20, y: 20, z: 20}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 0}
@@ -4084,17 +4159,17 @@ MonoBehaviour:
   _maxChaseDistance: 20
   _fieldOfView: 100
   _fovRange: 8
-  _attackRange: 2
-  _attackCooldown: 1.5
-  _daggerHolster: {fileID: 0}
-  _daggerInHand: {fileID: 0}
   _moveSpeed: 5
   _rotationSpeed: 0.8
-  _daggerCollider: {fileID: 0}
-  _meleeDamage: 10
   _showMoveRadius: 1
   _showFOVRadius: 1
   _showProximityRadius: 0
+  _daggerHolster: {fileID: 0}
+  _daggerInHand: {fileID: 0}
+  _daggerCollider: {fileID: 0}
+  _attackRange: 2
+  _attackCooldown: 1.5
+  _attackCommitRange: 3
   _showAttackRange: 0
 --- !u!136 &1755183289
 CapsuleCollider:

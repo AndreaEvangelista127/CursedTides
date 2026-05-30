@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class IdleState : BaseState
+public class MeleeIdleState : BaseMeleeState
 {
     
     private float _idleTimer; // Timer to keep track of how long the enemy has been idling
@@ -14,13 +14,13 @@ public class IdleState : BaseState
     {
         if (_enemy.CheckIfInFOV())
         {
-            _fsm.SwitchState(EStates.Chase);
+            _fsm.SwitchState(EStates.MeleeChase);
             return;
         }
 
         if (_enemy.CheckIfInDetectionRange())
         {
-            _fsm.SwitchState(EStates.Alert);
+            _fsm.SwitchState(EStates.MeleeAlert);
             return;
         }
 
@@ -28,7 +28,7 @@ public class IdleState : BaseState
         _idleTimer += Time.deltaTime; // Increment the idle timer by the time elapsed since the last frame
         if (_idleTimer >= _enemy.IdleTime) // Check if the idle time has elapsed
         {
-            _fsm.SwitchState(EStates.Patrol); // Switch to the patrol state after the idle time has elapsed
+            _fsm.SwitchState(EStates.MeleePatrol); // Switch to the patrol state after the idle time has elapsed
         }
     }
 

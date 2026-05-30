@@ -3,44 +3,44 @@ using Unity.Mathematics;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class PatrolState : BaseState
+public class MeleePatrolState : BaseMeleeState
 {
     private Vector3 _destination; // The destination point the enemy will move towards while patrolling
 
     public override void OnStateEnter()
     {
-        if (_enemy.IsWeaponDrawn)
+        if (_enemyMelee.IsWeaponDrawn)
         {
-            _enemy.ResetSheathingComplete();
+            _enemyMelee.ResetSheathingComplete();
             _enemy.GetComponent<Animator>().SetTrigger("sheathing");
             _enemy.Rb.linearVelocity = Vector3.zero; // Stop the enemy's movement while sheathing its weapon
         }
         else
         {
-            _enemy.SetSheathingComplete();
+            _enemyMelee.SetSheathingComplete();
         }
 
         _destination = GetRandomPatrolPoint();
-        _enemy.SetIfIsPatrolling(true);
+        _enemyMelee.SetIfIsPatrolling(true);
         Debug.Log("Entering Patrol State, new destination: " + _destination);
     }
 
     public override void OnStateUpdate()
     {
         //if the enemy is still sheathing its weapon, it should not move or check for the player
-        if (!_enemy.IsSheathingComplete) return;
+        if (!_enemyMelee.IsSheathingComplete) return;
 
-        if (_enemy.CheckIfInFOV())
+        if (_enemyMelee.CheckIfInFOV())
         {
             Debug.Log("Player in FOV");
-            _fsm.SwitchState(EStates.Chase);
+            _fsm.SwitchState(EStates.MeleeChase);
             return;
         }
 
-        if (_enemy.CheckIfInDetectionRange())
+        if (_enemyMelee.CheckIfInDetectionRange())
         {
             Debug.Log("Player is around me");
-            _fsm.SwitchState(EStates.Alert);
+            _fsm.SwitchState(EStates.MeleeAlert);
             return;
         }
 
@@ -57,19 +57,19 @@ public class PatrolState : BaseState
         if(distanceSqr < _enemy.DistanceBuffer * _enemy.DistanceBuffer) // Compare with the squared stopping distance
         {
             _enemy.Rb.linearVelocity = Vector3.zero; // Stop the enemy's movement
-            _fsm.SwitchState(EStates.Idle); // Switch to the idle state after reaching the destination
+            _fsm.SwitchState(EStates.MeleeIdle); // Switch to the idle state after reaching the destination
         }
     }
 
     public override void OnStateExit()
     {
-       _enemy.SetIfIsPatrolling(false);
+       _enemyMelee.SetIfIsPatrolling(false);
     }
 
     private Vector3 GetRandomPatrolPoint()
     {
         // Get a random point within a sphere with the radius of the patrol radius
-        Vector3 randomDest = UnityEngine.Random.insideUnitSphere * _enemy.PatrolRadius + _enemy.PatrolOrigin; //Added patrol origin so that the enemy patrols around its initial position instead of around the world origin
+        Vector3 randomDest = UnityEngine.Random.insideUnitSphere * _enemyMelee.PatrolRadius + _enemyMelee.PatrolOrigin; //Added patrol origin so that the enemy patrols around its initial position instead of around the world origin
 
         randomDest.y = 0; // The enemy should only patrol on the xz plane, so we set the y component to 0
 

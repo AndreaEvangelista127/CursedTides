@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class ChaseState : BaseState
+public class MeleeChaseState : BaseMeleeState
 {
 
     private Vector3 _lastPosition; 
@@ -12,9 +12,9 @@ public class ChaseState : BaseState
         _lastPosition = _enemy.transform.position; // Save the current position as the last position where the enemy was still inside the patrol radius
         _enemy.SetIfIsChasing(true);
 
-        if (!_enemy.IsWeaponDrawn)
+        if (!_enemyMelee.IsWeaponDrawn)
         {
-            _enemy.ResetWeaponDrawn(); // Reset the weapon drawn state to ensure the enemy can draw its weapon again when it enters the chase state
+            _enemyMelee.ResetWeaponDrawn(); // Reset the weapon drawn state to ensure the enemy can draw its weapon again when it enters the chase state
             _enemy.GetComponent<Animator>().SetTrigger("drawWeapon");
         }
     }
@@ -22,17 +22,17 @@ public class ChaseState : BaseState
     public override void OnStateUpdate()
     {
         // Wait until the enemy has drawn its weapon before starting to chase the player
-        if (!_enemy.IsWeaponDrawn) return;
+        if (!_enemyMelee.IsWeaponDrawn) return;
 
-        if(_enemy.CheckIfPlayerIsInAttackRange())
+        if(_enemyMelee.CheckIfPlayerIsInAttackRange())
         {
-            _fsm.SwitchState(EStates.Attack);
+            _fsm.SwitchState(EStates.MeleeAttack);
             return;
         }
 
         SaveLastPositionInRadius(); // Here we have 
 
-        bool hasReachedTheLimit = Vector3.Distance(_enemy.PlayerTransform.position, _lastPosition) > _enemy.MaxChaseDistance;
+        bool hasReachedTheLimit = Vector3.Distance(_enemyMelee.PlayerTransform.position, _lastPosition) > _enemyMelee.MaxChaseDistance;
         // If it's too far away from the last position where it still was inside the detection range, go back to patrol
         
         if(hasReachedTheLimit)
@@ -56,7 +56,7 @@ public class ChaseState : BaseState
                 Debug.Log("Reached last position, switching back to patrol");
                 _isGoingBackToLastPosition = false; // Reset the flag for the next time the enemy enters the chase state
                 _enemy.Rb.linearVelocity = Vector3.zero; // Stop the enemy's movement
-                _fsm.SwitchState(EStates.Patrol);
+                _fsm.SwitchState(EStates.MeleePatrol);
                 return;
             }
         }
@@ -76,10 +76,10 @@ public class ChaseState : BaseState
     private void SaveLastPositionInRadius()
     {
         //Distance between the enemy and the origin of the patrol radius
-        float distanceFromOrigin = Vector3.Distance(_enemy.transform.position, _enemy.PatrolOrigin);
+        float distanceFromOrigin = Vector3.Distance(_enemy.transform.position, _enemyMelee.PatrolOrigin);
 
         //If it's more than the patrol radius value, means that the enemy stepped outside of the patrol radius, so we save the last position where it was still inside the patrol radius
-        if (distanceFromOrigin <= _enemy.PatrolRadius)
+        if (distanceFromOrigin <= _enemyMelee.PatrolRadius)
         {
             _lastPosition = _enemy.transform.position;
         }
@@ -87,7 +87,7 @@ public class ChaseState : BaseState
 
     private void MoveTowardsPlayer()
     {
-        Vector3 direction = _enemy.PlayerTransform.position - _enemy.transform.position; // Get the direction from the enemy to the player
+        Vector3 direction = _enemyMelee.PlayerTransform.position - _enemy.transform.position; // Get the direction from the enemy to the player
         Vector3 moveVector = direction.normalized * _enemy.MoveSpeed; // Calculate the movement vector based on the enemy's move speed and the time elapsed since the last frame
         moveVector.y = 0;
         _enemy.RotateToDirection(direction);

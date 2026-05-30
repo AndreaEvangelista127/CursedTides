@@ -7,7 +7,7 @@ public abstract class BaseState
     protected EnemyFSM _fsm;
 
     // Method used only to setup the dictionary in the FSM for <EState, Enemy>
-    public void Setup(Enemy enemy, EnemyFSM fsm)
+    public virtual void Setup(Enemy enemy, EnemyFSM fsm)
     {
         _enemy = enemy;
         _fsm = fsm;

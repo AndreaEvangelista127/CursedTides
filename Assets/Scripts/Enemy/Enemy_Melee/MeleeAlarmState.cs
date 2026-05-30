@@ -3,7 +3,7 @@ using Unity.Mathematics;
 using UnityEngine;
 
 
-public class AlertState : BaseState
+public class MeleeAlertState : BaseMeleeState
 {
     private float _alertTimer;
     private float _rotationDirection = 1f; //Initially rotating to the right
@@ -31,19 +31,19 @@ public class AlertState : BaseState
             _alertTimer += Time.deltaTime;
             if (_alertTimer >= _enemy.AlertTime)
             {
-                _fsm.SwitchState(EStates.Chase);
+                _fsm.SwitchState(EStates.MeleeChase);
                 return;
             }
         }
         else
         {
-            _fsm.SwitchState(EStates.Patrol);
+            _fsm.SwitchState(EStates.MeleePatrol);
             return;
         }
 
         if(playerInFOV)
         {
-            _fsm.SwitchState(EStates.Chase);
+            _fsm.SwitchState(EStates.MeleeChase);
             return;
         }
 
