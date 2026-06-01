@@ -6,7 +6,6 @@ public class MeleeChaseState : BaseMeleeState
     private Vector3 _lastPosition; 
     private bool _isGoingBackToLastPosition = false; // Flag to indicate whether the enemy is currently going back to the last position
     
-
     public override void OnStateEnter()
     {
         _lastPosition = _enemy.transform.position; // Save the current position as the last position where the enemy was still inside the patrol radius
@@ -30,9 +29,9 @@ public class MeleeChaseState : BaseMeleeState
             return;
         }
 
-        SaveLastPositionInRadius(); // Here we have 
+        SaveLastPositionInRadius();  
 
-        bool hasReachedTheLimit = Vector3.Distance(_enemyMelee.PlayerTransform.position, _lastPosition) > _enemyMelee.MaxChaseDistance;
+        bool hasReachedTheLimit = Vector3.Distance(_enemyMelee.PlayerTransform.position, _lastPosition) >= _enemyMelee.MaxChaseDistance;
         // If it's too far away from the last position where it still was inside the detection range, go back to patrol
         
         if(hasReachedTheLimit)
@@ -44,7 +43,7 @@ public class MeleeChaseState : BaseMeleeState
         if (_isGoingBackToLastPosition)
         {
             Vector3 lastPosDir = _lastPosition - _enemy.transform.position;
-            Vector3 moveVector = lastPosDir.normalized * (_enemy.MoveSpeed * 2);
+            Vector3 moveVector = lastPosDir.normalized * (_enemy.ChaseSpeed);
 
             _enemy.RotateToDirection(lastPosDir);
             _enemy.Rb.linearVelocity = moveVector;
@@ -63,7 +62,7 @@ public class MeleeChaseState : BaseMeleeState
         else
         {
             // Run towards the player
-            MoveTowardsPlayer();
+            _enemy.MoveTowardsPlayer();
         }
 
     }
@@ -85,14 +84,5 @@ public class MeleeChaseState : BaseMeleeState
         }
     }
 
-    private void MoveTowardsPlayer()
-    {
-        Vector3 direction = _enemyMelee.PlayerTransform.position - _enemy.transform.position; // Get the direction from the enemy to the player
-        Vector3 moveVector = direction.normalized * _enemy.MoveSpeed; // Calculate the movement vector based on the enemy's move speed and the time elapsed since the last frame
-        moveVector.y = 0;
-        _enemy.RotateToDirection(direction);
-
-        _enemy.Rb.linearVelocity = moveVector;
-    }
 
 }

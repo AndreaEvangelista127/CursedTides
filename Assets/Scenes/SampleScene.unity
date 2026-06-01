@@ -487,6 +487,7 @@ MonoBehaviour:
   _maxRotation: 180
   _detectionRange: 10
   _maxChaseDistance: 20
+  _chaseSpeed: 4
   _fieldOfView: 120
   _fovRange: 15
   _moveSpeed: 1.5
@@ -1006,7 +1007,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &368647855
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1029,6 +1030,7 @@ MonoBehaviour:
   _maxRotation: 180
   _detectionRange: 10
   _maxChaseDistance: 20
+  _chaseSpeed: 3
   _fieldOfView: 100
   _fovRange: 8
   _moveSpeed: 3
@@ -4823,7 +4825,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 124188, guid: d43f2bfa2a48a5c4286141c62a64a497, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 405576, guid: d43f2bfa2a48a5c4286141c62a64a497, type: 3}
       propertyPath: m_LocalPosition.x
@@ -4918,6 +4920,7 @@ MonoBehaviour:
   _maxRotation: 30
   _detectionRange: 10
   _maxChaseDistance: 20
+  _chaseSpeed: 5
   _fieldOfView: 100
   _fovRange: 8
   _moveSpeed: 5

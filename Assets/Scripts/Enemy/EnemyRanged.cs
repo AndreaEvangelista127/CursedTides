@@ -7,10 +7,15 @@ public class EnemyRanged : Enemy
     [SerializeField] private float _shootRange = 10f;
     [SerializeField] private float _tooCloseRange = 3f;
     [SerializeField] private float _shootCooldown = 2f;
+    
 
     [Header("Alarm State settings")]
     private bool _hasFinishedLookingAround = false;
     private bool _hasShrugFinished = false;
+
+    private bool _combatTag = false; 
+
+
 
     // --- PUBLIC PROPERTIES ---
     public bool HasFinishedLookingAround => _hasFinishedLookingAround;
@@ -18,6 +23,7 @@ public class EnemyRanged : Enemy
     public float ShootRange => _shootRange;
     public float TooCloseRange => _tooCloseRange;
     public float ShootCooldown => _shootCooldown;
+    public bool CombatTag => _combatTag;
 
     private EnemyFSM _fsm;
 
@@ -68,6 +74,11 @@ public class EnemyRanged : Enemy
     public void ResetShrugFinished()
     {
         _hasShrugFinished = false;
+    }
+
+    public void SetCombatTag(bool value)
+    {
+        _combatTag = value;
     }
 
     protected override void OnDrawGizmos()

@@ -24,6 +24,7 @@ public abstract class Enemy : MonoBehaviour
     [Header("Chase Settings")]
     [SerializeField] private float _detectionRange = 10f; // Range within which the enemy can detect the player
     [SerializeField] private float _maxChaseDistance = 20f; // Maximum distance the enemy will chase the player before giving up and returning to patrol
+    [SerializeField] private float _chaseSpeed = 5f;
 
     [Header("Sight Settings")]
     [SerializeField] private float _fieldOfView = 120;
@@ -59,6 +60,7 @@ public abstract class Enemy : MonoBehaviour
     // CHASE
     public float DetectionRange => _detectionRange;
     public float MaxChaseDistance => _maxChaseDistance;
+    public float ChaseSpeed => _chaseSpeed;
     // SIGHT
     public float FieldOfView => _fieldOfView;
     public float FovRange => _fovRange;
@@ -131,6 +133,16 @@ public abstract class Enemy : MonoBehaviour
         randomDest.y = 0; // The enemy should only patrol on the xz plane, so we set the y component to 0
 
         return randomDest;
+    }
+
+    public void MoveTowardsPlayer()
+    {
+        Vector3 direction = _playerTransform.position - transform.position; // Get the direction from the enemy to the player
+        Vector3 moveVector = direction.normalized * _chaseSpeed; // Calculate the movement vector based on the enemy's chase speed and the time elapsed since the last frame
+        moveVector.y = 0;
+        RotateToDirection(direction);
+
+        _rb.linearVelocity = moveVector;
     }
 
     // === ANIMATION METHODS ===

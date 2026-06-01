@@ -5,7 +5,7 @@ public class RangedAlertState : BaseRangedState
     private Vector3 _lastKnownPlayerPosition; // The last known position of the player when the enemy enters the alert state
     private float _totalAlertTimer; // The total time the enemy has been in the alert state
     private bool _hasReachedPosition; // Flag to check if the enemy has reached the last known player position
-    private bool _isShrugStarted; // NEW — flag to ensure the shrug animation is triggered only once
+    private bool _isShrugStarted; 
 
 
     public override void OnStateEnter()
