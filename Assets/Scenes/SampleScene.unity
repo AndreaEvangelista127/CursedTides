@@ -180,7 +180,7 @@ CapsuleCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
@@ -492,6 +492,7 @@ MonoBehaviour:
   _fovRange: 15
   _moveSpeed: 1.5
   _rotationSpeed: 0.8
+  _headBone: {fileID: 0}
   _showMoveRadius: 1
   _showFOVRadius: 1
   _showProximityRadius: 1
@@ -1035,6 +1036,7 @@ MonoBehaviour:
   _fovRange: 8
   _moveSpeed: 3
   _rotationSpeed: 0.8
+  _headBone: {fileID: 2038253511}
   _showMoveRadius: 1
   _showFOVRadius: 1
   _showProximityRadius: 1
@@ -1172,7 +1174,7 @@ CapsuleCollider:
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0
-  m_Enabled: 0
+  m_Enabled: 1
   serializedVersion: 2
   m_Radius: 0.5
   m_Height: 2
@@ -4925,6 +4927,7 @@ MonoBehaviour:
   _fovRange: 8
   _moveSpeed: 5
   _rotationSpeed: 0.8
+  _headBone: {fileID: 0}
   _showMoveRadius: 1
   _showFOVRadius: 1
   _showProximityRadius: 0
@@ -5157,6 +5160,11 @@ MeshFilter:
 --- !u!4 &2011703554 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4379292150279932, guid: bfd6245ace6a1694d94da31f8f037213, type: 3}
+  m_PrefabInstance: {fileID: 1033411839}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &2038253511 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4738074274582608, guid: bfd6245ace6a1694d94da31f8f037213, type: 3}
   m_PrefabInstance: {fileID: 1033411839}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &2120676021

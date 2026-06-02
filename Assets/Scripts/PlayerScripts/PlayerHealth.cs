@@ -8,6 +8,7 @@ public class PlayerHealth : MonoBehaviour, IDamageable
     [SerializeField] private CheckPointManager _checkPointManager;
 
     public event Action<float> OnHealthChange; //Event to notify listeners of health changes
+    public static event Action OnPlayerDeath; //Event to notify listeners of player death
 
     private void Awake()
     {
@@ -37,6 +38,7 @@ public class PlayerHealth : MonoBehaviour, IDamageable
 
     private void Die()
     {
+        OnPlayerDeath?.Invoke(); // Notify listeners of player death
         _checkPointManager.Respawn();
         currentHealth = maxHealth; // Reset health to max after respawning
         OnHealthChange?.Invoke(currentHealth / maxHealth); // Notify HealthBar of the health reset

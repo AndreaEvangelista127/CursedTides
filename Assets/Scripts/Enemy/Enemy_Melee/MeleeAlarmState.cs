@@ -6,12 +6,12 @@ using UnityEngine;
 public class MeleeAlertState : BaseMeleeState
 {
     private float _alertTimer;
-    private float _rotationDirection = 1f; //Initially rotating to the right
+    //private float _rotationDirection = 1f; //Initially rotating to the right
 
-    private Quaternion _targetRotation;
-    private bool _isRotating = false;
-    private float _pauseTime = 0f;
-    private float _waitTime = 0.8f;
+    //private Quaternion _targetRotation;
+    //private bool _isRotating = false;
+    //private float _pauseTime = 0f;
+    //private float _waitTime = 0.8f;
     
 
     public override void OnStateEnter()
@@ -46,16 +46,6 @@ public class MeleeAlertState : BaseMeleeState
             _fsm.SwitchState(EStates.MeleeChase);
             return;
         }
-
-        // ---ALARM STATE---
-        if (_isRotating)
-        {
-            RotateTowardsTarget(); // Rotate towards the target rotation
-        }
-        else
-        {
-            WaitTimeBeforeRotation(_waitTime); // Wait for a certain time before generating a new target rotation
-        }
     }
 
     public override void OnStateExit()
@@ -64,31 +54,31 @@ public class MeleeAlertState : BaseMeleeState
     }
 
     // Rotate the enemy to a random angle within the specified rotation range
-    private void RotateTowardsTarget()
-    {
-        _enemy.transform.rotation = Quaternion.RotateTowards(_enemy.transform.rotation, _targetRotation, 90f * Time.deltaTime);
+    //private void RotateTowardsTarget()
+    //{
+    //    _enemy.transform.rotation = Quaternion.RotateTowards(_enemy.transform.rotation, _targetRotation, 90f * Time.deltaTime);
 
-        // Check if the enemy has reached the target rotation
-        if (Quaternion.Angle(_enemy.transform.rotation, _targetRotation) < 1f)
-        {
-            _pauseTime = _waitTime;
-            _isRotating = false;
-            _rotationDirection *= -1;
-        }
-    }
+    //    // Check if the enemy has reached the target rotation
+    //    if (Quaternion.Angle(_enemy.transform.rotation, _targetRotation) < 1f)
+    //    {
+    //        _pauseTime = _waitTime;
+    //        _isRotating = false;
+    //        _rotationDirection *= -1;
+    //    }
+    //}
 
-    private void WaitTimeBeforeRotation(float timeToWait)
-    {
-        _pauseTime -= Time.deltaTime;
+    //private void WaitTimeBeforeRotation(float timeToWait)
+    //{
+    //    _pauseTime -= Time.deltaTime;
 
-        // When enemy waited enough he can generate the new rotation
-        if (_pauseTime <= 0)
-        {
-            _isRotating = true;
-            float randomAngle = UnityEngine.Random.Range(_enemy.MinRotation, _enemy.MaxRotation) * _rotationDirection;
-            _targetRotation = _enemy.transform.rotation * Quaternion.Euler(0, randomAngle, 0);
-        }
-    }
+    //    // When enemy waited enough he can generate the new rotation
+    //    if (_pauseTime <= 0)
+    //    {
+    //        _isRotating = true;
+    //        float randomAngle = UnityEngine.Random.Range(_enemy.MinRotation, _enemy.MaxRotation) * _rotationDirection;
+    //        _targetRotation = _enemy.transform.rotation * Quaternion.Euler(0, randomAngle, 0);
+    //    }
+    //}
 
 
 }

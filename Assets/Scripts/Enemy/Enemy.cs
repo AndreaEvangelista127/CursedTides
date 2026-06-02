@@ -33,17 +33,20 @@ public abstract class Enemy : MonoBehaviour
     [Header("General Settings")]
     [SerializeField] private float _moveSpeed;
     [SerializeField] private float _rotationSpeed;
+    [SerializeField] private Transform _headBone; // Reference to the enemy's head bone, used for raycasting to check if the player is visible
 
+    [Header("Gizmos")]
+    [SerializeField] private bool _showMoveRadius;
+    [SerializeField] private bool _showFOVRadius;
+    [SerializeField] private bool _showProximityRadius;
+
+    protected EnemyFSM _enemyFSM;
     private Rigidbody _rb; // Reference to the enemy's Rigidbody component
     private Transform _playerTransform; // Reference to the player's Transform component
     private Vector3 _patrolOrigin;
     private float _halfFov; // To be able to have 2 different lines that wil shows the right and left end of the FOV
     private Animator _animator; // Reference to the enemy's Animator component
 
-    [Header("Gizmos")]
-    [SerializeField] private bool _showMoveRadius;
-    [SerializeField] private bool _showFOVRadius;
-    [SerializeField] private bool _showProximityRadius;
 
     // --- PUBLIC PROPERTIES ---
     // IDLE
@@ -77,6 +80,7 @@ public abstract class Enemy : MonoBehaviour
         _playerTransform = GameObject.FindWithTag("Player").transform; // Find the player in the scene by tag and get its Transform
         _halfFov = _fieldOfView / 2.0f; // Calculate half of the field of view for later use in FOV checks
         _animator = GetComponent<Animator>();
+        PlayerHealth.OnPlayerDeath += ResetToPatrol; // Add this method to the list of methods to be called when the player dies, so that the enemy can reset its state to patrol
     }
 
     public virtual bool CheckIfInFOV()
@@ -91,8 +95,20 @@ public abstract class Enemy : MonoBehaviour
             return false;
         }
 
+        Vector3 forward;
+
         // -- FOV CHECK --
-        float dotProduct = Vector3.Dot(transform.forward, dirToPlayer.normalized); // Calculate the dot product between the enemy's forward direction and the direction to the player
+        if(_headBone != null)
+        {
+            forward = _headBone.transform.forward;
+            forward = new Vector3(forward.x, 0, forward.z).normalized; // Flatten the forward vector to the xz plane and normalize it
+        }
+        else
+        {
+            forward = transform.forward;
+        }
+
+        float dotProduct = Vector3.Dot(forward, dirToPlayer.normalized); // Calculate the dot product between the enemy's forward direction and the direction to the player
 
         if (dotProduct >= Mathf.Cos(_halfFov * Mathf.Deg2Rad))
         { // If the dot product is greater than or equal to the cosine of half the field of view, the player is within the FOV angle
@@ -145,6 +161,13 @@ public abstract class Enemy : MonoBehaviour
         _rb.linearVelocity = moveVector;
     }
 
+    protected abstract void ResetToPatrol(); // Abstract method to be implemented by child classes, called when the player dies to reset the enemy's state to patrol
+
+    private void OnDestroy()
+    {
+        PlayerHealth.OnPlayerDeath -= ResetToPatrol; // Unsubscribe from the player death event when the enemy is destroyed to prevent memory leaks
+    }
+
     // === ANIMATION METHODS ===
 
     public void SetIfIsPatrolling(bool isPatrolling)
@@ -194,24 +217,27 @@ public abstract class Enemy : MonoBehaviour
             else
                 Gizmos.color = Color.red;
 
+            // Use head bone forward if available, otherwise fallback to transform.forward
+            Vector3 fovForward = _headBone != null ? _headBone.forward : transform.forward;
+            fovForward = new Vector3(fovForward.x, 0, fovForward.z).normalized; // Flatten the forward vector to the xz plane and normalize it
+            Vector3 origin = _headBone != null ? _headBone.position : transform.position + Vector3.up;
+
             Quaternion leftRayRotation = Quaternion.AngleAxis(-halfFov, Vector3.up);
             Quaternion rightRayRotation = Quaternion.AngleAxis(halfFov, Vector3.up);
-            Vector3 leftRayDirection = leftRayRotation * transform.forward;
-            Vector3 rightRayDirection = rightRayRotation * transform.forward;
-            Gizmos.DrawRay(transform.position + Vector3.up, leftRayDirection * _fovRange); //Vector3.up is added to the position to make the rays start from the enemy's head instead of its feet
-            Gizmos.DrawRay(transform.position + Vector3.up, rightRayDirection * _fovRange);
+            Vector3 leftRayDirection = leftRayRotation * fovForward;
+            Vector3 rightRayDirection = rightRayRotation * fovForward;
+            Gizmos.DrawRay(origin, leftRayDirection * _fovRange);
+            Gizmos.DrawRay(origin, rightRayDirection * _fovRange);
 
-            int steps = 20; // Number of lines to draw the arc, the higher the number, the smoother the arc will look, but it will also be more expensive to draw
-            float stepAngle = _fieldOfView / steps; // Angle between each step
-            Vector3 origin = transform.position + Vector3.up;
+            int steps = 20;
+            float stepAngle = _fieldOfView / steps;
 
-            // Start point of the arc (leftmost point)
-            Vector3 previousPoint = origin + (Quaternion.AngleAxis(-halfFov, Vector3.up) * transform.forward) * _fovRange;
+            Vector3 previousPoint = origin + (Quaternion.AngleAxis(-halfFov, Vector3.up) * fovForward) * _fovRange;
 
             for (int i = 1; i <= steps; i++)
             {
-                float angle = -halfFov + stepAngle * i; // First iteration: -100 + 5 = -95, second iteration: -100 + 10 = -90, etc.
-                Vector3 nextPoint = origin + (Quaternion.AngleAxis(angle, Vector3.up) * transform.forward) * _fovRange;
+                float angle = -halfFov + stepAngle * i;
+                Vector3 nextPoint = origin + (Quaternion.AngleAxis(angle, Vector3.up) * fovForward) * _fovRange;
                 Gizmos.DrawLine(previousPoint, nextPoint);
                 previousPoint = nextPoint;
             }

@@ -85,6 +85,11 @@ public class EnemyMelee : Enemy
     public void SetIsInAttackRange(bool value) =>
         GetComponent<Animator>().SetBool("isInAttackRange", value);
 
+    protected override void ResetToPatrol()
+    {
+        _fsm.SwitchState(EStates.MeleePatrol);
+    }
+
     protected override void OnDrawGizmos()
     {
         base.OnDrawGizmos();

@@ -81,6 +81,12 @@ public class EnemyRanged : Enemy
         _combatTag = value;
     }
 
+    // When the player dies, we call the ResetToPatrol method because we subsribed to the PlayerHealth.OnPlayerDeath event in the Enemy base class
+    protected override void ResetToPatrol() 
+    {
+        _fsm.SwitchState(EStates.RangedPatrol);
+    }
+
     protected override void OnDrawGizmos()
     {
         base.OnDrawGizmos();
