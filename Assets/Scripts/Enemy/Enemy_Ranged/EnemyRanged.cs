@@ -13,8 +13,8 @@ public class EnemyRanged : Enemy
     private bool _hasFinishedLookingAround = false;
     private bool _hasShrugFinished = false;
 
-    private bool _combatTag = false; 
-
+    private bool _combatTag = false;
+    private ProjectileLauncher _launcher;
 
 
     // --- PUBLIC PROPERTIES ---
@@ -41,6 +41,7 @@ public class EnemyRanged : Enemy
             [EStates.RangedWalkAway] = new RangedWalkAwayState()
         },
         EStates.RangedIdle);
+        _launcher = GetComponent<ProjectileLauncher>();
     }
 
     private void Update()
@@ -81,6 +82,10 @@ public class EnemyRanged : Enemy
         _combatTag = value;
     }
 
+    public void OnShoot() // Method called in the animation event of the shooting animation, which is called at the moment we want the projectile to be launched
+    {
+        _launcher.Shoot(PlayerTransform);    
+    }
     // When the player dies, we call the ResetToPatrol method because we subsribed to the PlayerHealth.OnPlayerDeath event in the Enemy base class
     protected override void ResetToPatrol() 
     {

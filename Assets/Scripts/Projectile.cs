@@ -8,12 +8,13 @@ public class Projectile : MonoBehaviour
     [SerializeField] private float _lifetime = 5f;
 
     private Rigidbody _rb;
-
+    // --- PUBLIC PROPERTIES ---
+    public float Speed => _projectileSpeed;
 
     private void Start()
     {
         _rb = GetComponent<Rigidbody>();
-        _rb.linearVelocity = transform.forward * _projectileSpeed;
+        
         Destroy(gameObject, _lifetime); // Destroy the projectile after its lifetime expires to prevent it from existing indefinitely
     }
 
@@ -26,10 +27,10 @@ public class Projectile : MonoBehaviour
             Debug.Log($"Projectile hit the {other.tag} and dealt {_dmg} damage.");
             Destroy(gameObject); // Destroy the projectile upon hitting the damageable object
         }
-        else if (other.CompareTag("Environment"))
-        {
-            Debug.Log("Projectile hit the environment and is destroyed.");
-            Destroy(gameObject); // Destroy the projectile upon hitting the environment
-        }
+        //else if (other.CompareTag("Environment"))
+        //{
+        //    Debug.Log("Projectile hit the environment and is destroyed.");
+        //    Destroy(gameObject); // Destroy the projectile upon hitting the environment
+        //}
     }
 }

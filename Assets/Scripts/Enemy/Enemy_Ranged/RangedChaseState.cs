@@ -14,11 +14,11 @@ public class RangedChaseState : BaseRangedState
 
     public override void OnStateUpdate()
     {
-        //if (_enemyRanged.CheckIfInFOV())
-        //{
-        //    _fsm.SwitchState(EStates.RangedShoot);
-        //    return;
-        //}
+        if (_enemyRanged.CheckIfInFOV())
+        {
+            _fsm.SwitchState(EStates.RangedShoot);
+            return;
+        }
 
         SaveLastPositionInRadius();
 

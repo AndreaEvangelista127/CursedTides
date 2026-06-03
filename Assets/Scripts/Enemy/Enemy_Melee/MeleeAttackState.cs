@@ -13,7 +13,7 @@ public class MeleeAttackState : BaseMeleeState
         _enemy.SetIfIsChasing(true);
         _enemy.Rb.linearVelocity = Vector3.zero; // Stop the enemy's movement when it enters the attack state
         _enemyMelee.DisableWeaponHitBox();
-        _enemy.GetComponent<Animator>().Play("Attack_Horizontal");
+        _enemyMelee.GetComponent<Animator>().Play("Attack_Horizontal");
 
     }
     public override void OnStateUpdate()
@@ -36,7 +36,7 @@ public class MeleeAttackState : BaseMeleeState
             else // we are not in the attack range anymore, we should switch back to chase state
             {
                 _enemyMelee.SetIsInAttackRange(false);
-                _enemy.GetComponent<Animator>().Play("Chase");
+                _enemyMelee.GetComponent<Animator>().Play("Chase");
                 _fsm.SwitchState(EStates.MeleeChase);
             }
 
