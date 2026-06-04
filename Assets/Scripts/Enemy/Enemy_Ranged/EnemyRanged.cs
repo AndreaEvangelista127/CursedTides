@@ -7,6 +7,7 @@ public class EnemyRanged : Enemy
     [SerializeField] private float _shootRange = 10f;
     [SerializeField] private float _tooCloseRange = 3f;
     [SerializeField] private float _shootCooldown = 2f;
+    [SerializeField] private ParticleSystem _smoke;
     
 
     [Header("Alarm State settings")]
@@ -84,7 +85,9 @@ public class EnemyRanged : Enemy
 
     public void OnShoot() // Method called in the animation event of the shooting animation, which is called at the moment we want the projectile to be launched
     {
-        _launcher.Shoot(PlayerTransform);    
+        _launcher.Shoot(PlayerTransform);
+        _smoke.Play();
+        
     }
     // When the player dies, we call the ResetToPatrol method because we subsribed to the PlayerHealth.OnPlayerDeath event in the Enemy base class
     protected override void ResetToPatrol() 

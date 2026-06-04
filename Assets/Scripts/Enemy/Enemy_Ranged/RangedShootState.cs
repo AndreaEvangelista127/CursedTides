@@ -25,7 +25,7 @@ public class RangedShootState : BaseRangedState
                 if (_shootTimer >= _enemyRanged.ShootCooldown)
                 {
                     _shootTimer = 0f;
-                    _enemyRanged.GetComponent<Animator>().SetTrigger("shoot");
+                    _enemyRanged.GetComponent<Animator>().Play("Shoot");
                 }
             }
             else
