@@ -9420,7 +9420,7 @@ GameObject:
   - component: {fileID: 1365478597}
   - component: {fileID: 1365478596}
   m_Layer: 0
-  m_Name: VFX_Graph
+  m_Name: FireFly
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
