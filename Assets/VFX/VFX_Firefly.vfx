@@ -19,7 +19,7 @@ MonoBehaviour:
       x: 827
       y: -1433
       width: 499
-      height: 1986
+      height: 2220
     contents:
     - model: {fileID: 8926484042661614608}
       id: 0
@@ -33,10 +33,10 @@ MonoBehaviour:
   - title: New Group Node
     position:
       serializedVersion: 2
-      x: 865
-      y: -351
+      x: 827
+      y: -347
       width: 474
-      height: 447
+      height: 556
     contents:
     - model: {fileID: 8926484042661614662}
       id: 0
@@ -45,10 +45,10 @@ MonoBehaviour:
   categories: []
   uiBounds:
     serializedVersion: 2
-    x: 264
+    x: 363
     y: -1433
-    width: 1075
-    height: 1986
+    width: 963
+    height: 2220
 --- !u!114 &114350483966674976
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -373,7 +373,7 @@ MonoBehaviour:
   m_Children:
   - {fileID: 8926484042661614864}
   - {fileID: 8926484042661615016}
-  m_UIPosition: {x: 890, y: -292}
+  m_UIPosition: {x: 852, y: -288}
   m_UICollapsed: 0
   m_UISuperCollapsed: 0
   m_InputSlots: []
@@ -409,7 +409,7 @@ MonoBehaviour:
   m_Parent: {fileID: 114350483966674976}
   m_Children:
   - {fileID: 8926484042661614685}
-  m_UIPosition: {x: 877, y: 180}
+  m_UIPosition: {x: 876, y: 414}
   m_UICollapsed: 0
   m_UISuperCollapsed: 0
   m_InputSlots:
@@ -2759,7 +2759,7 @@ MonoBehaviour:
   m_UIIgnoredErrors: []
   m_Parent: {fileID: 114350483966674976}
   m_Children: []
-  m_UIPosition: {x: 264, y: 52}
+  m_UIPosition: {x: 363, y: 49}
   m_UICollapsed: 0
   m_UISuperCollapsed: 0
   m_InputSlots: []
@@ -3112,7 +3112,7 @@ MonoBehaviour:
       m_Type:
         m_SerializableType: UnityEngine.AnimationCurve, UnityEngine.CoreModule, Version=0.0.0.0,
           Culture=neutral, PublicKeyToken=null
-      m_SerializableObject: '{"frames":[{"time":0.0,"value":0.0,"inTangent":2.0,"outTangent":2.0,"tangentMode":0,"leftTangentMode":0,"rightTangentMode":0,"broken":false},{"time":1.000091552734375,"value":0.0001373291015625,"inTangent":0.14804422855377198,"outTangent":0.14804422855377198,"tangentMode":0,"leftTangentMode":0,"rightTangentMode":0,"broken":false}],"preWrapMode":8,"postWrapMode":2,"version":1}'
+      m_SerializableObject: '{"frames":[{"time":0.0,"value":0.0,"inTangent":2.0,"outTangent":2.0,"tangentMode":0,"leftTangentMode":0,"rightTangentMode":0,"broken":false},{"time":0.159328430891037,"value":0.29353535175323489,"inTangent":0.001070927013643086,"outTangent":0.001070927013643086,"tangentMode":0,"leftTangentMode":0,"rightTangentMode":0,"broken":false},{"time":3.724137544631958,"value":0.2894015312194824,"inTangent":-0.0026666545309126379,"outTangent":-0.0026666545309126379,"tangentMode":0,"leftTangentMode":0,"rightTangentMode":0,"broken":false},{"time":5.009147644042969,"value":0.01537829264998436,"inTangent":-0.15829059481620789,"outTangent":-0.15829059481620789,"tangentMode":0,"leftTangentMode":0,"rightTangentMode":0,"broken":false}],"preWrapMode":8,"postWrapMode":2,"version":1}'
     m_Space: -1
   m_Property:
     name: Size
