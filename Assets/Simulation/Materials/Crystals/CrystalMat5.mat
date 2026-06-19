@@ -7,14 +7,14 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: CrystalMat
+  m_Name: CrystalMat5
   m_Shader: {fileID: -6465566751694194690, guid: ddca1c427d4d90447b82bf3d21ce7bc5, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
   m_InvalidKeywords:
   - _EMISSION
-  m_LightmapFlags: 4
+  m_LightmapFlags: 0
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: -1
@@ -39,16 +39,16 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _BottomLine: 0.606
-    - _Metallic: 0.5
+    - _BottomLine: 0.6
+    - _Metallic: 1
     - _QueueControl: 0
     - _QueueOffset: 0
-    - _Smoothness: 0.5
-    - _TopLine: 0.621
+    - _Smoothness: 1
+    - _TopLine: 0.652
     m_Colors:
     - _BaseColor: {r: 0, g: 0, b: 0, a: 1}
-    - _BottomColor: {r: 0, g: 0.02433443, b: 1, a: 1}
-    - _TopColor: {r: 0.8664716, g: 7.129739, b: 0, a: 1}
+    - _BottomColor: {r: 11.984314, g: 0, b: 0.21094178, a: 1}
+    - _TopColor: {r: 47.937252, g: 2.9492192, b: 0, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
 --- !u!114 &8561455871053093083
