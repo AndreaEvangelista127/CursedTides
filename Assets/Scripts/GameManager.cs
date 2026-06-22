@@ -3,6 +3,8 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
     [SerializeField] private int _totalPedestals;
+    [SerializeField] private GameConditions _gameConditions;
+
     private int _completedPedestals;
 
     public static GameManager Istance { get; private set; }
@@ -24,6 +26,6 @@ public class GameManager : MonoBehaviour
 
     private void Victory()
     {
-        Debug.Log("Victory! All pedestals completed.");
+        _gameConditions.ShowVictoryScreen();
     }
 }
