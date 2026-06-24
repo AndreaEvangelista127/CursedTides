@@ -83,6 +83,31 @@ public abstract class Enemy : MonoBehaviour
         PlayerHealth.OnPlayerDeath += ResetToPatrol; // Add this method to the list of methods to be called when the player dies, so that the enemy can reset its state to patrol
     }
 
+    public void ApplyEnemySettingForFactory(EnemySettings settings)
+    {
+        // General settings
+        _moveSpeed = settings.moveSpeed;
+        _rotationSpeed = settings.rotationSpeed;
+        //Idle
+        _idleTime = settings.idleTime;
+        //Patrol
+        _patrolRadius = settings.patrolRadius;
+        _distanceBuffer = settings.distanceBuffer;
+        //Alert
+        _alertTime = settings.alertTime;
+        _alertRotationSpeed = settings.alertRotationSpeed;
+        _alertRadius = settings.alertRadius;
+        _minRotation = settings.minRotation;
+        _maxRotation = settings.maxRotation;
+        //Chase
+        _detectionRange = settings.detectionRange;
+        _maxChaseDistance = settings.maxChaseDistance;
+        _chaseSpeed = settings.chaseSpeed;
+        //Sight
+        _fieldOfView = settings.fieldOfView;
+        _fovRange = settings.fovRange;
+    }
+
     public virtual bool CheckIfInFOV()
     {
         Vector3 dirToPlayer = _playerTransform.position - transform.position; // Get the direction from the enemy to the player

@@ -19,8 +19,6 @@ public class EnemyMelee : Enemy
     private bool _isWeaponDrawn = false;
     private bool _isSheathingComplete = true;
 
-    
-
     public bool IsWeaponDrawn => _isWeaponDrawn;
     public bool IsSheathingComplete => _isSheathingComplete;
     public float AttackRange => _attackRange;
