@@ -1,4 +1,3 @@
-using Ilumisoft.HealthSystem;
 using UnityEngine;
 
 public class Hurtbox : MonoBehaviour

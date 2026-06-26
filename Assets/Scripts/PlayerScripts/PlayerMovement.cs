@@ -11,22 +11,41 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private Transform _model;
     [SerializeField] private float _rotationSpeed = 10f;
 
+    [Header("Ground Check")]
+    [SerializeField] private Transform _groundCheckPoint;
+    [SerializeField] private Vector3 _groundCheckSize = new Vector3(0.5f, 0.1f, 0.5f);
+    [SerializeField] private LayerMask _groundLayer;
+
+    [Header("Sprint")]
+    [SerializeField] private float _sprintSpeed = 8f;
+    private bool _isSprinting = false;
+
+    [Header("Gizmos")]
+    [SerializeField] private bool _showGroundCheck;
+
+    private bool _isGrounded;
+
     private Rigidbody _rb;
 
     private Vector2 _moveInput; // We don't need the y component for movement
 
     private Transform _cameraTf;
 
+    private Animator _playerAnimator;
+
     private void Start()
     {
         _rb = GetComponent<Rigidbody>();
 
-        _cameraTf = Camera.main.transform; //
+        _playerAnimator = GetComponent<Animator>();
+
+        _cameraTf = Camera.main.transform; 
 
     }
 
     private void FixedUpdate()
     {
+        CheckGround();
         Move();
     }
 
@@ -34,6 +53,7 @@ public class PlayerMovement : MonoBehaviour
     public void OnMove(InputAction.CallbackContext context)
     {
         _moveInput = context.ReadValue<Vector2>();
+        
     }
 
     public void OnJump(InputAction.CallbackContext context)
@@ -44,10 +64,19 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+    public void OnSprint(InputAction.CallbackContext context)
+    {
+        if (!_isGrounded) return;
+        if (context.started) _isSprinting = true;
+        if (context.canceled) _isSprinting = false;
+    }
 
     // --- MOVEMENT LOGIC ---
     private void Move()
     {
+        bool isMoving = _moveInput.magnitude > 0.1f;
+        _playerAnimator.SetBool("isWalking", isMoving);
+
         Vector3 moveVector = Vector3.zero;
 
         // Using the x component for the horizontal movement and z component for the forward movement
@@ -58,7 +87,8 @@ public class PlayerMovement : MonoBehaviour
 
         // Move the model of the player to face the direction of movement
         RotateModel(moveVector);
-
+        
+        float currentSpeed = _isSprinting ? _sprintSpeed : _speed;
         moveVector *= _speed;
         moveVector.y = _rb.linearVelocity.y;
 
@@ -83,7 +113,35 @@ public class PlayerMovement : MonoBehaviour
 
     private void Jump()
     {
+        if (!_isGrounded) return; // Can only jump when grounded
+        _playerAnimator.SetTrigger("jump");
         _rb.linearVelocity = new Vector3(_rb.linearVelocity.x, jumpForce, _rb.linearVelocity.z);
+    }
+
+    private void CheckGround()
+    {
+        _isGrounded = Physics.CheckBox(
+            _groundCheckPoint.position,  // center of the box
+            new Vector3(_groundCheckSize.x, _groundCheckSize.y, _groundCheckSize.z) / 2f, // half extents
+            Quaternion.identity,          // rotation
+            _groundLayer                  // layer to check
+        );
+        
+    }
+
+    private void OnDrawGizmos()
+    {
+
+        if (_isGrounded)
+        {
+            Gizmos.color = Color.green;
+            Gizmos.DrawWireCube(_groundCheckPoint.position, _groundCheckSize);
+        }
+        else
+        {
+            Gizmos.color = Color.red;
+            Gizmos.DrawWireCube(_groundCheckPoint.position, _groundCheckSize);
+        }
     }
 
 }
