@@ -7,6 +7,7 @@ public class PlayerMovement : MonoBehaviour
 {
     [SerializeField] private float _speed = 5f;
     [SerializeField] private float jumpForce = 5f;
+    private bool _isJumping;
 
     [SerializeField] private Transform _model;
     [SerializeField] private float _rotationSpeed = 10f;
@@ -33,14 +34,20 @@ public class PlayerMovement : MonoBehaviour
 
     private Animator _playerAnimator;
 
+    private bool _canMove;
+
     private void Start()
     {
         _rb = GetComponent<Rigidbody>();
 
         _playerAnimator = GetComponent<Animator>();
 
-        _cameraTf = Camera.main.transform; 
+        _cameraTf = Camera.main.transform;
 
+        // Bools
+        _canMove = true;
+        _isSprinting = false;
+        _isJumping = false;
     }
 
     private void FixedUpdate()
@@ -67,13 +74,25 @@ public class PlayerMovement : MonoBehaviour
     public void OnSprint(InputAction.CallbackContext context)
     {
         if (!_isGrounded) return;
-        if (context.started) _isSprinting = true;
-        if (context.canceled) _isSprinting = false;
+
+        if (context.started)
+        {
+            _isSprinting = true;
+            _playerAnimator.SetBool("isSprinting",true);
+        }
+        else if(context.canceled) 
+        {
+            _isSprinting = false;
+            _playerAnimator.SetBool("isSprinting", false);
+        }
+
     }
 
     // --- MOVEMENT LOGIC ---
     private void Move()
     {
+        if (!_canMove) return;
+
         bool isMoving = _moveInput.magnitude > 0.1f;
         _playerAnimator.SetBool("isWalking", isMoving);
 
@@ -89,7 +108,7 @@ public class PlayerMovement : MonoBehaviour
         RotateModel(moveVector);
         
         float currentSpeed = _isSprinting ? _sprintSpeed : _speed;
-        moveVector *= _speed;
+        moveVector *= currentSpeed;
         moveVector.y = _rb.linearVelocity.y;
 
         _rb.linearVelocity = moveVector; // Apply the movement to the Rigidbody2D
@@ -113,8 +132,14 @@ public class PlayerMovement : MonoBehaviour
 
     private void Jump()
     {
-        if (!_isGrounded) return; // Can only jump when grounded
+        if( !_canMove || !_isGrounded || _isJumping) return;
         _playerAnimator.SetTrigger("jump");
+        _isJumping = true;
+
+    }
+
+    public void OnJumpEvent()
+    {
         _rb.linearVelocity = new Vector3(_rb.linearVelocity.x, jumpForce, _rb.linearVelocity.z);
     }
 
@@ -126,7 +151,14 @@ public class PlayerMovement : MonoBehaviour
             Quaternion.identity,          // rotation
             _groundLayer                  // layer to check
         );
-        
+
+        if (_isGrounded) _isJumping = false;
+    }
+
+    public void SetMovementEnabled(bool enabled)
+    {
+        _canMove = enabled;
+        if (!enabled) _rb.linearVelocity = new Vector3(0, _rb.linearVelocity.y, 0);
     }
 
     private void OnDrawGizmos()

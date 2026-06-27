@@ -8,7 +8,6 @@ public class EnemySpawnerWindow : EditorWindow
     private bool _spawnMelee = true; // true = melee selected, false = ranged selected
     private Vector3 _spawnPosition = Vector3.zero;
 
-
     [MenuItem("Tools/Enemy Spawner")] // This adds a menu item to the Unity Editor under "Tools" called "Enemy Spawner"
     public static void ShowWindow()
     {
@@ -106,5 +105,7 @@ public class EnemySpawnerWindow : EditorWindow
         settings.fieldOfView = EditorGUILayout.FloatField("Fov Angle", settings.fieldOfView);
         settings.fovRange = EditorGUILayout.FloatField("Fov Range", settings.fovRange);
     }
+    
+    
 
 }

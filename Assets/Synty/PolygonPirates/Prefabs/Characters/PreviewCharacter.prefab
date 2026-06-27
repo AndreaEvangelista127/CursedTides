@@ -664,8 +664,9 @@ GameObject:
   m_Component:
   - component: {fileID: 4520202143709628}
   - component: {fileID: 95771921333097730}
+  - component: {fileID: 6083213028784060311}
   m_Layer: 0
-  m_Name: SM_Chr_English_Captain_01
+  m_Name: PreviewCharacter
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -724,6 +725,19 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &6083213028784060311
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1077468293337468}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 98e6c44986fa61445af321a0a326649f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ModelPoolDataSO
+  test: {fileID: 1971014765154730}
 --- !u!1 &1087869044455866
 GameObject:
   m_ObjectHideFlags: 0

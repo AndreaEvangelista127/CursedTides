@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class EnemyHealth : MonoBehaviour
+public class EnemyHealth : MonoBehaviour, IDamageable
 {
     [SerializeField] private float maxHealth = 100f;
     [SerializeField] private float currentHealth;
@@ -14,7 +14,7 @@ public class EnemyHealth : MonoBehaviour
     {
         currentHealth -= damage;
         Debug.Log($"Ouch i took {damage} damage");
-        currentHealth = Mathf.Clamp(currentHealth, 0f, maxHealth); // Ensure health doesn't go below 0 or above max
+        currentHealth = Mathf.Clamp(currentHealth, 0f, maxHealth); 
 
         if (currentHealth <= 0f)
         {
