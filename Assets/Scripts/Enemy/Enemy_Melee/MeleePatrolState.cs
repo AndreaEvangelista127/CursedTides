@@ -22,7 +22,7 @@ public class MeleePatrolState : BaseMeleeState
 
         _destination = _enemy.GetRandomPatrolPoint();
         _enemy.SetIfIsPatrolling(true);
-        Debug.Log("Entering Patrol State, new destination: " + _destination);
+        //Debug.Log("Entering Patrol State, new destination: " + _destination);
     }
 
     public override void OnStateUpdate()

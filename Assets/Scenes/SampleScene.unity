@@ -2899,6 +2899,31 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerMovement
   _speed: 5
   jumpForce: 6
+  _jumpSpeedCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0.007947084
+      value: 0.0051098466
+      inSlope: -0.004268643
+      outSlope: -0.004268643
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.9941101
+      value: 0.00090026855
+      inSlope: -0.004268643
+      outSlope: -0.004268643
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  _jumpAnimDuration: 1.55
   _model: {fileID: 513790291}
   _rotationSpeed: 10
   _groundCheckPoint: {fileID: 1182697439}
