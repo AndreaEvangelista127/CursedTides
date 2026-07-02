@@ -53,6 +53,11 @@ public class PlayerMovement : MonoBehaviour
         _isSprinting = false;
     }
 
+    private void Update()
+    {
+        Debug.Log(_isGrounded);
+    }
+
     private void FixedUpdate()
     {
         CheckGround();
@@ -166,7 +171,7 @@ public class PlayerMovement : MonoBehaviour
         );
         //Debug.Log("isGrounded: " + _isGrounded + " at position: " + _groundCheckPoint.position);
 
-        if (_isGrounded && Math.Abs(_rb.linearVelocity.y) < 0.1f)
+        if (_isGrounded)
         {
             //Debug.Log("Resetting isJumping - grounded: " + _isGrounded + " velY: " + Math.Abs(_rb.linearVelocity.y));
             _isJumping = false;

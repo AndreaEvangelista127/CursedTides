@@ -1,3 +1,5 @@
+using NUnit.Framework;
+using System;
 using UnityEditor;
 using UnityEngine;
 
@@ -8,7 +10,6 @@ public enum TestEnum
     sdssd
 }
 
-
 public class EditorExercise : EditorWindow
 {
 
@@ -18,16 +19,22 @@ public class EditorExercise : EditorWindow
     private string[] _names = { "Andrea", "Phil" };
     private int _nameIndex = 0;
 
+    private PreviewModelSelector _previewModelSelector;
 
     private PreviewRenderUtility _preview;
     private GameObject _previewPrefab;
     private GameObject _previewModel;
 
+    private string[] _skinNames;
+    private int _skinIndex = 0;
+    private GameObject _currentSkinSelected;
+    private GameObject _previousSkinSelected;
 
 
     private void OnEnable()
     {
         _preview = new PreviewRenderUtility();
+        
     }
 
 
@@ -51,16 +58,30 @@ public class EditorExercise : EditorWindow
         _testEnum = (TestEnum)EditorGUILayout.EnumPopup("Models", _testEnum);
         _nameIndex = EditorGUILayout.Popup("Names:", _nameIndex, _names);
 
-
-
-
         _previewPrefab = EditorGUILayout.ObjectField("Preview Prefab", _previewPrefab, typeof(GameObject), false) as GameObject;
 
         if (_previewModel == null && _previewPrefab != null)
         {
             _previewModel = PrefabUtility.InstantiatePrefab(_previewPrefab) as GameObject;
             _previewModel.transform.position = Vector3.zero;
+
+            _previewModelSelector = _previewModel.GetComponentInChildren<PreviewModelSelector>();
+
+            if (_previewModelSelector != null)
+            {
+                _skinNames = _previewModelSelector.GetSkinNames();
+            }
+
+
+            //CurrentSelected and previuosSelected
             _preview.AddSingleGO(_previewModel);
+        }
+
+        if (_skinNames != null && _skinNames.Length != 0)
+        {
+            _skinIndex = EditorGUILayout.Popup("Skins:", _skinIndex, _skinNames);
+            _previewModelSelector.SelectSkin(_skinIndex);
+
         }
 
 
@@ -84,16 +105,7 @@ public class EditorExercise : EditorWindow
 
         GUILayout.Label("end here");
 
-
     }
-
-
-
-
-
-
-
-
 
 
 }
