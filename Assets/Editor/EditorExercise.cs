@@ -1,24 +1,9 @@
-using NUnit.Framework;
-using System;
+
 using UnityEditor;
 using UnityEngine;
 
-public enum TestEnum
-{
-    asdsad,
-    sdsd,
-    sdssd
-}
-
 public class EditorExercise : EditorWindow
 {
-
-
-    private TestEnum _testEnum;
-
-    private string[] _names = { "Andrea", "Phil" };
-    private int _nameIndex = 0;
-
     private PreviewModelSelector _previewModelSelector;
 
     private PreviewRenderUtility _preview;
@@ -27,9 +12,6 @@ public class EditorExercise : EditorWindow
 
     private string[] _skinNames;
     private int _skinIndex = 0;
-    private GameObject _currentSkinSelected;
-    private GameObject _previousSkinSelected;
-
 
     private void OnEnable()
     {
@@ -37,13 +19,10 @@ public class EditorExercise : EditorWindow
         
     }
 
-
     private void OnDisable()
     {
         _preview.Cleanup();
     }
-
-
 
     [MenuItem("Tools/Exercise")] // This adds a menu item to the Unity Editor under "Tools" called "Enemy Spawner"
     public static void ShowWindow()
@@ -54,10 +33,6 @@ public class EditorExercise : EditorWindow
 
     private void OnGUI()
     {
-
-        _testEnum = (TestEnum)EditorGUILayout.EnumPopup("Models", _testEnum);
-        _nameIndex = EditorGUILayout.Popup("Names:", _nameIndex, _names);
-
         _previewPrefab = EditorGUILayout.ObjectField("Preview Prefab", _previewPrefab, typeof(GameObject), false) as GameObject;
 
         if (_previewModel == null && _previewPrefab != null)

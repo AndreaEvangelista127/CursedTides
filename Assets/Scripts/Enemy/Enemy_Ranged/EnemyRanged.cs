@@ -50,6 +50,13 @@ public class EnemyRanged : Enemy
         _fsm.UpdateFSM(); 
     }
 
+    public void ApplyRangedSettings(RangedEnemySettings settings)
+    {
+        _shootRange = settings.shootRange;
+        _shootCooldown = settings.shootCooldown;
+        _tooCloseRange = settings.tooCloseRange;
+    }
+
     public bool CheckIfPlayerIsInShootRange() =>
         Vector3.Distance(transform.position, PlayerTransform.position) <= _shootRange;
 

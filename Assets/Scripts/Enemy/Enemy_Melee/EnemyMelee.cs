@@ -47,6 +47,13 @@ public class EnemyMelee : Enemy
         _fsm.UpdateFSM(); // Update the FSM each frame
     }
 
+    public void ApplyMeleeSettings(MeleeEnemySettings settings)
+    {
+        _attackRange = settings.attackRange;
+        _attackCooldown = settings.attackCooldown;
+        _attackCommitRange = settings.attackCommitRange;
+    }
+
     public void OnWeaponUnsheathed()
     {
         _daggerHolster.SetActive(false);
