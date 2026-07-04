@@ -3,7 +3,16 @@ using UnityEngine;
 
 public class EnemySpawnerWindow : EditorWindow
 {
-    private GameObject _sharedPrefab;
+    // PREVIEW 
+    private PreviewRenderUtility _preview; // Unity class to show a preview in the editor tool
+    private GameObject _previewModel; // Instance of the prefab that is being previewed
+    private PreviewModelSelector _previewModelSelector; // Reference to the PreviewModelSelector component the access the skin selection functionality
+    private AttachmentSelector _previewAttachmentSelector; // Reference to the AttachmentSelector component to access the attachment selection functionality
+
+    // PREFABS
+    private GameObject _enemyBasePrefab;
+    private GameObject _enemyModelPrefab;
+    private GameObject _lastModelPrefab;
 
     // SETTINGS WINDOW
     private MeleeEnemySettings _meleeSettings = new MeleeEnemySettings();
@@ -11,12 +20,13 @@ public class EnemySpawnerWindow : EditorWindow
     private bool _spawnMelee = true; // true = melee selected, false = ranged selected
     private Vector3 _spawnPosition = Vector3.zero;
 
-    // SKIN PREVIEW WINDOW
-    private PreviewRenderUtility _preview; // Unity class to show a preview in the editor tool
-    private PreviewModelSelector _previewModelSelector;
+    // --- SKIN ---
     private string[] _skinNames;
     private int _skinIndex = 0;
-    private GameObject _previewModel;
+
+    // --- ATTACHMENTS ---
+    private string[] _attachmentNames;
+    private bool[] _attachmentToggles;
 
     private void OnEnable()
     {
@@ -26,6 +36,9 @@ public class EnemySpawnerWindow : EditorWindow
     private void OnDisable()
     {
         _preview.Cleanup();
+
+        if (_previewModel != null)
+            DestroyImmediate(_previewModel); // Destroy the preview model when the window is closed
     }
 
     [MenuItem("Tools/Enemy Spawner")] // This adds a menu item to the Unity Editor under "Tools" called "Enemy Spawner"
@@ -40,12 +53,13 @@ public class EnemySpawnerWindow : EditorWindow
         GUILayout.Label("ENEMY SPAWNER", EditorStyles.boldLabel);
         GUILayout.Space(10);
 
-        GUILayout.BeginHorizontal(); // BORDER BOX START
+        GUILayout.BeginHorizontal(); // OUTER HORIZONTAL LAYOUT
 
-        // --- START OF THE LEFT COLUMN ---
+        // ------------- LEFT SIDE - SETTINGS -------------
         GUILayout.BeginVertical(GUILayout.Width(300)); 
 
-        // Tab Selection - Melee or Ranged
+        GUILayout.Label("Enemy Type", EditorStyles.boldLabel);
+
         GUILayout.BeginHorizontal();
         if (GUILayout.Toggle(_spawnMelee, "Melee", "Button"))
             _spawnMelee = true;
@@ -53,63 +67,102 @@ public class EnemySpawnerWindow : EditorWindow
             _spawnMelee = false;
         GUILayout.EndHorizontal();
 
+        if (_previewModel != null)
+        {
+            EnemyWeaponSetup weaponSetup = _previewModel.GetComponent<EnemyWeaponSetup>();
+            if (weaponSetup != null)
+            {
+                if (_spawnMelee) weaponSetup.ActivateMelee();
+                else weaponSetup.ActivateRanged();
+            }
+        }
+
         GUILayout.Space(5);
-        _sharedPrefab = (GameObject)EditorGUILayout.ObjectField("Enemy Prefab", _sharedPrefab, typeof(GameObject), false);
+        _enemyBasePrefab = (GameObject)EditorGUILayout.ObjectField("Enemy Prefab", _enemyBasePrefab, typeof(GameObject), false);
         GUILayout.Space(10);
 
-        if (_spawnMelee)
+        if(_spawnMelee)
         {
             GUILayout.Label("Melee Settings", EditorStyles.boldLabel);
             DrawCommonSettings(_meleeSettings);
-
-            GUILayout.Space(5);
-            EditorGUILayout.LabelField("Attack", EditorStyles.boldLabel);
-            _meleeSettings.attackRange = EditorGUILayout.FloatField("Attack Range", _meleeSettings.attackRange);
-            _meleeSettings.attackCooldown = EditorGUILayout.FloatField("Attack Cooldown", _meleeSettings.attackCooldown);
+            DrawMeleeSettings(_meleeSettings);
             
         }
         else
         {
             GUILayout.Label("Ranged Settings", EditorStyles.boldLabel);
             DrawCommonSettings(_rangedSettings);
-
-            GUILayout.Space(5);
-            EditorGUILayout.LabelField("Attack", EditorStyles.boldLabel);
-            _rangedSettings.shootRange = EditorGUILayout.FloatField("Shoot Range", _rangedSettings.shootRange);
-            _rangedSettings.shootCooldown = EditorGUILayout.FloatField("Shoot Cooldown", _rangedSettings.shootCooldown);
-            _rangedSettings.tooCloseRange = EditorGUILayout.FloatField("Too Close Range", _rangedSettings.tooCloseRange);
+            DrawRangedSettings(_rangedSettings);
         }
 
         GUILayout.EndVertical();
-        // --- END OF THE LEFT COLUMN ---
 
-        GUILayout.Box("", GUILayout.Width(2), GUILayout.ExpandHeight(true)); // --- MIDDLE LINE ---
+        GUILayout.Box("", GUILayout.Width(2), GUILayout.ExpandHeight(true)); // ----- Separator -----
 
-        // --- START OF THE RIGHT COLUMN ---
+        // ------------- RIGHT SIDE - PREVIEW -------------
+
         GUILayout.BeginVertical(GUILayout.Width(300));
 
         GUILayout.Label("SKIN SELECTOR", EditorStyles.boldLabel);
         GUILayout.Space(10);
 
-        // Instantiate the prefab in the preview scene when assigned
-        if (_previewModel == null && _sharedPrefab != null)
+        _enemyModelPrefab = (GameObject)EditorGUILayout.ObjectField("Model Prefab", _enemyModelPrefab, typeof(GameObject), false);
+
+        // Detection of changes in the model prefab to update the preview model accordingly
+        if (_enemyModelPrefab != _lastModelPrefab) 
         {
-            _previewModel = PrefabUtility.InstantiatePrefab(_sharedPrefab) as GameObject;
+            if (_previewModel != null) DestroyImmediate(_previewModel);
+            _previewModel = null;
+            _skinNames = null;
+            _attachmentNames = null;
+            _attachmentToggles = null;
+            _lastModelPrefab = _enemyModelPrefab;
+        }
+
+        // Instatiate and show the preview model, the skin and attachments
+        if (_previewModel == null && _enemyModelPrefab != null) 
+        {
+            _previewModel = PrefabUtility.InstantiatePrefab(_enemyModelPrefab) as GameObject;
             _previewModel.transform.position = Vector3.zero;
-            _previewModelSelector = _previewModel.GetComponentInChildren<PreviewModelSelector>();
+            _previewModelSelector = _previewModel.GetComponent<PreviewModelSelector>();
+            _previewAttachmentSelector = _previewModel.GetComponent<AttachmentSelector>();
+
             if (_previewModelSelector != null)
                 _skinNames = _previewModelSelector.GetSkinNames();
+
+            if (_previewAttachmentSelector != null)
+            {
+                _attachmentNames = _previewAttachmentSelector.GetAttachmentNames();
+                _attachmentToggles = new bool[_attachmentNames.Length];
+            }
+
             _preview.AddSingleGO(_previewModel);
         }
 
-        // Skin dropdown — only shown when skin names are available
-        if (_skinNames != null && _skinNames.Length != 0)
+        // Skin dropdown
+        if (_skinNames != null && _skinNames.Length > 0)
         {
-            _skinIndex = EditorGUILayout.Popup("Skins:", _skinIndex, _skinNames);
+            _skinIndex = EditorGUILayout.Popup("Skin:", _skinIndex, _skinNames);
             _previewModelSelector.SelectSkin(_skinIndex);
         }
 
-        // Preview render area
+        // Attachment checkboxes
+        if (_attachmentNames != null && _attachmentNames.Length > 0)
+        {
+            GUILayout.Space(5);
+            GUILayout.Label("Attachments", EditorStyles.boldLabel);
+            for (int i = 0; i < _attachmentNames.Length; i++)
+            {
+                bool newValue = EditorGUILayout.Toggle(_attachmentNames[i], _attachmentToggles[i]);
+                if (newValue != _attachmentToggles[i])
+                {
+                    _attachmentToggles[i] = newValue;
+                    _previewAttachmentSelector.SetAttachmentActive(i, newValue);
+                }
+            }
+        }
+
+        // Preview render
         Rect previewRect = GUILayoutUtility.GetRect(280, 280);
         _preview.BeginPreview(previewRect, GUIStyle.none);
         _preview.camera.transform.position = new Vector3(0, 1, 7);
@@ -121,28 +174,35 @@ public class EnemySpawnerWindow : EditorWindow
         GUI.DrawTexture(previewRect, frame, ScaleMode.ScaleToFit);
 
         GUILayout.EndVertical();
-        // --- END OF THE RIGHT COLUMN ---
 
-        GUILayout.EndHorizontal(); // BORDER BOX END
+        GUILayout.EndHorizontal(); // END OUTER HORIZONTAL LAYOUT
 
         GUILayout.Space(10);
 
         _spawnPosition = EditorGUILayout.Vector3Field("Spawn Point", _spawnPosition);
 
-        GUILayout.Space(10) ;
+        GUILayout.Space(10);
 
         if (GUILayout.Button("Spawn Enemy"))
         {
-            if (_sharedPrefab == null)
+            // Validate both prefabs are assigned
+            if (_enemyBasePrefab == null || _enemyModelPrefab == null)
             {
-                EditorUtility.DisplayDialog("Error", "Please assign a prefab first!", "OK");
+                EditorUtility.DisplayDialog("Error", "Please assign both Enemy Base and Model prefabs!", "OK");
                 return;
             }
 
             EnemySettings settings = _spawnMelee ? _meleeSettings : _rangedSettings;
 
-            //EnemyFactory.SpawnEnemy(_sharedPrefab, settings, _spawnPosition, _spawnMelee);
-            EnemyFactory.SpawnEnemy(_previewModel, settings, _spawnPosition, _spawnMelee);
+            EnemyFactory.GenerateEnemy(
+                _enemyBasePrefab,    // the physics base (Rigidbody, Collider)
+                _enemyModelPrefab,   // the visual model (Mesh, Bones, Skins)
+                settings,            // melee or ranged settings
+                _spawnMelee,         // determines which scripts to add
+                _spawnPosition,      // where to place in scene
+                _skinIndex,          // which skin to activate
+                _attachmentToggles   // which attachments to activate
+            );
         }
     }
 
@@ -152,6 +212,7 @@ public class EnemySpawnerWindow : EditorWindow
         EditorGUILayout.LabelField("General", EditorStyles.boldLabel);
         settings.moveSpeed = EditorGUILayout.FloatField("Move Speed", settings.moveSpeed);
         settings.rotationSpeed = EditorGUILayout.FloatField("Rotation Speed", settings.rotationSpeed);
+        settings.health = EditorGUILayout.FloatField("Max Health", settings.health);
 
         GUILayout.Space(5);
         EditorGUILayout.LabelField("Idle", EditorStyles.boldLabel);
@@ -181,7 +242,24 @@ public class EnemySpawnerWindow : EditorWindow
         settings.fieldOfView = EditorGUILayout.FloatField("Fov Angle", settings.fieldOfView);
         settings.fovRange = EditorGUILayout.FloatField("Fov Range", settings.fovRange);
     }
-    
-    
+
+    private void DrawMeleeSettings(MeleeEnemySettings settings)
+    {
+        GUILayout.Space(5);
+        EditorGUILayout.LabelField("Melee Attack Settings", EditorStyles.boldLabel);
+        settings.attackRange = EditorGUILayout.FloatField("Attack Range", settings.attackRange);
+        settings.attackCooldown = EditorGUILayout.FloatField("Attack Cooldown", settings.attackCooldown);
+    }
+
+    private void DrawRangedSettings(RangedEnemySettings settings)
+    {
+        GUILayout.Space(5);
+        EditorGUILayout.LabelField("Ranged Attack Settings", EditorStyles.boldLabel);
+        settings.shootRange = EditorGUILayout.FloatField("Shoot Range", settings.shootRange);
+        settings.tooCloseRange = EditorGUILayout.FloatField("Too Close Range", settings.tooCloseRange);
+        settings.shootCooldown = EditorGUILayout.FloatField("Shoot Cooldown", settings.shootCooldown);
+    }
+
+
 
 }

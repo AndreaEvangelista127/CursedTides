@@ -33,7 +33,7 @@ public abstract class Enemy : MonoBehaviour
     [Header("General Settings")]
     [SerializeField] private float _moveSpeed;
     [SerializeField] private float _rotationSpeed;
-    [SerializeField] private Transform _headBone; // Reference to the enemy's head bone, used for raycasting to check if the player is visible
+    [SerializeField] private Transform _headSkull; // Reference to the enemy's head bone, used for raycasting to check if the player is visible
 
     [Header("Gizmos")]
     [SerializeField] private bool _showMoveRadius;
@@ -123,9 +123,9 @@ public abstract class Enemy : MonoBehaviour
         Vector3 forward;
 
         // -- FOV CHECK --
-        if(_headBone != null)
+        if(_headSkull != null)
         {
-            forward = _headBone.transform.forward;
+            forward = _headSkull.transform.forward;
             forward = new Vector3(forward.x, 0, forward.z).normalized; // Flatten the forward vector to the xz plane and normalize it
         }
         else
@@ -243,9 +243,9 @@ public abstract class Enemy : MonoBehaviour
                 Gizmos.color = Color.red;
 
             // Use head bone forward if available, otherwise fallback to transform.forward
-            Vector3 fovForward = _headBone != null ? _headBone.forward : transform.forward;
+            Vector3 fovForward = _headSkull != null ? _headSkull.forward : transform.forward;
             fovForward = new Vector3(fovForward.x, 0, fovForward.z).normalized; // Flatten the forward vector to the xz plane and normalize it
-            Vector3 origin = _headBone != null ? _headBone.position : transform.position + Vector3.up;
+            Vector3 origin = _headSkull != null ? _headSkull.position : transform.position + Vector3.up;
 
             Quaternion leftRayRotation = Quaternion.AngleAxis(-halfFov, Vector3.up);
             Quaternion rightRayRotation = Quaternion.AngleAxis(halfFov, Vector3.up);

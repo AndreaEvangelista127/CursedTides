@@ -7,6 +7,7 @@ public class EnemySettings
     public GameObject prefab;
     public float moveSpeed = 3f;
     public float rotationSpeed = 5f;
+    public float health = 100f;
 
     [Header("Idle")]
     public float idleTime = 2f;
