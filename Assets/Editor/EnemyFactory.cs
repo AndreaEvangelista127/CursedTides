@@ -1,6 +1,7 @@
 using UnityEditor;
 using UnityEngine;
 using System.Collections.Generic;
+using Mono.Cecil;
 
 // Using Factory Method pattern to create enemies based on their type (Melee or Ranged)
 public class EnemyFactory 
@@ -74,12 +75,29 @@ public class EnemyFactory
         healthScript.ApplyHealth(settings.health);
 
         // step 5.2: Add animator
-        Animator animator = enemy.AddComponent<Animator>();
+        Animator animator = enemy.GetComponent<Animator>();
+
+        RuntimeAnimatorController controller; 
+
+        if (isMelee)
+        {
+            controller = Resources.Load("MeleeController") as RuntimeAnimatorController;
+        }
+        else 
+        {
+            controller = Resources.Load("RangedController") as RuntimeAnimatorController;
+        }
+
+        animator.runtimeAnimatorController = null;
+        animator.runtimeAnimatorController = controller;
+        
+        if(animator.runtimeAnimatorController != null)
+        {
+            Debug.Log(animator.runtimeAnimatorController.name);
+        }
 
         //Step 6: Apply the common settings to the enemy script
         enemyScript.ApplyEnemySettingForFactory(settings);
-
-        
 
         //Step 7: Remove all inactive attachments from the model to clean up the hierarchy
         CleanupInactiveObjects(model);

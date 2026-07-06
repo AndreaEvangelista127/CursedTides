@@ -6,20 +6,20 @@ public class EnemySettings
     [Header("General")]
     public GameObject prefab;
     public float moveSpeed = 3f;
-    public float rotationSpeed = 5f;
+    public float rotationSpeed = 0.8f;
     public float health = 100f;
 
     [Header("Idle")]
-    public float idleTime = 2f;
+    public float idleTime = 3f;
 
     [Header("Patrol")]
-    public float patrolRadius = 5f;
+    public float patrolRadius = 20f;
     public float distanceBuffer = 1f;
 
     [Header("Alert")]
-    public float alertTime = 3f;
+    public float alertTime = 6f;
     public float alertRotationSpeed = 120f;
-    public float alertRadius = 1f;
+    public float alertRadius = 7f;
     public float minRotation = 30f;
     public float maxRotation = 180f;
 
@@ -30,7 +30,7 @@ public class EnemySettings
 
     [Header("Sight")]
     public float fieldOfView = 120f;
-    public float fovRange = 3f;
+    public float fovRange = 8f;
 }
 
 [System.Serializable]
