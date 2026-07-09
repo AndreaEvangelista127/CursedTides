@@ -5,15 +5,16 @@ using UnityEngine.InputSystem;
 
 public class PlayerMovement : MonoBehaviour
 {
+    [Header("General settings")]
     [SerializeField] private float _speed = 5f;
-    [SerializeField] private float jumpForce = 5f;
-
-    private bool _isJumping;
-    private float _jumpCooldown = 0.2f;
-    private float _jumpCooldownTimer = 0f;
-
     [SerializeField] private Transform _model;
     [SerializeField] private float _rotationSpeed = 10f;
+
+    [Header("Jump Settings")]
+    [SerializeField] private float jumpForce = 5f;
+    [SerializeField] private float _jumpCooldown = 0.4f;
+    private float _jumpCooldownTimer = 0f;
+    private bool _isJumping;
 
     [Header("Ground Check")]
     [SerializeField] private Transform _groundCheckPoint;
@@ -57,14 +58,13 @@ public class PlayerMovement : MonoBehaviour
         if (_jumpCooldownTimer > 0)
             _jumpCooldownTimer -= Time.deltaTime;
 
+        Debug.Log($"canMove: {_canMove}, isGrounded: {_isGrounded}, isJumping: {_isJumping}");
     }
 
     private void FixedUpdate()
     {
         CheckGround();
         Move();
-    
-        
     }
 
     // --- INPUT SYSTEMS CALLBACKS ---
@@ -137,21 +137,24 @@ public class PlayerMovement : MonoBehaviour
 
         // By using Lerp, we can smoothly rotate the model towards the target rotation
         _model.rotation = Quaternion.Lerp(_model.rotation, targetRotation, _rotationSpeed * Time.deltaTime);
-
-        //_model.rotation = Quaternion.LookRotation(moveVector); //CLUNKY VERSION FOR ROTATION, NOT SMOOTH 
     }
 
     private void Jump()
     {
-        //Debug.Log($"canMove: {_canMove}, grounded: {_isGrounded}, isJumping: {_isJumping}");
-        if ( !_canMove || !_isGrounded || _isJumping) return;
+        if(!_canMove) return;
+
+        if (!_isGrounded && _isJumping) return;
+
         if (_jumpCooldownTimer > 0) return; // cooldown guard
 
-        _isJumping = true;
         _jumpCooldownTimer = _jumpCooldown; // start cooldown
+        _isJumping = true;
 
         _playerAnimator.ResetTrigger("jump");
         _playerAnimator.SetTrigger("jump");
+
+        _playerAnimator.SetBool("isJumping", _isJumping);
+
 
     }
 
@@ -171,9 +174,14 @@ public class PlayerMovement : MonoBehaviour
 
         _isGrounded = boxCheck && _rb.linearVelocity.y <= 0.1f; // Check if the player is grounded and not moving upwards
 
-        _playerAnimator.SetBool("isJumping", !_isGrounded); // true if the player is in the air, false if grounded
+         // true if the player is in the air, false if grounded
 
-        if (_isGrounded) _isJumping = false;
+        if (_isGrounded && _jumpCooldownTimer <= 0)
+        {
+            _isJumping = false;
+            _playerAnimator.ResetTrigger("jump");
+            _playerAnimator.SetBool("isJumping", _isJumping);
+        }
     }
 
     public void SetMovementEnabled(bool enabled)
