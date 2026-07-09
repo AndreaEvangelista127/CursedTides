@@ -7,11 +7,10 @@ public class PlayerMovement : MonoBehaviour
 {
     [SerializeField] private float _speed = 5f;
     [SerializeField] private float jumpForce = 5f;
-    [SerializeField] private AnimationCurve _jumpSpeedCurve = AnimationCurve.Linear(0, 0, 1, 1);
-    [SerializeField] private float _jumpAnimDuration = 1.550f; // How long the animation last
 
-    private float _jumpAnimTimer = 0f;
     private bool _isJumping;
+    private float _jumpCooldown = 0.2f;
+    private float _jumpCooldownTimer = 0f;
 
     [SerializeField] private Transform _model;
     [SerializeField] private float _rotationSpeed = 10f;
@@ -55,22 +54,17 @@ public class PlayerMovement : MonoBehaviour
 
     private void Update()
     {
-        Debug.Log(_isGrounded);
+        if (_jumpCooldownTimer > 0)
+            _jumpCooldownTimer -= Time.deltaTime;
+
     }
 
     private void FixedUpdate()
     {
         CheckGround();
         Move();
-        //Debug.Log("isJumping = " + _isJumping);
     
-        if (_isJumping)
-        {
-            _jumpAnimTimer += Time.deltaTime;
-            float normalizedTime = _jumpAnimTimer / _jumpAnimDuration; // if jumpAnimationTimer is a 0,6 and the animation is 1,2 that means the jump anim is halfway through
-            _playerAnimator.speed = _jumpSpeedCurve.Evaluate(normalizedTime);
-            Debug.Log("Animation speed: " + _playerAnimator.speed);
-        }
+        
     }
 
     // --- INPUT SYSTEMS CALLBACKS ---
@@ -151,31 +145,35 @@ public class PlayerMovement : MonoBehaviour
     {
         //Debug.Log($"canMove: {_canMove}, grounded: {_isGrounded}, isJumping: {_isJumping}");
         if ( !_canMove || !_isGrounded || _isJumping) return;
-        _playerAnimator.SetTrigger("jump");
+        if (_jumpCooldownTimer > 0) return; // cooldown guard
+
         _isJumping = true;
-        _jumpAnimTimer = 0; 
+        _jumpCooldownTimer = _jumpCooldown; // start cooldown
+
+        _playerAnimator.ResetTrigger("jump");
+        _playerAnimator.SetTrigger("jump");
+
     }
 
-    public void OnJumpEvent()
+    public void OnJumpEvent() //Animation event called from the jump animation to apply the jump force at the right time
     {
         _rb.linearVelocity = new Vector3(_rb.linearVelocity.x, jumpForce, _rb.linearVelocity.z);
     }
 
     private void CheckGround()
     {
-        _isGrounded = Physics.CheckBox(
+        bool boxCheck = Physics.CheckBox(
             _groundCheckPoint.position,  // center of the box
             new Vector3(_groundCheckSize.x, _groundCheckSize.y, _groundCheckSize.z) / 2f, // half extents
             Quaternion.identity,          // rotation
             _groundLayer                  // layer to check
         );
-        //Debug.Log("isGrounded: " + _isGrounded + " at position: " + _groundCheckPoint.position);
 
-        if (_isGrounded)
-        {
-            //Debug.Log("Resetting isJumping - grounded: " + _isGrounded + " velY: " + Math.Abs(_rb.linearVelocity.y));
-            _isJumping = false;
-        }
+        _isGrounded = boxCheck && _rb.linearVelocity.y <= 0.1f; // Check if the player is grounded and not moving upwards
+
+        _playerAnimator.SetBool("isJumping", !_isGrounded); // true if the player is in the air, false if grounded
+
+        if (_isGrounded) _isJumping = false;
     }
 
     public void SetMovementEnabled(bool enabled)

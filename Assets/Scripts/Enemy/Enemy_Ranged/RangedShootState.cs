@@ -16,7 +16,6 @@ public class RangedShootState : BaseRangedState
     {
         _shootTimer += Time.deltaTime;
         _enemyRanged.RotateToDirection(_enemyRanged.PlayerTransform.position - _enemy.transform.position); // Rotate towards the player while shooting
-        Debug.Log("Shoot timer: " + _shootTimer + " | Cooldown: " + _enemyRanged.ShootCooldown);
 
         if (_shootTimer >= _animationTime) 
         {
