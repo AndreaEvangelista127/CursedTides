@@ -5,42 +5,79 @@ using UnityEngine;
 
 public class TerrainGenerator : MonoBehaviour
 {
-    [SerializeField] private int _width;
-    [SerializeField] private int _height;
-    [SerializeField] private float _scale;
-    [SerializeField] private float _amplitudeMultiplier;
 
+    [Header("Map Settings")]
+    [SerializeField] private int _mapWidth;
+    [SerializeField] private int _mapHeight;
+    [SerializeField] private float _scale;
+
+    [Header("Noise Settings")]
+    [SerializeField] private int _octaves = 4;
+    [SerializeField][Range(0f, 1f)] private float _persistance = 0.5f;
+    [SerializeField] private float _lacunarity = 2.0f;
+    [SerializeField] private float _amplitudeMultiplier = 1.0f;
+    public int seed;
+    public Vector2 offset;
+
+    [Header("References")]
     [SerializeField] private TextureDisplayer _textureDisplayer;
     [SerializeField] private MeshFilter _mf;
+    
 
-    public void DisplayHeightMap()
+    [SerializeField] public TerrainType[] regions;
+
+    public void Generate()
     {
-        if (_width <= 0) _width = 1;
-        if (_height <= 0) _height = 1;
+        float[,] heightMap = NoiseGenerator.GenerateNoiseMap(_mapWidth, _mapHeight, _scale, seed, _octaves, _persistance, _lacunarity, offset);
 
-        float[,] heightMap = NoiseGenerator.GenerateNoiseMap(_width, _height, _scale);
+        // Show noise map on first plane
+        Texture2D noiseTexture = TextureGenerator.GenerateTextureFromHeightMap(heightMap);
+        _textureDisplayer.DisplayNoiseTexture(noiseTexture);
 
-        Texture2D texture = TextureGenerator.GenerateTextureFromHeightMap(heightMap);
+        // Show color map on second plane
+        Texture2D colorTexture = TextureGenerator.GenerateTextureFromColorMap(GenerateColorMap(heightMap), _mapWidth, _mapHeight);
+        _textureDisplayer.DisplayColorTexture(colorTexture);
 
-        if(_textureDisplayer != null)
+        // Generate mesh on third object
+        _mf.mesh = MeshGenerator.GenerateMeshFromHeightMap(heightMap, _amplitudeMultiplier);
+    }
+
+    private Color[] GenerateColorMap(float[,] heightMap)
+    {
+        Color[] colorMap = new Color[_mapWidth * _mapHeight];
+        for (int y = 0; y < _mapHeight; y++)
         {
-            _textureDisplayer.DisplayTexture(texture);
+            for (int x = 0; x < _mapWidth; x++)
+            {
+                float currentHeight = heightMap[x, y];
+                for (int i = 0; i < regions.Length; i++)
+                {
+                    if (currentHeight <= regions[i].height)
+                    {
+                        colorMap[y * _mapWidth + x] = regions[i].color;
+                        break;
+                    }
+                }
+            }
         }
-
+        return colorMap;
     }
 
-    public void GenerateTerrainFromMesh()
+    private void OnValidate() // This method is called when the script is loaded or a value is changed in the inspector (Called in the editor only)
     {
-        if (_width <= 0) _width = 1;
-        if (_height <= 0) _height = 1;
-
-        float[,] heightMap = NoiseGenerator.GenerateNoiseMap(_width, _height, _scale);
-
-        Mesh terrainMesh = MeshGenerator.GenerateMeshFromHeightMap(heightMap, _amplitudeMultiplier);
-
-        _mf.mesh = terrainMesh;
+        if(_mapWidth < 1) _mapWidth = 1;
+        if (_mapHeight < 1) _mapHeight = 1;
+        if(_lacunarity < 1) _lacunarity = 1;
+        if(_octaves < 0) _octaves = 0;
+        
     }
 
-
+    [System.Serializable]
+    public struct TerrainType
+    {
+        public string name;
+        public float height;
+        public Color color;
+    }
 
 }

@@ -10,25 +10,16 @@ public class TerrainGeneratorEditor : Editor
     {
         TerrainGenerator terrainGenerator = (TerrainGenerator)target;
 
-
-        if(DrawDefaultInspector() && _autoGenerate)
+        if (DrawDefaultInspector() && _autoGenerate)
         {
-            terrainGenerator.DisplayHeightMap();
-            terrainGenerator.GenerateTerrainFromMesh();
+            terrainGenerator.Generate();
         }
 
-        _autoGenerate = EditorGUILayout.Toggle("Auto Generate",_autoGenerate);
+        _autoGenerate = EditorGUILayout.Toggle("Auto Generate", _autoGenerate);
 
-        if (GUILayout.Button("Generate HeighMap"))
+        if (GUILayout.Button("Generate"))
         {
-            terrainGenerator.DisplayHeightMap();
+            terrainGenerator.Generate();
         }
-
-        if (GUILayout.Button("Generate Mesh"))
-        {
-            terrainGenerator.GenerateTerrainFromMesh();
-        }
-
-
     }
 }
