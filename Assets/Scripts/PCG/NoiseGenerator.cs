@@ -38,8 +38,8 @@ public static class NoiseGenerator
                 
                 for (int i = 0; i < octaves; i++)
                 {
-                    float sampleX = (x - halfWidth) / scale * frequency + octaveOffsets[i].x; 
-                    float sampleY = (y - halfHeight) / scale * frequency + octaveOffsets[i].y;
+                    float sampleX = (x - halfWidth) / scale * frequency + octaveOffsets[i].x; // (x - halfwidth) to start in the center
+                    float sampleY = (y - halfHeight) / scale * frequency + octaveOffsets[i].y; // (y - halfheight) to start in the center
 
                     //heightMap[x, y] = Mathf.PerlinNoise(sampleX, sampleY);
                     float perlinValue = Mathf.PerlinNoise(sampleX, sampleY) * 2 - 1; // Remapping the value from [0, 1] to [-1, 1] to allow for negative values and more variation in the terrain

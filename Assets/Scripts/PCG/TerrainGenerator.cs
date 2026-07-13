@@ -16,6 +16,7 @@ public class TerrainGenerator : MonoBehaviour
     [SerializeField][Range(0f, 1f)] private float _persistance = 0.5f;
     [SerializeField] private float _lacunarity = 2.0f;
     [SerializeField] private float _amplitudeMultiplier = 1.0f;
+    [SerializeField] private AnimationCurve _amplitudeCurveMultiplier;
     public int seed;
     public Vector2 offset;
 
@@ -39,7 +40,9 @@ public class TerrainGenerator : MonoBehaviour
         _textureDisplayer.DisplayColorTexture(colorTexture);
 
         // Generate mesh on third object
-        _mf.mesh = MeshGenerator.GenerateMeshFromHeightMap(heightMap, _amplitudeMultiplier);
+        MeshGenerator.MeshData meshData = MeshGenerator.GenerateMeshFromHeightMap(heightMap, _amplitudeMultiplier, _amplitudeCurveMultiplier);
+        _mf.mesh = meshData.CreateMesh();
+        _textureDisplayer.DisplayTerrainTexture(colorTexture);
     }
 
     private Color[] GenerateColorMap(float[,] heightMap)
@@ -54,6 +57,7 @@ public class TerrainGenerator : MonoBehaviour
                 {
                     if (currentHeight <= regions[i].height)
                     {
+
                         colorMap[y * _mapWidth + x] = regions[i].color;
                         break;
                     }
