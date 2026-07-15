@@ -1,9 +1,8 @@
 ﻿using UnityEngine;
-using UnityEngine.UIElements;
 
 public static class MeshGenerator
 {
-    public static MeshData GenerateMeshFromHeightMap(float[,] heightMap, float heightMultiplier, AnimationCurve heightCurveMultiplier)
+    public static MeshData GenerateMeshFromHeightMap(float[,] heightMap, float heightMultiplier, AnimationCurve heightCurveMultiplier, int levelOfDetail)
     {
         int width = heightMap.GetLength(0);
         int height = heightMap.GetLength(1);
@@ -16,15 +15,17 @@ public static class MeshGenerator
         float topLeftX = (width - 1) / -2f;
         float topLeftZ = (height - 1) / 2f; // z positive when we go up
 
-        MeshData meshData = new MeshData(width, height);
+        int meshSimplificationIncrement = (levelOfDetail == 0) ? 1 : levelOfDetail * 2; // If levelOfDetail is 0, we want to keep all the vertices, otherwise we want to skip some vertices
+        int verticesPerLine = (width - 1) / meshSimplificationIncrement + 1; // Number of vertices per line, we add 1 because we want to include the last vertex
 
+        MeshData meshData = new MeshData(verticesPerLine, verticesPerLine);
         int vertexIndex = 0;
 
         int[] indeces = new int[(width - 1) * (height - 1) * 6]; // Indeces of the mesh -> 3 indeces for triangle so 6 in total for a quad
 
-        for (int y = 0; y < height; y++)
+        for (int y = 0; y < height; y += meshSimplificationIncrement)
         {
-            for (int x = 0; x < width; x++)
+            for (int x = 0; x < width; x += meshSimplificationIncrement)
             {
                 meshData.vertices[vertexIndex] = new Vector3(topLeftX + x, heightCurveMultiplier.Evaluate(heightMap[x,y]) * heightMultiplier , topLeftZ - y); // Centered
 
@@ -43,8 +44,8 @@ public static class MeshGenerator
                 if (x < width - 1 && y < height - 1) // Inside of the bounds for the indeces
                 {
                     // CLOCKWISE ORDER TO RENDER THE CORRECT FACE OF THE MESH, OTHERWISE WILL BE RENDERED THE BACK  
-                    meshData.AddTriangle(vertexIndex, vertexIndex + width + 1, vertexIndex + width); // topleft -> bottom right -> bottom left
-                    meshData.AddTriangle(vertexIndex + width + 1, vertexIndex, vertexIndex + 1); // bottom right -> top left -> top right
+                    meshData.AddTriangle(vertexIndex, vertexIndex + verticesPerLine + 1, vertexIndex + verticesPerLine); // topleft -> bottom right -> bottom left
+                    meshData.AddTriangle(vertexIndex + verticesPerLine + 1, vertexIndex, vertexIndex + 1); // bottom right -> top left -> top right
                 }
 
                 vertexIndex++;

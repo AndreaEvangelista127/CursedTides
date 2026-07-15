@@ -1,30 +1,55 @@
 using Unity.Mathematics;
 using UnityEngine;
 
-public static class NoiseGenerator
+public static class HeightMapGenerator
 {
-    public static float[,] GenerateNoiseMap(int width, int height, float scale,int seed, int octaves, float persistance, float lacunarity, Vector2 offset)
+
+    public static float[,] GenerateFallOffMap(int width, int height, float curvePower, float curveScale)
+    {
+        float[,] fallOffMap = new float[width, height];
+
+        for (int x = 0; x < height; x++)
+        {
+            for (int y = 0; y < width; y++)
+            {
+                float xValue = x / (float)width * 2 - 1; // 1 / 10 = 0.1 -> 0.1 * 2 = 0.2 -> 0.2 - 1 = - 0.8
+                float yValue = y / (float)height * 2 - 1; 
+
+                //float fallOffValue = Mathf.Max(Mathf.Abs(xValue), Mathf.Abs(yValue)); //square fallOffMap
+                float fallOffValue = Mathf.Sqrt(xValue * xValue + yValue * yValue); //Circular fallOffMap
+                fallOffMap[x,y] = EvaluateFallOffValue(fallOffValue, curvePower , curveScale);
+            }
+        }
+        return fallOffMap;
+    }
+
+    private static float EvaluateFallOffValue(float fallOffValue, float curvePower, float curveScale)
+    {
+        return Mathf.Pow(fallOffValue, curvePower) / (Mathf.Pow(fallOffValue, curvePower) + Mathf.Pow(curveScale - curveScale * fallOffValue, curvePower)); //wtf is this, study!
+    }
+
+
+    public static float[,] GeneratePerlinNoiseMap(int width, int height, float scale, int seed, int octaves, float persistance, float lacunarity, Vector2 offset)
     {
         float[,] heightMap = new float[width, height];
 
         System.Random pseudoRand = new System.Random(seed);
         Vector2[] octaveOffsets = new Vector2[octaves];
-        for(int i = 0; i < octaves; i++)
+        for (int i = 0; i < octaves; i++)
         {
             float offsetX = pseudoRand.Next(-100000, 100000) + offset.x;
             float offsetY = pseudoRand.Next(-100000, 100000) + offset.y;
             octaveOffsets[i] = new Vector2(offsetX, offsetY);
         }
 
-
-        if (scale == 0) scale = 0.0001f;
+        if (scale <= 0) scale = 0.0001f;
 
         float maxNoiseHeight = float.MinValue; // Starting with the lowest possible value to find the maximum
         float minNoiseHeight = float.MaxValue; // Starting with the highest possible value to find the minimum
 
         // Centering the noise in the middle of the map
-        float halfWidth = width / 2f; 
-        float halfHeight = height / 2f; 
+        float halfWidth = width / 2f;
+        float halfHeight = height / 2f;
 
         // Every (x, y) coordinate in the heightMap will be assigned a noise value that will represent the height of the terrain at that point
         for (int y = 0; y < height; y++)
@@ -35,15 +60,15 @@ public static class NoiseGenerator
                 float frequency = 1; // How closer are the waves of the noise
                 float noiseHeight = 0; // The final noise value for the current (x, y) coordinate
 
-                
+
                 for (int i = 0; i < octaves; i++)
                 {
-                    float sampleX = (x - halfWidth) / scale * frequency + octaveOffsets[i].x; // (x - halfwidth) to start in the center
-                    float sampleY = (y - halfHeight) / scale * frequency + octaveOffsets[i].y; // (y - halfheight) to start in the center
+                    float sampleX = (x - halfWidth) / scale * frequency + octaveOffsets[i].x * frequency; // (x - halfwidth) to start in the center
+                    float sampleY = (y - halfHeight) / scale * frequency + octaveOffsets[i].y * frequency; // (y - halfheight) to start in the center
 
                     //heightMap[x, y] = Mathf.PerlinNoise(sampleX, sampleY);
                     float perlinValue = Mathf.PerlinNoise(sampleX, sampleY) * 2 - 1; // Remapping the value from [0, 1] to [-1, 1] to allow for negative values and more variation in the terrain
-                    noiseHeight += perlinValue * amplitude; 
+                    noiseHeight += perlinValue * amplitude;
 
                     amplitude *= persistance; // if persistance = 0.5, the amplitude will be halved for each octave, making the waves smaller and smaller
                     frequency *= lacunarity; // if lacunarity = 2, the frequency will be doubled for each octave, making the waves closer and closer
@@ -54,7 +79,7 @@ public static class NoiseGenerator
                 if (noiseHeight > maxNoiseHeight)
                     maxNoiseHeight = noiseHeight;
 
-                if (noiseHeight < minNoiseHeight)  
+                if (noiseHeight < minNoiseHeight)
                     minNoiseHeight = noiseHeight;
 
                 heightMap[x, y] = noiseHeight;

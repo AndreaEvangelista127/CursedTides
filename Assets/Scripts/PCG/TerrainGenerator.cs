@@ -7,9 +7,11 @@ public class TerrainGenerator : MonoBehaviour
 {
 
     [Header("Map Settings")]
-    [SerializeField] private int _mapWidth;
-    [SerializeField] private int _mapHeight;
+    //[SerializeField] private int mapChunkSize;
+    //[SerializeField] private int mapChunkSizes;
     [SerializeField] private float _scale;
+    [SerializeField][Range(0,6)] private int _levelOfDetail;
+    const int mapChunkSize = 241;
 
     [Header("Noise Settings")]
     [SerializeField] private int _octaves = 4;
@@ -20,37 +22,67 @@ public class TerrainGenerator : MonoBehaviour
     public int seed;
     public Vector2 offset;
 
+    [Header("FallOffSettings")]
+    [SerializeField] private float _curvePower = 3f;
+    [SerializeField] private float _curveScale = 2.2f;
+
     [Header("References")]
     [SerializeField] private TextureDisplayer _textureDisplayer;
     [SerializeField] private MeshFilter _mf;
+    [SerializeField] private ObjectSpawner _objectSpawner;
     
 
     [SerializeField] public TerrainType[] regions;
 
     public void Generate()
     {
-        float[,] heightMap = NoiseGenerator.GenerateNoiseMap(_mapWidth, _mapHeight, _scale, seed, _octaves, _persistance, _lacunarity, offset);
+        float[,] heightMap = HeightMapGenerator.GeneratePerlinNoiseMap(mapChunkSize, mapChunkSize, _scale, seed, _octaves, _persistance, _lacunarity, offset);
+
+        float[,] fallOffMap = HeightMapGenerator.GenerateFallOffMap(mapChunkSize, mapChunkSize, _curvePower, _curveScale);
+
+        float[,] finalMap = new float[mapChunkSize, mapChunkSize];
+
+        for (int y = 0; y < mapChunkSize; y++)
+        {
+            for (int x = 0; x < mapChunkSize; x++)
+            {
+
+                finalMap[x, y] = Mathf.Clamp01(heightMap[x, y] - fallOffMap[x, y]); // substracting from the noise map the fall of map
+            }
+        }
+
+        Texture2D finalTexture = TextureGenerator.GenerateTextureFromHeightMap(finalMap);
+        _textureDisplayer.DisplayNoiseTexture(finalTexture);
+        
+       
+        //Texture2D fallOffTexture = TextureGenerator.GenerateTextureFromHeightMap(fallOffMap);
 
         // Show noise map on first plane
-        Texture2D noiseTexture = TextureGenerator.GenerateTextureFromHeightMap(heightMap);
-        _textureDisplayer.DisplayNoiseTexture(noiseTexture);
+        //Texture2D noiseTexture = TextureGenerator.GenerateTextureFromHeightMap(heightMap);
+        //_textureDisplayer.DisplayNoiseTexture(noiseTexture);
 
         // Show color map on second plane
-        Texture2D colorTexture = TextureGenerator.GenerateTextureFromColorMap(GenerateColorMap(heightMap), _mapWidth, _mapHeight);
+        //Texture2D colorTexture = TextureGenerator.GenerateTextureFromColorMap(GenerateColorMap(heightMap), _mapWidth, _mapHeight);
+        Texture2D colorTexture = TextureGenerator.GenerateTextureFromColorMap(GenerateColorMap(finalMap), mapChunkSize, mapChunkSize);
         _textureDisplayer.DisplayColorTexture(colorTexture);
 
         // Generate mesh on third object
-        MeshGenerator.MeshData meshData = MeshGenerator.GenerateMeshFromHeightMap(heightMap, _amplitudeMultiplier, _amplitudeCurveMultiplier);
-        _mf.mesh = meshData.CreateMesh();
+        MeshGenerator.MeshData meshData = MeshGenerator.GenerateMeshFromHeightMap(finalMap, _amplitudeMultiplier, _amplitudeCurveMultiplier, _levelOfDetail);
+        _mf.sharedMesh = meshData.CreateMesh();
         _textureDisplayer.DisplayTerrainTexture(colorTexture);
+
+        if(_objectSpawner != null)
+        {
+            _objectSpawner.SpawnObjects(finalMap, seed, _amplitudeMultiplier, _amplitudeCurveMultiplier, _mf.transform);
+        }
     }
 
     private Color[] GenerateColorMap(float[,] heightMap)
     {
-        Color[] colorMap = new Color[_mapWidth * _mapHeight];
-        for (int y = 0; y < _mapHeight; y++)
+        Color[] colorMap = new Color[mapChunkSize * mapChunkSize];
+        for (int y = 0; y < mapChunkSize; y++)
         {
-            for (int x = 0; x < _mapWidth; x++)
+            for (int x = 0; x < mapChunkSize; x++)
             {
                 float currentHeight = heightMap[x, y];
                 for (int i = 0; i < regions.Length; i++)
@@ -58,7 +90,7 @@ public class TerrainGenerator : MonoBehaviour
                     if (currentHeight <= regions[i].height)
                     {
 
-                        colorMap[y * _mapWidth + x] = regions[i].color;
+                        colorMap[y * mapChunkSize + x] = regions[i].color;
                         break;
                     }
                 }
@@ -69,8 +101,8 @@ public class TerrainGenerator : MonoBehaviour
 
     private void OnValidate() // This method is called when the script is loaded or a value is changed in the inspector (Called in the editor only)
     {
-        if(_mapWidth < 1) _mapWidth = 1;
-        if (_mapHeight < 1) _mapHeight = 1;
+        //if(mapChunkSize < 1) mapChunkSize = 1;
+        //if (mapChunkSize < 1) mapChunkSize = 1;
         if(_lacunarity < 1) _lacunarity = 1;
         if(_octaves < 0) _octaves = 0;
         
