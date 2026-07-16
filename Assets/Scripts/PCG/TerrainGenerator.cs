@@ -7,8 +7,6 @@ public class TerrainGenerator : MonoBehaviour
 {
 
     [Header("Map Settings")]
-    //[SerializeField] private int mapChunkSize;
-    //[SerializeField] private int mapChunkSizes;
     [SerializeField] private float _scale;
     [SerializeField][Range(0,6)] private int _levelOfDetail;
     const int mapChunkSize = 241;
@@ -73,7 +71,7 @@ public class TerrainGenerator : MonoBehaviour
 
         if(_objectSpawner != null)
         {
-            _objectSpawner.SpawnObjects(finalMap, seed, _amplitudeMultiplier, _amplitudeCurveMultiplier, _mf.transform);
+            _objectSpawner.SpawnObjects(finalMap, seed, _amplitudeMultiplier, _amplitudeCurveMultiplier, _mf.transform, meshData);
         }
     }
 
@@ -101,8 +99,6 @@ public class TerrainGenerator : MonoBehaviour
 
     private void OnValidate() // This method is called when the script is loaded or a value is changed in the inspector (Called in the editor only)
     {
-        //if(mapChunkSize < 1) mapChunkSize = 1;
-        //if (mapChunkSize < 1) mapChunkSize = 1;
         if(_lacunarity < 1) _lacunarity = 1;
         if(_octaves < 0) _octaves = 0;
         

@@ -1,4 +1,6 @@
 using UnityEngine;
+using System.Collections.Generic;
+using UnityEditor.U2D.Sprites;
 
 public class ObjectSpawner : MonoBehaviour
 {
@@ -15,11 +17,20 @@ public class ObjectSpawner : MonoBehaviour
 
     [SerializeField] private SpawnableObject[] _spawnableObjects;
 
-    public void SpawnObjects(float[,] heightMap, int seed, float amplitudeMultiplier, AnimationCurve heightCurve, Transform meshTransform)
+    public void SpawnObjects(float[,] heightMap, int seed, float amplitudeMultiplier, AnimationCurve heightCurve, Transform meshTransform, MeshGenerator.MeshData meshdata)
     {
-        // Destroy previously spawned objects
-        foreach (Transform child in meshTransform)
+
+        List<Transform> meshChildrens = new();
+
+        foreach(Transform t in meshTransform)
         {
+            meshChildrens.Add(t);
+        }
+
+        foreach (Transform child in meshChildrens)
+        {
+
+            if (child == null) continue;
             if (child.name.EndsWith("_Container"))
             {
                 Debug.Log($"Destroying container: {child.name}");
@@ -59,8 +70,8 @@ public class ObjectSpawner : MonoBehaviour
                         if (rand.NextDouble() < obj.density) // Randomly decide to spawn based on density, 0.1 means 10% chance to spawn
                         {
                             // The mesh is centered at the origin, so we offset the x and z coordinates to center the objects on the mesh
-                            float worldX = x - mapWidth / 2f; 
-                            float worldZ = -(y - mapHeight / 2f); 
+                            float worldX = x - mapWidth / 2f;
+                            float worldZ = -(y - mapHeight / 2f);
                             float worldY = heightCurve.Evaluate(currentHeight) * amplitudeMultiplier + obj.heightOffset;
 
                             Vector3 localPos = new Vector3(worldX, worldY, worldZ);
