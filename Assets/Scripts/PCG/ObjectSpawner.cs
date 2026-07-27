@@ -16,6 +16,7 @@ public class ObjectSpawner : MonoBehaviour
     }
 
     [SerializeField] private SpawnableObject[] _spawnableObjects;
+    [SerializeField] private LayerMask _mapMeshLayer;
 
     public void SpawnObjects(float[,] heightMap, int seed, float amplitudeMultiplier, AnimationCurve heightCurve, Transform meshTransform, MeshGenerator.MeshData meshdata)
     {
@@ -67,18 +68,33 @@ public class ObjectSpawner : MonoBehaviour
 
                     if (currentHeight >= obj.minHeight && currentHeight <= obj.maxHeight) // The Noise value is within the height range for this object?
                     {
-                        if (rand.NextDouble() < obj.density) // Randomly decide to spawn based on density, 0.1 means 10% chance to spawn
+                        if (rand.NextDouble() < obj.density) // Randomomly decide to spawn based on density, a value of 0.1 means 10% chance to spawn
                         {
-                            // The mesh is centered at the origin, so we offset the x and z coordinates to center the objects on the mesh
+                            // XZ position centered on mesh
                             float worldX = x - mapWidth / 2f;
                             float worldZ = -(y - mapHeight / 2f);
-                            float worldY = heightCurve.Evaluate(currentHeight) * amplitudeMultiplier + obj.heightOffset;
 
-                            Vector3 localPos = new Vector3(worldX, worldY, worldZ);
-                            Vector3 worldPos = meshTransform.TransformPoint(localPos);
+                            // Approximate Y — just above the surface
+                            float approxY = heightCurve.Evaluate(currentHeight) * amplitudeMultiplier + 10f; // +10 to ensure it's above the terrain for raycasting
 
-                            GameObject spawned = Instantiate(obj.prefab, worldPos, Quaternion.identity);
-                            spawned.transform.SetParent(containers[i]);
+                            // Convert to world space
+                            Vector3 localPos = new Vector3(worldX, approxY, worldZ);
+                            Vector3 rayOrigin = meshTransform.TransformPoint(localPos); // Tranform a local position to world space to ensure the raycast is done in the correct world space
+
+                            // Shoot ray downward
+                            Ray ray = new Ray(rayOrigin, Vector3.down);
+
+                            if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, _mapMeshLayer))
+                            {
+                                // Exact position on surface + offset
+                                Vector3 spawnPos = hit.point + Vector3.up * obj.heightOffset;
+
+                                // Rotation aligned to terrain normal
+                                Quaternion spawnRot = Quaternion.FromToRotation(Vector3.up, hit.normal);
+
+                                GameObject spawned = Instantiate(obj.prefab, spawnPos, spawnRot);
+                                spawned.transform.SetParent(containers[i]);
+                            }
                         }
                     }
                 }

@@ -3,18 +3,26 @@ using System.Collections;
 
 public class TextureDisplayer : MonoBehaviour
 {
-    [SerializeField] private MeshRenderer _meshR;
+    [SerializeField] private MeshRenderer _baseMeshR;
+    [SerializeField] private MeshRenderer _falloffMeshR;
     [SerializeField] private MeshRenderer _colorMeshR;
     [SerializeField] private MeshRenderer _terrainMesh;
 
-    public void DisplayNoiseTexture(Texture2D texture)
-    {
-        if(_meshR == null || texture == null) return;
 
-        _meshR.sharedMaterial.mainTexture = texture;
+    public void DisplayBaseNoiseTexture(Texture2D texture)
+    {
+        if (_baseMeshR == null || texture == null) return;
+        _baseMeshR.sharedMaterial.mainTexture = texture;
+    }
+
+    public void DisplayFalloffTexture(Texture2D texture)
+    {
+        if(_falloffMeshR == null || texture == null) return;
+
+        _falloffMeshR.sharedMaterial.mainTexture = texture;
 
         // Divide by a factor to keep pixels compressed instead of spread out
-        _meshR.transform.localScale = new Vector3(texture.width / 10f, 1, texture.height / 10f);
+        _falloffMeshR.transform.localScale = new Vector3(texture.width / 10f, 1, texture.height / 10f);
     }
 
     public void DisplayColorTexture(Texture2D texture)

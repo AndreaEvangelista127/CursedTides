@@ -9,7 +9,7 @@ public class TerrainGenerator : MonoBehaviour
     [Header("Map Settings")]
     [SerializeField] private float _scale;
     [SerializeField][Range(0,6)] private int _levelOfDetail;
-    const int mapChunkSize = 241;
+    public const int mapChunkSize = 241; // 241 is the maximum size for a mesh with 6 levels of detail (LOD)
 
     [Header("Noise Settings")]
     [SerializeField] private int _octaves = 4;
@@ -21,57 +21,65 @@ public class TerrainGenerator : MonoBehaviour
     public Vector2 offset;
 
     [Header("FallOffSettings")]
+    [SerializeField] private bool _useFalloff;
     [SerializeField] private float _curvePower = 3f;
     [SerializeField] private float _curveScale = 2.2f;
+    [SerializeField][Range(0f, 1f)] private float _minIslandHeight = 0.3f;
+    [SerializeField][Range(0f, 1f)] private float _islandBorderThreshold = 0.2f;
 
     [Header("References")]
     [SerializeField] private TextureDisplayer _textureDisplayer;
     [SerializeField] private MeshFilter _mf;
     [SerializeField] private ObjectSpawner _objectSpawner;
-    
-
+ 
     [SerializeField] public TerrainType[] regions;
 
     public void Generate()
     {
         float[,] heightMap = HeightMapGenerator.GeneratePerlinNoiseMap(mapChunkSize, mapChunkSize, _scale, seed, _octaves, _persistance, _lacunarity, offset);
 
-        float[,] fallOffMap = HeightMapGenerator.GenerateFallOffMap(mapChunkSize, mapChunkSize, _curvePower, _curveScale);
+        float[,] baseHeightMap = (float[,])heightMap.Clone(); // Clone the heightMap to keep the original values for the base noise texture
 
-        float[,] finalMap = new float[mapChunkSize, mapChunkSize];
+        Texture2D baseNoiseTexture = TextureGenerator.GenerateTextureFromHeightMap(baseHeightMap);
+        _textureDisplayer.DisplayBaseNoiseTexture(baseNoiseTexture);
 
-        for (int y = 0; y < mapChunkSize; y++)
+        if (_useFalloff)
         {
-            for (int x = 0; x < mapChunkSize; x++)
+            float[,] fallOffMap = HeightMapGenerator.GenerateFallOffMap(mapChunkSize, mapChunkSize, _curvePower, _curveScale);
+            for (int y = 0; y < mapChunkSize; y++)
             {
+                for (int x = 0; x < mapChunkSize; x++)
+                {
+                    float result = Mathf.Clamp01(heightMap[x, y] - fallOffMap[x, y]);
 
-                finalMap[x, y] = Mathf.Clamp01(heightMap[x, y] - fallOffMap[x, y]); // substracting from the noise map the fall of map
+                    // if the fallOffMap value is below the threshold, set the height to at least _minIslandHeight
+                    if (fallOffMap[x, y] < _islandBorderThreshold) result = Mathf.Max(result, _minIslandHeight);
+                    heightMap[x, y] = result;
+                }
             }
-        }
+            Texture2D falloffTexture = TextureGenerator.GenerateTextureFromHeightMap(heightMap);
+            _textureDisplayer.DisplayFalloffTexture(falloffTexture);
+        }  
 
-        Texture2D finalTexture = TextureGenerator.GenerateTextureFromHeightMap(finalMap);
-        _textureDisplayer.DisplayNoiseTexture(finalTexture);
-        
-       
-        //Texture2D fallOffTexture = TextureGenerator.GenerateTextureFromHeightMap(fallOffMap);
-
-        // Show noise map on first plane
-        //Texture2D noiseTexture = TextureGenerator.GenerateTextureFromHeightMap(heightMap);
-        //_textureDisplayer.DisplayNoiseTexture(noiseTexture);
-
-        // Show color map on second plane
-        //Texture2D colorTexture = TextureGenerator.GenerateTextureFromColorMap(GenerateColorMap(heightMap), _mapWidth, _mapHeight);
-        Texture2D colorTexture = TextureGenerator.GenerateTextureFromColorMap(GenerateColorMap(finalMap), mapChunkSize, mapChunkSize);
+        // SHOW COLOR MAP ON THE SECOND PLANE
+        Texture2D colorTexture = TextureGenerator.GenerateTextureFromColorMap(GenerateColorMap(heightMap), mapChunkSize, mapChunkSize);
         _textureDisplayer.DisplayColorTexture(colorTexture);
 
-        // Generate mesh on third object
-        MeshGenerator.MeshData meshData = MeshGenerator.GenerateMeshFromHeightMap(finalMap, _amplitudeMultiplier, _amplitudeCurveMultiplier, _levelOfDetail);
-        _mf.sharedMesh = meshData.CreateMesh();
+        // SHOW MESH ON THE THIRD PLANE
+        MeshGenerator.MeshData meshData = MeshGenerator.GenerateMeshFromHeightMap(heightMap, _amplitudeMultiplier, _amplitudeCurveMultiplier, _levelOfDetail);
+        Mesh generatedMesh = meshData.CreateMesh();
+        _mf.mesh = generatedMesh;
+
+        // Add a MeshCollider to the MeshFilter's GameObject if it doesn't already have one
+        MeshCollider meshCollider = _mf.GetComponent<MeshCollider>();
+        if (meshCollider != null)
+            meshCollider.sharedMesh = generatedMesh;
+
         _textureDisplayer.DisplayTerrainTexture(colorTexture);
 
         if(_objectSpawner != null)
         {
-            _objectSpawner.SpawnObjects(finalMap, seed, _amplitudeMultiplier, _amplitudeCurveMultiplier, _mf.transform, meshData);
+            _objectSpawner.SpawnObjects(heightMap, seed, _amplitudeMultiplier, _amplitudeCurveMultiplier, _mf.transform, meshData);
         }
     }
 
