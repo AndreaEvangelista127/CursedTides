@@ -5,11 +5,12 @@ using UnityEngine;
 
 public class TerrainGenerator : MonoBehaviour
 {
-
     [Header("Map Settings")]
     [SerializeField][Range(0,6)] private int _levelOfDetail;
     [SerializeField][Range(1,4)] private int _mapSizeFactor = 2; // The size of the mesh in world units, the higher the value, the bigger the mesh will be
     public const int mapChunkSize = 241; // 241 is the maximum size for a mesh with 6 levels of detail (LOD)
+    private float _minTerrainHeight;
+    private float _maxTerrainHeight;
 
     [Header("Noise Settings")]
     [SerializeField] private float _noiseScale;
@@ -72,18 +73,21 @@ public class TerrainGenerator : MonoBehaviour
         // SHOW MESH ON THE THIRD PLANE
         MeshGenerator.MeshData meshData = MeshGenerator.GenerateMeshFromHeightMap(heightMap, _amplitudeMultiplier, _amplitudeCurveMultiplier, _levelOfDetail,_mapSizeFactor);
 
-        float minHeight = float.MaxValue;
-        float maxHeight = float.MinValue;
+        _minTerrainHeight = float.MaxValue;
+        _maxTerrainHeight = float.MinValue;
 
-        foreach (Vector3 v in meshData.vertices)
+        foreach (Vector3 vertex in meshData.vertices)
         {
-            if (v.y < minHeight) minHeight = v.y;
-            if (v.y > maxHeight) maxHeight = v.y;
+            if (vertex.y < _minTerrainHeight) _minTerrainHeight = vertex.y;
+            if (vertex.y > _maxTerrainHeight) _maxTerrainHeight = vertex.y;
         }
+
+        Debug.Log("Min Terrain height:" + _minTerrainHeight + "," + "Max Terrain Height:" + _maxTerrainHeight);
 
         for (int i = 0; i < meshData.vertices.Length; i++)
         {
-            float normalizedHeight = Mathf.InverseLerp(minHeight, maxHeight, meshData.vertices[i].y);
+            float normalizedHeight = Mathf.InverseLerp(_minTerrainHeight, _maxTerrainHeight, meshData.vertices[i].y); //returns a value between 0 and 1 that will represent the height color
+            //Debug.Log(normalizedHeight);
             meshData.colors[i] = _terrainGradient.Evaluate(normalizedHeight);
         }
 

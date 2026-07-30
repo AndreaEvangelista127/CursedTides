@@ -15,8 +15,6 @@ public static class MeshGenerator
         float topLeftX = (width - 1) / -2f * mapSizeFactor;
         float topLeftZ = (height - 1) / 2f * mapSizeFactor; // z positive when we go up
 
-        Debug.Log(topLeftX + " " + topLeftZ);
-
         int meshSimplificationIncrement = (levelOfDetail == 0) ? 1 : levelOfDetail * 2; // If levelOfDetail is 0, we want to keep all the vertices, otherwise we want to skip some vertices
         int verticesPerLine = (width - 1) / meshSimplificationIncrement + 1; // Number of vertices per line, we add 1 because we want to include the last vertex
 

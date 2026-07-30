@@ -3,7 +3,6 @@ using UnityEngine;
 
 public static class HeightMapGenerator
 {
-
     public static float[,] GenerateFallOffMap(int width, int height, float curvePower, float curveScale)
     {
         float[,] fallOffMap = new float[width, height];

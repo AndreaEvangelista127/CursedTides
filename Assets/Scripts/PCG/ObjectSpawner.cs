@@ -88,9 +88,13 @@ public class ObjectSpawner : MonoBehaviour
                             {
                                 // Exact position on surface + offset
                                 Vector3 spawnPos = hit.point + Vector3.up * obj.heightOffset;
+                                Quaternion spawnRot = Quaternion.identity;
 
-                                // Rotation aligned to terrain normal
-                                Quaternion spawnRot = Quaternion.FromToRotation(Vector3.up, hit.normal);
+                                if(obj.name != "Palm Tree")
+                                {
+                                    // Rotation aligned to terrain normal
+                                    spawnRot = Quaternion.FromToRotation(Vector3.up, hit.normal);
+                                }
 
                                 GameObject spawned = Instantiate(obj.prefab, spawnPos, spawnRot);
                                 spawned.transform.SetParent(containers[i]);
