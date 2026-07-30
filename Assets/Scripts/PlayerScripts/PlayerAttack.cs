@@ -17,7 +17,10 @@ public class PlayerAttack : MonoBehaviour
     {
         if (!context.started) return;
         if (_isAttacking) return;
-        _playerMovement.SetMovementEnabled(false);
+        if (_playerMovement.CurrentState == PlayerMovement.PlayerState.Jumping) return;
+        if (_playerMovement.CurrentState == PlayerMovement.PlayerState.Dodging) return;
+
+        _playerMovement.SetCanMove(false);
         _playerAnimator.SetTrigger("slashAttack");
         _isAttacking = true;
     }
@@ -25,6 +28,6 @@ public class PlayerAttack : MonoBehaviour
     public void OnAttackFinished()
     {
         _isAttacking = false;
-        _playerMovement.SetMovementEnabled(true);
+        _playerMovement.SetCanMove(true);
     }
 }

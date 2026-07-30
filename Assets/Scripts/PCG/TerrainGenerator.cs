@@ -7,11 +7,12 @@ public class TerrainGenerator : MonoBehaviour
 {
 
     [Header("Map Settings")]
-    [SerializeField] private float _scale;
     [SerializeField][Range(0,6)] private int _levelOfDetail;
+    [SerializeField][Range(1,4)] private int _mapSizeFactor = 2; // The size of the mesh in world units, the higher the value, the bigger the mesh will be
     public const int mapChunkSize = 241; // 241 is the maximum size for a mesh with 6 levels of detail (LOD)
 
     [Header("Noise Settings")]
+    [SerializeField] private float _noiseScale;
     [SerializeField] private int _octaves = 4;
     [SerializeField][Range(0f, 1f)] private float _persistance = 0.5f;
     [SerializeField] private float _lacunarity = 2.0f;
@@ -25,18 +26,20 @@ public class TerrainGenerator : MonoBehaviour
     [SerializeField] private float _curvePower = 3f;
     [SerializeField] private float _curveScale = 2.2f;
     [SerializeField][Range(0f, 1f)] private float _minIslandHeight = 0.3f;
-    [SerializeField][Range(0f, 1f)] private float _islandBorderThreshold = 0.2f;
+    //[SerializeField][Range(0f, 1f)] private float _islandBorderThreshold = 0.2f;
 
     [Header("References")]
     [SerializeField] private TextureDisplayer _textureDisplayer;
     [SerializeField] private MeshFilter _mf;
     [SerializeField] private ObjectSpawner _objectSpawner;
- 
+
+
+    [SerializeField] private Gradient _terrainGradient;
     [SerializeField] public TerrainType[] regions;
 
     public void Generate()
     {
-        float[,] heightMap = HeightMapGenerator.GeneratePerlinNoiseMap(mapChunkSize, mapChunkSize, _scale, seed, _octaves, _persistance, _lacunarity, offset);
+        float[,] heightMap = HeightMapGenerator.GeneratePerlinNoiseMap(mapChunkSize, mapChunkSize, _noiseScale, seed, _octaves, _persistance, _lacunarity, offset);
 
         float[,] baseHeightMap = (float[,])heightMap.Clone(); // Clone the heightMap to keep the original values for the base noise texture
 
@@ -50,10 +53,11 @@ public class TerrainGenerator : MonoBehaviour
             {
                 for (int x = 0; x < mapChunkSize; x++)
                 {
-                    float result = Mathf.Clamp01(heightMap[x, y] - fallOffMap[x, y]);
-
+                    //float result = Mathf.Clamp01(heightMap[x, y] - fallOffMap[x, y]);
+                    float result = Mathf.Clamp(heightMap[x, y], _minIslandHeight, 1f) - fallOffMap[x, y];
+                    result = Mathf.Clamp01(result);
                     // if the fallOffMap value is below the threshold, set the height to at least _minIslandHeight
-                    if (fallOffMap[x, y] < _islandBorderThreshold) result = Mathf.Max(result, _minIslandHeight);
+                    //if (fallOffMap[x, y] < _islandBorderThreshold) result = Mathf.Max(result, _minIslandHeight);
                     heightMap[x, y] = result;
                 }
             }
@@ -66,7 +70,23 @@ public class TerrainGenerator : MonoBehaviour
         _textureDisplayer.DisplayColorTexture(colorTexture);
 
         // SHOW MESH ON THE THIRD PLANE
-        MeshGenerator.MeshData meshData = MeshGenerator.GenerateMeshFromHeightMap(heightMap, _amplitudeMultiplier, _amplitudeCurveMultiplier, _levelOfDetail);
+        MeshGenerator.MeshData meshData = MeshGenerator.GenerateMeshFromHeightMap(heightMap, _amplitudeMultiplier, _amplitudeCurveMultiplier, _levelOfDetail,_mapSizeFactor);
+
+        float minHeight = float.MaxValue;
+        float maxHeight = float.MinValue;
+
+        foreach (Vector3 v in meshData.vertices)
+        {
+            if (v.y < minHeight) minHeight = v.y;
+            if (v.y > maxHeight) maxHeight = v.y;
+        }
+
+        for (int i = 0; i < meshData.vertices.Length; i++)
+        {
+            float normalizedHeight = Mathf.InverseLerp(minHeight, maxHeight, meshData.vertices[i].y);
+            meshData.colors[i] = _terrainGradient.Evaluate(normalizedHeight);
+        }
+
         Mesh generatedMesh = meshData.CreateMesh();
         _mf.mesh = generatedMesh;
 

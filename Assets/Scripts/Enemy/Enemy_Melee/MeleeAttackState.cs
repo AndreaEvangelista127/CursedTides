@@ -20,12 +20,13 @@ public class MeleeAttackState : BaseMeleeState
     {
         _attackTimer += Time.deltaTime; // Increment the attack timer
 
+        _enemy.RotateToDirection(_enemy.PlayerTransform.position - _enemy.transform.position);
+
         if (_attackTimer >= _animationTime)
         {
             if (_enemyMelee.CheckIfPlayerIsInAttackRange())
             {
                 _enemyMelee.SetIsInAttackRange(true);
-                _enemy.RotateToDirection(_enemyMelee.PlayerTransform.position - _enemy.transform.position); // Rotate towards the player while attacking
                 // ATTACK
                 if (_attackTimer >= _enemyMelee.AttackCooldown)
                 {

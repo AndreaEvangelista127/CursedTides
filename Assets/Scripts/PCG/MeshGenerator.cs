@@ -2,18 +2,20 @@
 
 public static class MeshGenerator
 {
-    public static MeshData GenerateMeshFromHeightMap(float[,] heightMap, float heightMultiplier, AnimationCurve heightCurveMultiplier, int levelOfDetail)
+    public static MeshData GenerateMeshFromHeightMap(float[,] heightMap, float heightMultiplier, AnimationCurve heightCurveMultiplier, int levelOfDetail, int mapSizeFactor)
     {
         int width = heightMap.GetLength(0);
-        int height = heightMap.GetLength(1);
+        int height = heightMap.GetLength(1); 
 
         // Centering of the mesh
         /* width=5:
             topLeftX = (5-1) / -2 = -2  ← starts at -2 from left
             topLeftZ = (5-1) / 2  = +2  ← starts at +2 from top
         */
-        float topLeftX = (width - 1) / -2f;
-        float topLeftZ = (height - 1) / 2f; // z positive when we go up
+        float topLeftX = (width - 1) / -2f * mapSizeFactor;
+        float topLeftZ = (height - 1) / 2f * mapSizeFactor; // z positive when we go up
+
+        Debug.Log(topLeftX + " " + topLeftZ);
 
         int meshSimplificationIncrement = (levelOfDetail == 0) ? 1 : levelOfDetail * 2; // If levelOfDetail is 0, we want to keep all the vertices, otherwise we want to skip some vertices
         int verticesPerLine = (width - 1) / meshSimplificationIncrement + 1; // Number of vertices per line, we add 1 because we want to include the last vertex
@@ -27,7 +29,7 @@ public static class MeshGenerator
         {
             for (int x = 0; x < width; x += meshSimplificationIncrement)
             {
-                meshData.vertices[vertexIndex] = new Vector3(topLeftX + x, heightCurveMultiplier.Evaluate(heightMap[x,y]) * heightMultiplier , topLeftZ - y); // Centered
+                meshData.vertices[vertexIndex] = new Vector3(topLeftX + (x * mapSizeFactor), heightCurveMultiplier.Evaluate(heightMap[x,y]) * heightMultiplier , topLeftZ - (y * mapSizeFactor)); // Centered
 
                 /* width = 100 pixel
                     x=0   → 0   / 100 = 0.0  → left border of the texture
@@ -60,6 +62,7 @@ public static class MeshGenerator
         public Vector3[] vertices;
         public int[] triangles;
         public Vector2[] uvs; // creating uv map to add texture to the mesh
+        public Color[] colors;
 
         int triangleIndex;
 
@@ -68,6 +71,7 @@ public static class MeshGenerator
             vertices = new Vector3[meshWidth * meshHeight];
             uvs = new Vector2[meshWidth * meshHeight];
             triangles = new int[(meshWidth - 1) * (meshHeight - 1) * 6];
+            colors = new Color[meshWidth * meshHeight];
         }
 
         public void AddTriangle(int a, int b, int c)
@@ -85,6 +89,7 @@ public static class MeshGenerator
             mesh.vertices = vertices;
             mesh.triangles = triangles;
             mesh.uv = uvs;
+            mesh.colors = colors;
 
             mesh.RecalculateNormals();
 

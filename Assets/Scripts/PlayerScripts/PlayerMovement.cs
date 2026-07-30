@@ -1,10 +1,22 @@
 using System;
+using System.Collections;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 
 public class PlayerMovement : MonoBehaviour
 {
+    public enum PlayerState
+    {
+        Idle,
+        Walking,
+        Sprinting,
+        Jumping,
+        Dodging,
+        Attacking
+    }
+    private PlayerState _currentState = PlayerState.Idle;
+    public PlayerState CurrentState => _currentState; // only get the current state, no set
+
     [Header("General settings")]
     [SerializeField] private float _speed = 5f;
     [SerializeField] private Transform _model;
@@ -14,7 +26,6 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float jumpForce = 5f;
     [SerializeField] private float _jumpCooldown = 0.4f;
     private float _jumpCooldownTimer = 0f;
-    private bool _isJumping;
 
     [Header("Ground Check")]
     [SerializeField] private Transform _groundCheckPoint;
@@ -23,7 +34,11 @@ public class PlayerMovement : MonoBehaviour
 
     [Header("Sprint")]
     [SerializeField] private float _sprintSpeed = 8f;
-    private bool _isSprinting = false;
+
+    [Header("Dodge Settings")]
+    [SerializeField] private float _dodgeCooldown = 1f;
+    [SerializeField] private AnimationCurve _dodgeCurve;
+    private float _dodgeCooldownTimer = 0f;
 
     [Header("Gizmos")]
     [SerializeField] private bool _showGroundCheck;
@@ -49,16 +64,19 @@ public class PlayerMovement : MonoBehaviour
         _cameraTf = Camera.main.transform;
 
         // Bools
-        _canMove = true;
-        _isSprinting = false;
+         _canMove = true;
     }
 
     private void Update()
     {
+        // If the player jumped, we start the cooldown timer for the jump
         if (_jumpCooldownTimer > 0)
             _jumpCooldownTimer -= Time.deltaTime;
 
-        Debug.Log($"canMove: {_canMove}, isGrounded: {_isGrounded}, isJumping: {_isJumping}");
+        // If the player dodged, we start the cooldown timer for the dodge
+        if (_dodgeCooldownTimer > 0)
+            _dodgeCooldownTimer -= Time.deltaTime;
+
     }
 
     private void FixedUpdate()
@@ -70,6 +88,7 @@ public class PlayerMovement : MonoBehaviour
     // --- INPUT SYSTEMS CALLBACKS ---
     public void OnMove(InputAction.CallbackContext context)
     {
+        if (_currentState == PlayerState.Dodging) return;
         _moveInput = context.ReadValue<Vector2>();
         
     }
@@ -85,26 +104,46 @@ public class PlayerMovement : MonoBehaviour
     public void OnSprint(InputAction.CallbackContext context)
     {
         if (!_isGrounded) return;
+        if (_currentState == PlayerState.Jumping) return;
+        if (_currentState == PlayerState.Dodging) return;
 
         if (context.started)
         {
-            _isSprinting = true;
-            _playerAnimator.SetBool("isSprinting",true);
+            _currentState = PlayerState.Sprinting;
+            _playerAnimator.SetBool("isSprinting", true);
         }
-        else if(context.canceled) 
+        else if (context.canceled)
         {
-            _isSprinting = false;
+            _currentState = PlayerState.Idle;
             _playerAnimator.SetBool("isSprinting", false);
         }
 
+    }
+
+    public void OnDodge(InputAction.CallbackContext context)
+    {
+        if (!context.started) return;
+        if (_currentState == PlayerState.Dodging) return;
+        if (_currentState == PlayerState.Jumping) return;
+        if (_dodgeCooldownTimer > 0) return;
+        StartCoroutine(Dodge());
     }
 
     // --- MOVEMENT LOGIC ---
     private void Move()
     {
         if (!_canMove) return;
+        if (_currentState == PlayerState.Dodging) return;
+        if (_currentState == PlayerState.Jumping) return;
 
         bool isMoving = _moveInput.magnitude > 0.1f;
+
+        // Update state based on movement
+        if (isMoving && _currentState != PlayerState.Sprinting)
+            _currentState = PlayerState.Walking;
+        else if (!isMoving && _currentState == PlayerState.Walking)
+            _currentState = PlayerState.Idle;
+
         _playerAnimator.SetBool("isWalking", isMoving);
 
         Vector3 moveVector = Vector3.zero;
@@ -117,8 +156,8 @@ public class PlayerMovement : MonoBehaviour
 
         // Move the model of the player to face the direction of movement
         RotateModel(moveVector);
-        
-        float currentSpeed = _isSprinting ? _sprintSpeed : _speed;
+
+        float currentSpeed = (_currentState == PlayerState.Sprinting) ? _sprintSpeed : _speed;
         moveVector *= currentSpeed;
         moveVector.y = _rb.linearVelocity.y;
 
@@ -141,26 +180,55 @@ public class PlayerMovement : MonoBehaviour
 
     private void Jump()
     {
-        if(!_canMove) return;
+        if (_currentState == PlayerState.Jumping) return;
+        if (_currentState == PlayerState.Dodging) return;
+        if (!_isGrounded) return;
+        if (_jumpCooldownTimer > 0) return;
 
-        if (!_isGrounded && _isJumping) return;
-
-        if (_jumpCooldownTimer > 0) return; // cooldown guard
-
-        _jumpCooldownTimer = _jumpCooldown; // start cooldown
-        _isJumping = true;
+        _currentState = PlayerState.Jumping;
+        _jumpCooldownTimer = _jumpCooldown;
 
         _playerAnimator.ResetTrigger("jump");
         _playerAnimator.SetTrigger("jump");
-
-        _playerAnimator.SetBool("isJumping", _isJumping);
-
-
+        _playerAnimator.SetBool("isJumping", true);
     }
 
     public void OnJumpEvent() //Animation event called from the jump animation to apply the jump force at the right time
     {
         _rb.linearVelocity = new Vector3(_rb.linearVelocity.x, jumpForce, _rb.linearVelocity.z);
+    }
+
+    private IEnumerator Dodge()
+    {
+        // Only dodge if moving
+        if (_moveInput.magnitude < 0.1f) yield break;
+
+        _currentState = PlayerState.Dodging;
+        _dodgeCooldownTimer = _dodgeCooldown;
+
+        // blocca velocity
+        _rb.linearVelocity = new Vector3(0, _rb.linearVelocity.y, 0);
+
+        Vector3 dodgeDir = new Vector3(_moveInput.x, 0, _moveInput.y);
+        dodgeDir = Quaternion.Euler(0, _cameraTf.eulerAngles.y, 0) * dodgeDir;
+        if (dodgeDir.magnitude < 0.1f) dodgeDir = _model.forward;
+        dodgeDir.Normalize();
+
+        _playerAnimator.SetTrigger("dodge");
+
+        float dodgeDuration = _dodgeCurve[_dodgeCurve.length - 1].time;
+        float timer = 0f;
+
+        while (timer < dodgeDuration)
+        {
+            float speed = _dodgeCurve.Evaluate(timer);
+            _rb.linearVelocity = dodgeDir * speed + Vector3.up * _rb.linearVelocity.y;
+            timer += Time.deltaTime;
+            yield return null;
+        }
+
+        _rb.linearVelocity = Vector3.zero;
+        _currentState = PlayerState.Idle;
     }
 
     private void CheckGround()
@@ -178,16 +246,16 @@ public class PlayerMovement : MonoBehaviour
 
         if (_isGrounded && _jumpCooldownTimer <= 0)
         {
-            _isJumping = false;
+            _currentState = PlayerState.Idle;
             _playerAnimator.ResetTrigger("jump");
-            _playerAnimator.SetBool("isJumping", _isJumping);
+            _playerAnimator.SetBool("isJumping", false);
         }
     }
 
-    public void SetMovementEnabled(bool enabled)
+    public void SetCanMove(bool canMove)
     {
-        _canMove = enabled;
-        if (!enabled) _rb.linearVelocity = new Vector3(0, _rb.linearVelocity.y, 0);
+        _canMove = canMove;
+        if (!canMove) _rb.linearVelocity = new Vector3(0, _rb.linearVelocity.y, 0);
     }
 
     private void OnDrawGizmos()

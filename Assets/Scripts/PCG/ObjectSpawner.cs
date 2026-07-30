@@ -71,8 +71,8 @@ public class ObjectSpawner : MonoBehaviour
                         if (rand.NextDouble() < obj.density) // Randomomly decide to spawn based on density, a value of 0.1 means 10% chance to spawn
                         {
                             // XZ position centered on mesh
-                            float worldX = x - mapWidth / 2f;
-                            float worldZ = -(y - mapHeight / 2f);
+                            float worldX = (x - mapWidth / 2f) * 2f;
+                            float worldZ = -(y - mapHeight / 2f) * 2f;
 
                             // Approximate Y — just above the surface
                             float approxY = heightCurve.Evaluate(currentHeight) * amplitudeMultiplier + 10f; // +10 to ensure it's above the terrain for raycasting

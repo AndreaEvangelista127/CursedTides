@@ -2908,6 +2908,31 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 128
   _sprintSpeed: 8
+  _dodgeCooldown: 1
+  _dodgeCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: -0.00068479776
+      value: 15.038615
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 0.52424073
+      value: 0.019453812
+      inSlope: -1.2981718
+      outSlope: -1.2981718
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
   _showGroundCheck: 1
 --- !u!114 &410071650
 MonoBehaviour:
@@ -7040,6 +7065,22 @@ MonoBehaviour:
         m_CallState: 2
     m_ActionId: 44ccaabe-1929-42ac-9084-6126bfbd527a
     m_ActionName: 'Player/Attack[/Mouse/leftButton]'
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 410071649}
+        m_TargetAssemblyTypeName: PlayerMovement, Assembly-CSharp
+        m_MethodName: OnDodge
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: a402b181-f48b-4d32-8044-4aedb2ef3b77
+    m_ActionName: 'Player/Dodge[/Keyboard/leftCtrl]'
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Player
@@ -7542,6 +7583,11 @@ Transform:
   - {fileID: 330009597}
   m_Father: {fileID: 14168397}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!4 &1054053344 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 3327411106238339377, guid: 1c7cebf18b00c91429a9346c5c2ce899, type: 3}
+  m_PrefabInstance: {fileID: 1280406218266558046}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &1057779308 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 400754, guid: 32c513dd4f75bc24692549a1a831b5c3, type: 3}
@@ -19193,6 +19239,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5930220917257214468, guid: 1c7cebf18b00c91429a9346c5c2ce899, type: 3}
+      propertyPath: _headSkull
+      value: 
+      objectReference: {fileID: 1054053344}
     - target: {fileID: 7033848193468962354, guid: 1c7cebf18b00c91429a9346c5c2ce899, type: 3}
       propertyPath: m_Height
       value: 1.2
