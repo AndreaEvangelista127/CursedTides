@@ -18,6 +18,7 @@ public class ObjectSpawner : MonoBehaviour
     [SerializeField] private SpawnableObject[] _spawnableObjects;
     [SerializeField] private LayerMask _mapMeshLayer;
 
+
     public void SpawnObjects(float[,] heightMap, int seed, float amplitudeMultiplier, AnimationCurve heightCurve, Transform meshTransform, MeshGenerator.MeshData meshdata)
     {
 
@@ -53,7 +54,7 @@ public class ObjectSpawner : MonoBehaviour
             containers[i] = new GameObject(_spawnableObjects[i].name + "_Container").transform;
             containers[i].SetParent(meshTransform);
         }
-
+        int counter = 0;
         // Iterate through the height map and spawn objects based on their height range and density
         for (int y = 0; y < mapHeight; y++)
         {
@@ -101,8 +102,10 @@ public class ObjectSpawner : MonoBehaviour
                             }
                         }
                     }
+                    counter++;
                 }
             }
         }
+        Debug.Log(counter);
     }
 }

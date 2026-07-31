@@ -40,6 +40,7 @@ public class TerrainGenerator : MonoBehaviour
 
     public void Generate()
     {
+
         float[,] heightMap = HeightMapGenerator.GeneratePerlinNoiseMap(mapChunkSize, mapChunkSize, _noiseScale, seed, _octaves, _persistance, _lacunarity, offset);
 
         float[,] baseHeightMap = (float[,])heightMap.Clone(); // Clone the heightMap to keep the original values for the base noise texture
@@ -72,6 +73,9 @@ public class TerrainGenerator : MonoBehaviour
 
         // SHOW MESH ON THE THIRD PLANE
         MeshGenerator.MeshData meshData = MeshGenerator.GenerateMeshFromHeightMap(heightMap, _amplitudeMultiplier, _amplitudeCurveMultiplier, _levelOfDetail,_mapSizeFactor);
+
+        MapGridCellInfo[,] mapInfoGrid = MapInfoGridGenerator.GenerateMapInfoGrid(heightMap, _mapSizeFactor, _amplitudeMultiplier, _amplitudeCurveMultiplier);
+        // Give this map to the object spawner, so that we can use the values of the struct to be able to spawn the objects based on the position and if the vertex is occupied
 
         _minTerrainHeight = float.MaxValue;
         _maxTerrainHeight = float.MinValue;
