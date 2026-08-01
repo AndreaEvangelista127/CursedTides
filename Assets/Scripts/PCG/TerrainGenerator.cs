@@ -34,6 +34,9 @@ public class TerrainGenerator : MonoBehaviour
     [SerializeField] private MeshFilter _mf;
     [SerializeField] private ObjectSpawner _objectSpawner;
 
+    [Header("Water Settings")]
+    [SerializeField] private GameObject _waterPrefab;
+    [SerializeField] private float _waterHeight;
 
     [SerializeField] private Gradient _terrainGradient;
     [SerializeField] public TerrainType[] regions;
@@ -55,11 +58,8 @@ public class TerrainGenerator : MonoBehaviour
             {
                 for (int x = 0; x < mapChunkSize; x++)
                 {
-                    //float result = Mathf.Clamp01(heightMap[x, y] - fallOffMap[x, y]);
                     float result = Mathf.Clamp(heightMap[x, y], _minIslandHeight, 1f) - fallOffMap[x, y];
                     result = Mathf.Clamp01(result);
-                    // if the fallOffMap value is below the threshold, set the height to at least _minIslandHeight
-                    //if (fallOffMap[x, y] < _islandBorderThreshold) result = Mathf.Max(result, _minIslandHeight);
                     heightMap[x, y] = result;
                 }
             }
@@ -75,7 +75,6 @@ public class TerrainGenerator : MonoBehaviour
         MeshGenerator.MeshData meshData = MeshGenerator.GenerateMeshFromHeightMap(heightMap, _amplitudeMultiplier, _amplitudeCurveMultiplier, _levelOfDetail,_mapSizeFactor);
 
         MapGridCellInfo[,] mapInfoGrid = MapInfoGridGenerator.GenerateMapInfoGrid(heightMap, _mapSizeFactor, _amplitudeMultiplier, _amplitudeCurveMultiplier);
-        // Give this map to the object spawner, so that we can use the values of the struct to be able to spawn the objects based on the position and if the vertex is occupied
 
         _minTerrainHeight = float.MaxValue;
         _maxTerrainHeight = float.MinValue;
@@ -91,12 +90,28 @@ public class TerrainGenerator : MonoBehaviour
         for (int i = 0; i < meshData.vertices.Length; i++)
         {
             float normalizedHeight = Mathf.InverseLerp(_minTerrainHeight, _maxTerrainHeight, meshData.vertices[i].y); //returns a value between 0 and 1 that will represent the height color
-            //Debug.Log(normalizedHeight);
             meshData.colors[i] = _terrainGradient.Evaluate(normalizedHeight);
         }
 
         Mesh generatedMesh = meshData.CreateMesh();
         _mf.mesh = generatedMesh;
+
+        // Instantiate water prefab at the center of the mesh with the specified water height
+        if (_waterPrefab != null)
+        {
+            Transform oldWater = _mf.transform.Find("Water");
+            if (oldWater != null) DestroyImmediate(oldWater.gameObject);
+
+            GameObject water = Instantiate(_waterPrefab,
+                new Vector3(0, _waterHeight, 0),
+                Quaternion.identity);
+            water.name = "Water";
+            water.transform.SetParent(_mf.transform);
+
+            // Scale to cover entire map
+            float mapSize = (mapChunkSize - 1) * _mapSizeFactor;
+            water.transform.localScale = new Vector3(mapSize / 10f, 1, mapSize / 10f);
+        }
 
         // Add a MeshCollider to the MeshFilter's GameObject if it doesn't already have one
         MeshCollider meshCollider = _mf.GetComponent<MeshCollider>();
@@ -105,9 +120,11 @@ public class TerrainGenerator : MonoBehaviour
 
         _textureDisplayer.DisplayTerrainTexture(colorTexture);
 
+
+        // OBJECT SPAWNING
         if(_objectSpawner != null)
         {
-            _objectSpawner.SpawnObjects(heightMap, seed, _amplitudeMultiplier, _amplitudeCurveMultiplier, _mf.transform, meshData);
+            _objectSpawner.SpawnObjects(mapInfoGrid, seed, _mf.transform);
         }
     }
 
