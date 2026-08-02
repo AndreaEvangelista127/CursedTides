@@ -7,11 +7,11 @@ public class GameManager : MonoBehaviour
 
     private int _completedPedestals;
 
-    public static GameManager Istance { get; private set; }
+    public static GameManager Instance { get; private set; }
 
     private void Awake()
     {
-        if (Istance == null) Istance = this;
+        if (Instance == null) Instance = this;
         else Destroy(gameObject);
     }
 

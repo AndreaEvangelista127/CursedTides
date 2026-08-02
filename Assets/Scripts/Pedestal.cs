@@ -4,8 +4,8 @@ using UnityEngine;
 public class Pedestal : MonoBehaviour, IInteractable
 {
     [SerializeField] private GemType _requiredGemType; // In the Unity Inspector, set this to the type of gem that this pedestal requires.
-    [SerializeField] private GameObject _interactionPrompt;  // Used to show the player that they can interact with the pedestal. (Press E to place the gem)
     [SerializeField] private GameObject _pedestalGem; // The visual representation of the gem on the pedestal. This will be enabled when the correct gem is placed on it.
+    [SerializeField] private GameObject _pedestalPlaceHolder;
 
     private bool _isOccupied = false; // Indicates whether the pedestal currently has a gem on it.
     private PlayerGemHolder _playerGemHolder;
@@ -36,12 +36,12 @@ public class Pedestal : MonoBehaviour, IInteractable
 
     public void ShowPrompt()
     {
-        _interactionPrompt.SetActive(true);
+        InteractionPrompt.Instance?.Show("Press E to place gem");
     }
 
     public void HidePrompt()
     {
-        _interactionPrompt.SetActive(false);
+        InteractionPrompt.Instance?.Hide();
     }
 
     public void Interact()
@@ -51,8 +51,9 @@ public class Pedestal : MonoBehaviour, IInteractable
         _isOccupied = true;
         _playerGemHolder.PlaceGem();
         _pedestalGem.SetActive(true);
+        _pedestalPlaceHolder.SetActive(false);
         HidePrompt();
 
-        GameManager.Istance.OnPedestalCompleted();
+        GameManager.Instance.OnPedestalCompleted();
     }
 }

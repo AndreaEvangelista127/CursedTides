@@ -5,7 +5,6 @@ public class Gem : MonoBehaviour, IInteractable
 {
     [SerializeField] private GemType _gemType;
     [SerializeField] private Sprite _gemIcon;
-    [SerializeField] private GameObject _interactionPrompt;
 
     private PlayerGemHolder _playerGemHolder;
 
@@ -46,11 +45,12 @@ public class Gem : MonoBehaviour, IInteractable
 
     public void ShowPrompt()
     {
-        _interactionPrompt.SetActive(true);
+        Debug.Log("ShowPrompt called, Instance: " + (InteractionPrompt.Instance != null));
+        InteractionPrompt.Instance?.Show("Press E to collect");
     }
 
     public void HidePrompt()
     {
-        _interactionPrompt.SetActive(false);
+        InteractionPrompt.Instance?.Hide();
     }
 }
