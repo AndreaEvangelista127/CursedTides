@@ -179,8 +179,9 @@ public abstract class Enemy : MonoBehaviour
     public void MoveTowardsPlayer()
     {
         Vector3 direction = _playerTransform.position - transform.position; // Get the direction from the enemy to the player
+        direction.y = 0; // Ignore vertical movement for chasing
         Vector3 moveVector = direction.normalized * _chaseSpeed; // Calculate the movement vector based on the enemy's chase speed and the time elapsed since the last frame
-        moveVector.y = 0;
+        moveVector.y = _rb.linearVelocity.y; // Preserve the current vertical velocity (like gravity)
         RotateToDirection(direction);
 
         _rb.linearVelocity = moveVector;

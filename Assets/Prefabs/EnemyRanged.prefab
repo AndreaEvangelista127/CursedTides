@@ -62,7 +62,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 116
+  m_Constraints: 112
   m_CollisionDetection: 0
 --- !u!136 &8028927308737407910
 CapsuleCollider:
@@ -86,7 +86,7 @@ CapsuleCollider:
   m_Radius: 0.2
   m_Height: 1.6
   m_Direction: 1
-  m_Center: {x: 0, y: 1, z: 0}
+  m_Center: {x: 0, y: 0.8, z: 0}
 --- !u!95 &1027096458879365241
 Animator:
   serializedVersion: 7
@@ -136,7 +136,7 @@ MonoBehaviour:
   _fovRange: 15
   _moveSpeed: 1.5
   _rotationSpeed: 0.8
-  _headBone: {fileID: 8584620869492748455}
+  _headSkull: {fileID: 0}
   _showMoveRadius: 1
   _showFOVRadius: 1
   _showProximityRadius: 1
@@ -6006,11 +6006,6 @@ PrefabInstance:
 --- !u!4 &8584572825467557101 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4842603885351172, guid: c2c0f67a5016e1448a02a52083dbe372, type: 3}
-  m_PrefabInstance: {fileID: 8589406632711603689}
-  m_PrefabAsset: {fileID: 0}
---- !u!4 &8584620869492748455 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 4786038684644686, guid: c2c0f67a5016e1448a02a52083dbe372, type: 3}
   m_PrefabInstance: {fileID: 8589406632711603689}
   m_PrefabAsset: {fileID: 0}
 --- !u!4 &8592296342449135655 stripped

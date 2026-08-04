@@ -45,15 +45,15 @@ public class MeleePatrolState : BaseMeleeState
         }
 
         Vector3 direction = _destination - _enemy.transform.position; // Get the direction from the enemy to the destination
+        direction.y = 0; // Ignore vertical movement for patrolling
         Vector3 moveVector = direction.normalized * _enemy.MoveSpeed; // Calculate the movement vector based on the enemy's move speed and the time elapsed since the last frame
+        moveVector.y = _enemy.Rb.linearVelocity.y; // 
 
         _enemy.RotateToDirection(direction); //Rotate each frame to face the direction of movement
-
         _enemy.Rb.linearVelocity = moveVector; // Set the enemy's velocity to move towards the destination
 
         // Check if the enemy is within the stopping distance of the destination
         float distanceSqr = direction.sqrMagnitude; // Use squared magnitude for performance reasons
-
         if(distanceSqr < _enemy.DistanceBuffer * _enemy.DistanceBuffer) // Compare with the squared stopping distance
         {
             _enemy.Rb.linearVelocity = Vector3.zero; // Stop the enemy's movement

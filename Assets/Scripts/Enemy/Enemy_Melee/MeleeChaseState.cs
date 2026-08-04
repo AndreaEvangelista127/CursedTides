@@ -43,7 +43,9 @@ public class MeleeChaseState : BaseMeleeState
         if (_isGoingBackToLastPosition)
         {
             Vector3 lastPosDir = _lastPosition - _enemy.transform.position;
+            lastPosDir.y = 0; // Ignore vertical movement for chasing
             Vector3 moveVector = lastPosDir.normalized * (_enemy.ChaseSpeed);
+            moveVector.y = _enemy.Rb.linearVelocity.y; // Preserve the current vertical velocity (like gravity)
 
             _enemy.RotateToDirection(lastPosDir);
             _enemy.Rb.linearVelocity = moveVector;
