@@ -6,9 +6,11 @@ public class PlayerHealth : MonoBehaviour, IDamageable
     [SerializeField] private float maxHealth = 100f;
     [SerializeField] private float currentHealth;
     [SerializeField] private CheckPointManager _checkPointManager;
+    [SerializeField] private Transform _chestBone; // Used by the ProjectileLauncher to correctly aim to the player´s chest
 
     public event Action<float> OnHealthChange; //Event to notify listeners of health changes
     public static event Action OnPlayerDeath; //Event to notify listeners of player death
+    public Transform ChestBone => _chestBone;
 
     private void Awake()
     {

@@ -92,7 +92,9 @@ public class EnemyRanged : Enemy
 
     public void OnShoot() // Method called in the animation event of the shooting animation, which is called at the moment we want the projectile to be launched
     {
-        _launcher.Shoot(PlayerTransform);
+        PlayerHealth playerHealth = PlayerTransform.GetComponent<PlayerHealth>();
+        Vector3 aimPoint = playerHealth != null ? playerHealth.ChestBone.position : PlayerTransform.position;
+        _launcher.Shoot(aimPoint);
         _smoke.Play();
         
     }

@@ -54,6 +54,7 @@ public class PlayerMovement : MonoBehaviour
     private Animator _playerAnimator;
 
     private bool _canMove;
+    private bool _isSprintHeld = false;
 
     private void Start()
     {
@@ -103,21 +104,8 @@ public class PlayerMovement : MonoBehaviour
 
     public void OnSprint(InputAction.CallbackContext context)
     {
-        if (!_isGrounded) return;
-        if (_currentState == PlayerState.Jumping) return;
-        if (_currentState == PlayerState.Dodging) return;
-
-        if (context.started)
-        {
-            _currentState = PlayerState.Sprinting;
-            _playerAnimator.SetBool("isSprinting", true);
-        }
-        else if (context.canceled)
-        {
-            _currentState = PlayerState.Idle;
-            _playerAnimator.SetBool("isSprinting", false);
-        }
-
+        if(context.performed) _isSprintHeld = true;
+        else if(context.canceled) _isSprintHeld = false;
     }
 
     public void OnDodge(InputAction.CallbackContext context)
@@ -137,27 +125,23 @@ public class PlayerMovement : MonoBehaviour
         if (_currentState == PlayerState.Jumping) return;
 
         bool isMoving = _moveInput.magnitude > 0.1f;
+        bool isSprinting = _isSprintHeld && isMoving;
 
-        // Update state based on movement
-        if (isMoving && _currentState != PlayerState.Sprinting)
-            _currentState = PlayerState.Walking;
-        else if (!isMoving && _currentState == PlayerState.Walking)
-            _currentState = PlayerState.Idle;
+        if (!isMoving) _currentState = PlayerState.Idle;
+        else if(isSprinting) _currentState = PlayerState.Sprinting;
+        else _currentState = PlayerState.Walking;
 
         _playerAnimator.SetBool("isWalking", isMoving);
-
-        Vector3 moveVector = Vector3.zero;
-
-        // Using the x component for the horizontal movement and z component for the forward movement
-        moveVector.x = _moveInput.x;
-        moveVector.z = _moveInput.y;
+        _playerAnimator.SetBool("isSprinting", isSprinting);
+    
+        Vector3 moveVector = new Vector3(_moveInput.x, 0, _moveInput.y);
 
         moveVector = Quaternion.Euler(0, _cameraTf.eulerAngles.y, 0) * moveVector; // Rotate the movement vector based on the camera's y rotation
 
         // Move the model of the player to face the direction of movement
         RotateModel(moveVector);
 
-        float currentSpeed = (_currentState == PlayerState.Sprinting) ? _sprintSpeed : _speed;
+        float currentSpeed = isSprinting ? _sprintSpeed : _speed;
         moveVector *= currentSpeed;
         moveVector.y = _rb.linearVelocity.y;
 
@@ -246,7 +230,8 @@ public class PlayerMovement : MonoBehaviour
 
         if (_isGrounded && _jumpCooldownTimer <= 0)
         {
-            _currentState = PlayerState.Idle;
+            if (_currentState == PlayerState.Jumping) // only if i was jumping reset to state to idle
+                _currentState = PlayerState.Idle;
             _playerAnimator.ResetTrigger("jump");
             _playerAnimator.SetBool("isJumping", false);
         }

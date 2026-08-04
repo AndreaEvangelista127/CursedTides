@@ -129,6 +129,7 @@ public class ObjectSpawner : MonoBehaviour
                         spawnRotation = Quaternion.FromToRotation(Vector3.up, hit.normal);
                     }
                     GameObject spawned = Instantiate(obj.prefab, spawnPos, spawnRotation);
+                    spawned.tag = "Environment";
                     spawned.transform.SetParent(containers[i]);
 
                     MarkOccupied(cell.Position, obj.minDistance, mapInfoGrid, mapWidth, mapHeight);

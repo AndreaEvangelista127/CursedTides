@@ -27,10 +27,12 @@ public class Projectile : MonoBehaviour
             Debug.Log($"Projectile hit the {other.tag} and dealt {_dmg} damage.");
             Destroy(gameObject); // Destroy the projectile upon hitting the damageable object
         }
-        //else if (other.CompareTag("Environment"))
-        //{
-        //    Debug.Log("Projectile hit the environment and is destroyed.");
-        //    Destroy(gameObject); // Destroy the projectile upon hitting the environment
-        //}
+        else if (other.CompareTag("Environment"))
+        {
+            Debug.Log("Projectile hit the environment and is destroyed.");
+            Destroy(gameObject); // Destroy the projectile upon hitting the environment
+        }
     }
+
+    
 }
