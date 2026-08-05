@@ -3,6 +3,7 @@ using UnityEngine.InputSystem;
 
 public class PlayerAttack : MonoBehaviour
 {
+    [SerializeField] private Collider _swordCollider;
     private Animator _playerAnimator;
     private PlayerMovement _playerMovement;
     private bool _isAttacking = false;
@@ -29,5 +30,15 @@ public class PlayerAttack : MonoBehaviour
     {
         _isAttacking = false;
         _playerMovement.SetCanMove(true);
+    }
+
+    public void EnableSwordHitbox()
+    {
+        _swordCollider.enabled = true;
+    }
+
+    public void DisableSwordHitbox()
+    {
+        _swordCollider.enabled = false;
     }
 }

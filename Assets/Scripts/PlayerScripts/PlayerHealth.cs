@@ -6,10 +6,13 @@ public class PlayerHealth : MonoBehaviour, IDamageable
     [SerializeField] private float maxHealth = 100f;
     [SerializeField] private float currentHealth;
     [SerializeField] private CheckPointManager _checkPointManager;
-    [SerializeField] private Transform _chestBone; // Used by the ProjectileLauncher to correctly aim to the player´s chest
+    [SerializeField] private Transform _chestBone; // Used by the ProjectileLauncher to correctly aim to the playerï¿½s chest
 
     public event Action<float> OnHealthChange; //Event to notify listeners of health changes
     public static event Action OnPlayerDeath; //Event to notify listeners of player death
+    public static event Action OnPlayerHealing; 
+    public static event Action OnPlayerStopHealing;
+
     public Transform ChestBone => _chestBone;
 
     private void Awake()
@@ -37,6 +40,13 @@ public class PlayerHealth : MonoBehaviour, IDamageable
         }
     }
 
+    public void Heal(float amount)
+    {
+        currentHealth += amount;
+        currentHealth = Mathf.Clamp(currentHealth, 0f, maxHealth); // Ensure health doesn't go below 0 or above max
+        OnHealthChange?.Invoke(currentHealth / maxHealth); // Notify the healthbar with the % of health remaining
+    }
+
 
     private void Die()
     {
@@ -45,6 +55,7 @@ public class PlayerHealth : MonoBehaviour, IDamageable
         currentHealth = maxHealth; // Reset health to max after respawning
         OnHealthChange?.Invoke(currentHealth / maxHealth); // Notify HealthBar of the health reset
     }
-
+    public static void TriggerHealing() => OnPlayerHealing?.Invoke();
+    public static void TriggerStopHealing() => OnPlayerStopHealing?.Invoke();
 
 }

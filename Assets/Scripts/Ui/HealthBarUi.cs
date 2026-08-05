@@ -6,16 +6,24 @@ public class HealthBarUi : MonoBehaviour
 {
     [SerializeField] private Image _fill;
     [SerializeField] private PlayerHealth _playerHealth;
+    [SerializeField] private float _lerpSpeed = 5f;
+
+    private float _targetFill;
 
     private void Start()
     {
+        _targetFill = 1f; // Start with full health
         _playerHealth.OnHealthChange += UpdateHealthBar; //Subscribe to the health change event
+    }
+
+    private void Update()
+    {
+        _fill.fillAmount = Mathf.Lerp(_fill.fillAmount, _targetFill, Time.deltaTime * _lerpSpeed);
     }
 
     private void UpdateHealthBar(float healthPercent)
     {
-        Debug.Log("Updating health bar: " + healthPercent);
-        _fill.fillAmount = healthPercent;
+        _targetFill = healthPercent;
     }
 
     private void OnDestroy()
