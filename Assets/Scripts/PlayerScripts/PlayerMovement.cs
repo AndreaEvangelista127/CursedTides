@@ -228,9 +228,8 @@ public class PlayerMovement : MonoBehaviour
             _groundLayer                  // layer to check
         );
 
-        _isGrounded = boxCheck && _rb.linearVelocity.y <= 0.1f; // Check if the player is grounded and not moving upwards
-
-         // true if the player is in the air, false if grounded
+        //_isGrounded = boxCheck && _rb.linearVelocity.y <= 0.1f; // Check if the player is grounded and not moving upwards
+        _isGrounded = boxCheck;
 
         if (_isGrounded && _jumpCooldownTimer <= 0)
         {
