@@ -5,7 +5,6 @@ public class PlayerInteraction : MonoBehaviour
 {
     private IInteractable _currentInteractable;
 
-    
     public void SetCurrentInteractable(IInteractable interactable)
     {
         _currentInteractable = interactable;

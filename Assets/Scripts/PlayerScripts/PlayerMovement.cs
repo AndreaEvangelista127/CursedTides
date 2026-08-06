@@ -113,6 +113,7 @@ public class PlayerMovement : MonoBehaviour
         if (!context.started) return;
         if (_currentState == PlayerState.Dodging) return;
         if (_currentState == PlayerState.Jumping) return;
+        if(_currentState == PlayerState.Attacking) return;
         if (_dodgeCooldownTimer > 0) return;
         StartCoroutine(Dodge());
     }
@@ -193,13 +194,16 @@ public class PlayerMovement : MonoBehaviour
         // blocca velocity
         _rb.linearVelocity = new Vector3(0, _rb.linearVelocity.y, 0);
 
+        // Get direction
         Vector3 dodgeDir = new Vector3(_moveInput.x, 0, _moveInput.y);
+        //Rotate based on the camera, not sure
         dodgeDir = Quaternion.Euler(0, _cameraTf.eulerAngles.y, 0) * dodgeDir;
         if (dodgeDir.magnitude < 0.1f) dodgeDir = _model.forward;
         dodgeDir.Normalize();
 
         _playerAnimator.SetTrigger("dodge");
 
+        
         float dodgeDuration = _dodgeCurve[_dodgeCurve.length - 1].time;
         float timer = 0f;
 
@@ -241,6 +245,12 @@ public class PlayerMovement : MonoBehaviour
     {
         _canMove = canMove;
         if (!canMove) _rb.linearVelocity = new Vector3(0, _rb.linearVelocity.y, 0);
+    }
+
+    public void SetIsAttacking(bool isAttacking)
+    {
+        if (isAttacking) _currentState = PlayerState.Attacking;
+        
     }
 
     private void OnDrawGizmos()

@@ -3,7 +3,6 @@ using UnityEngine;
 public class BonfireHealing : MonoBehaviour
 {
     [SerializeField] private float _healPerSecond = 10f;
-    [SerializeField] private float _healLerpSpeed = 2f;
 
     private PlayerHealth _playerHealth;
     private bool _playerInRange = false;

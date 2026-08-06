@@ -24,6 +24,7 @@ public class PlayerAttack : MonoBehaviour
         _playerMovement.SetCanMove(false);
         _playerAnimator.SetTrigger("slashAttack");
         _isAttacking = true;
+        _playerMovement.SetIsAttacking(_isAttacking);
     }
 
     public void OnAttackFinished()
