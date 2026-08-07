@@ -84,14 +84,13 @@ public class PlayerMovement : MonoBehaviour
     {
         CheckGround();
         Move();
+        Debug.Log(_canMove);
     }
 
     // --- INPUT SYSTEMS CALLBACKS ---
     public void OnMove(InputAction.CallbackContext context)
     {
-        if (_currentState == PlayerState.Dodging) return;
         _moveInput = context.ReadValue<Vector2>();
-        
     }
 
     public void OnJump(InputAction.CallbackContext context)
@@ -123,7 +122,6 @@ public class PlayerMovement : MonoBehaviour
     {
         if (!_canMove) return;
         if (_currentState == PlayerState.Dodging) return;
-        if (_currentState == PlayerState.Jumping) return;
 
         bool isMoving = _moveInput.magnitude > 0.1f;
         bool isSprinting = _isSprintHeld && isMoving;
@@ -242,8 +240,8 @@ public class PlayerMovement : MonoBehaviour
 
     public void SetCanMove(bool canMove)
     {
-        _canMove = canMove;
-        if (!canMove) _rb.linearVelocity = new Vector3(0, _rb.linearVelocity.y, 0);
+        //_canMove = canMove;
+        //if (!canMove) _rb.linearVelocity = new Vector3(0, _rb.linearVelocity.y, 0);
     }
 
     public void SetIsAttacking(bool isAttacking)
