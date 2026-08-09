@@ -84,7 +84,6 @@ public class PlayerMovement : MonoBehaviour
     {
         CheckGround();
         Move();
-        Debug.Log(_canMove);
     }
 
     // --- INPUT SYSTEMS CALLBACKS ---

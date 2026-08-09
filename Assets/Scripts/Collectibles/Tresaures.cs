@@ -50,36 +50,30 @@ public class Tresaures : MonoBehaviour, IInteractable
         ScoreManager.Instance?.Collect(_scoreValue);
         HidePrompt();
 
-        // Start coroutine for animation
         StartCoroutine(OpenChest());
-
-        //Destroy(gameObject);
-
     }
 
     IEnumerator OpenChest()
     {
         Debug.Log("Trigger animation");
 
-        _animator.SetTrigger("Interact");
-
-        yield return new WaitWhile(() => _animator.GetCurrentAnimatorStateInfo(0).IsName("IdleChest"));
-
-        while (true)
+        if(_animator != null)
         {
-            float timePassed = _animator.GetCurrentAnimatorStateInfo(0).normalizedTime;
-            Debug.Log(timePassed);
-            if (timePassed >= 1)
-                break;
-            yield return null;
+            _animator.SetTrigger("Interact");
+            yield return new WaitWhile(() => _animator.GetCurrentAnimatorStateInfo(0).IsName("IdleChest"));
+
+            while (true)
+            {
+                float timePassed = _animator.GetCurrentAnimatorStateInfo(0).normalizedTime;
+                Debug.Log(timePassed);
+                if (timePassed >= 1)
+                    break;
+                yield return null;
+            }
         }
 
-        //yield return new WaitWhile(() => _animator.GetCurrentAnimatorStateInfo(0).IsName("OpenChest")); // Wait while the OpenChest animation is running
-        //yield return new WaitUntil(() => _animator.GetCurrentAnimatorStateInfo(0).normalizedTime <= 1.0f); // Wait until the current animation is done
 
-
-
-        //yield return null;
+        HidePrompt();
         Destroy(gameObject);
     }
 

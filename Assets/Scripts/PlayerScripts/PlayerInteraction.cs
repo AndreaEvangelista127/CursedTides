@@ -5,6 +5,8 @@ public class PlayerInteraction : MonoBehaviour
 {
     private IInteractable _currentInteractable;
 
+    // This method is called by the interactable object when the player enters its trigger zone
+    // Keep track of the current interactable object, 
     public void SetCurrentInteractable(IInteractable interactable)
     {
         _currentInteractable = interactable;

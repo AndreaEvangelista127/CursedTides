@@ -1459,7 +1459,10 @@ PrefabInstance:
     m_RemovedGameObjects:
     - {fileID: 7023183074595566542, guid: f04f508fbe702664087c1241d0b95069, type: 3}
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 4416583326165742770, guid: f04f508fbe702664087c1241d0b95069, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7131666033089570721}
   m_SourcePrefab: {fileID: 100100000, guid: f04f508fbe702664087c1241d0b95069, type: 3}
 --- !u!4 &3732112169428165695 stripped
 Transform:
@@ -1471,3 +1474,18 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 4416583326165742770, guid: f04f508fbe702664087c1241d0b95069, type: 3}
   m_PrefabInstance: {fileID: 417193952934382135}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &7131666033089570721
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4071518573034339973}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a7b74555f3457754783aa56cc1883138, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FloatingAnim
+  _rotationSpeed: 90
+  _floatAmplitude: 0
+  _floatSpeed: 1

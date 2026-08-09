@@ -38,6 +38,10 @@ public class TerrainGenerator : MonoBehaviour
     [SerializeField] private GameObject _waterPrefab;
     [SerializeField] private float _waterHeight;
 
+    [Header("Firefly Settings")]
+    [SerializeField] private GameObject _firefliesPrefab;
+    [SerializeField] private float _firefliesHeight = 2f;
+
     [SerializeField] private Gradient _terrainGradient;
     [SerializeField] public TerrainType[] regions;
 
@@ -111,6 +115,22 @@ public class TerrainGenerator : MonoBehaviour
             // Scale to cover entire map
             float mapSize = (mapChunkSize - 1) * _mapSizeFactor;
             water.transform.localScale = new Vector3(mapSize / 10f, 1, mapSize / 10f);
+        }
+
+        // Instantiate fireflies prefab at the center of the mesh with the specified fireflies height
+        if (_firefliesPrefab != null)
+        {
+            Transform oldFireflies = _mf.transform.Find("Fireflies");
+            if (oldFireflies != null) DestroyImmediate(oldFireflies.gameObject);
+
+            float mapSize = (mapChunkSize - 1) * _mapSizeFactor;
+
+            GameObject fireflies = Instantiate(_firefliesPrefab,
+                new Vector3(0, _firefliesHeight, 0),
+                Quaternion.identity);
+            fireflies.name = "Fireflies";
+            fireflies.transform.SetParent(_mf.transform);
+            fireflies.transform.localScale = new Vector3(_mapSizeFactor, _mapSizeFactor, _mapSizeFactor);
         }
 
         // Add a MeshCollider to the MeshFilter's GameObject if it doesn't already have one

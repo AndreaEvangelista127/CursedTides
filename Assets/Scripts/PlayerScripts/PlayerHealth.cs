@@ -8,12 +8,20 @@ public class PlayerHealth : MonoBehaviour, IDamageable
     [SerializeField] private CheckPointManager _checkPointManager;
     [SerializeField] private Transform _chestBone; // Used by the ProjectileLauncher to correctly aim to the player�s chest
 
+    // Events
     public event Action<float> OnHealthChange; //Event to notify listeners of health changes
     public static event Action OnPlayerDeath; //Event to notify listeners of player death
+    // Events for healing
     public static event Action OnPlayerHealing; 
     public static event Action OnPlayerStopHealing;
+    // Event for burning
+    public static event Action OnPlayerBurning;
+    public static event Action OnPlayerStopBurning;
 
+    // Properties
     public Transform ChestBone => _chestBone;
+    public bool IsBurning { get; private set; } = false;
+
 
     private void Awake()
     {
@@ -21,11 +29,10 @@ public class PlayerHealth : MonoBehaviour, IDamageable
         OnHealthChange?.Invoke(currentHealth / maxHealth); //Notify HealthBar of the initial health value
     }
 
-    [ContextMenu("Test Take Damage")]
-    public void TestTakeDamage()
-    {
-        TakeDamage(50f);
-    }
+    public static void TriggerHealing() => OnPlayerHealing?.Invoke();
+    public static void TriggerStopHealing() => OnPlayerStopHealing?.Invoke();
+    public static void TriggerBurning() => OnPlayerBurning?.Invoke();
+    public static void TriggerStopBurning() => OnPlayerStopBurning?.Invoke();
 
     public void TakeDamage(float damage)
     {
@@ -47,6 +54,10 @@ public class PlayerHealth : MonoBehaviour, IDamageable
         OnHealthChange?.Invoke(currentHealth / maxHealth); // Notify the healthbar with the % of health remaining
     }
 
+    public void SetBurningState(bool isBurning)
+    {
+        IsBurning = isBurning;
+    }
 
     private void Die()
     {
@@ -55,7 +66,5 @@ public class PlayerHealth : MonoBehaviour, IDamageable
         currentHealth = maxHealth; // Reset health to max after respawning
         OnHealthChange?.Invoke(currentHealth / maxHealth); // Notify HealthBar of the health reset
     }
-    public static void TriggerHealing() => OnPlayerHealing?.Invoke();
-    public static void TriggerStopHealing() => OnPlayerStopHealing?.Invoke();
 
 }

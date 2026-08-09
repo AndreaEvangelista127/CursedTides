@@ -241,7 +241,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Pedestal
   _requiredGemType: 0
-  _interactionPrompt: {fileID: 0}
   _pedestalGem: {fileID: 4726034526637967606}
   _pedestalPlaceHolder: {fileID: 3746776402657009267}
 --- !u!1 &1339551254710334022
@@ -1490,13 +1489,31 @@ PrefabInstance:
     m_RemovedGameObjects:
     - {fileID: 5540424954451435586, guid: e9c28b17345b8c146af6a283dafe6eff, type: 3}
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 8991119041630766956, guid: e9c28b17345b8c146af6a283dafe6eff, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1484835719359688454}
   m_SourcePrefab: {fileID: 100100000, guid: e9c28b17345b8c146af6a283dafe6eff, type: 3}
 --- !u!1 &3746776402657009267 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 8991119041630766956, guid: e9c28b17345b8c146af6a283dafe6eff, type: 3}
   m_PrefabInstance: {fileID: 5708847340585539871}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1484835719359688454
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3746776402657009267}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a7b74555f3457754783aa56cc1883138, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FloatingAnim
+  _rotationSpeed: 90
+  _floatAmplitude: 0
+  _floatSpeed: 1
 --- !u!4 &4086147935708873929 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8614558761485819350, guid: e9c28b17345b8c146af6a283dafe6eff, type: 3}
