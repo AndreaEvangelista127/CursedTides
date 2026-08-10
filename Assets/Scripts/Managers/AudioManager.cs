@@ -15,10 +15,14 @@ public class AudioManager : MonoBehaviour
     [SerializeField] private AudioClip _gameMusic;
 
     [Header("SFX Clips")]
-    [SerializeField] private AudioClip _swordSlash;
+    [SerializeField] private AudioClip _buttonClick;
+    [SerializeField] private AudioClip _playerSwordSlash;
+    [SerializeField] private AudioClip _enemySwordSlash;
+    [SerializeField] private AudioClip _gunShot;
     [SerializeField] private AudioClip _enemyDeath;
     [SerializeField] private AudioClip _playerDeath;
     [SerializeField] private AudioClip _gemCollect;
+    [SerializeField] private AudioClip _collectiblePickUp;
     [SerializeField] private AudioClip _pedestalPlace;
     [SerializeField] private AudioClip _chestOpen;
 
@@ -60,10 +64,14 @@ public class AudioManager : MonoBehaviour
     }
 
     // --- SFX ---
-    public void PlaySwordSlash() => PlaySFX(_swordSlash);
+    public void PlayButtonClick() => PlaySFX(_buttonClick);
+    public void PlayPlayerSwordSlash() => PlaySFX(_playerSwordSlash);
+    public void PlayEnemySwordSlash() => PlaySFX(_enemySwordSlash);
+    public void PlayGunShot() => PlaySFX(_gunShot);
     public void PlayEnemyDeath() => PlaySFX(_enemyDeath);
     public void PlayPlayerDeath() => PlaySFX(_playerDeath);
     public void PlayGemCollect() => PlaySFX(_gemCollect);
+    public void PlayCollectiblePickup() => PlaySFX(_collectiblePickUp);
     public void PlayPedestalPlace() => PlaySFX(_pedestalPlace);
     public void PlayChestOpen() => PlaySFX(_chestOpen);
 

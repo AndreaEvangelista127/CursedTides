@@ -63483,7 +63483,7 @@ Transform:
   m_GameObject: {fileID: 410071645}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 16.59, y: 5.573, z: 27.17}
+  m_LocalPosition: {x: 16.59, y: 5.573, z: -47.11}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -63618,7 +63618,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6221c537698ccb047b3582c4424c512e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerAttack
-  _swordCollider: {fileID: 1775958576}
+  _swordCollider: {fileID: 1775958577}
 --- !u!1 &410087039
 GameObject:
   m_ObjectHideFlags: 0
@@ -85925,13 +85925,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 598462370}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.13254732, y: 0.46533653, z: -0.067833945, w: -0.8725203}
-  m_LocalPosition: {x: -73.229965, y: 11.637178, z: 122.64284}
+  m_LocalRotation: {x: -0.120240904, y: 0.46624607, z: -0.061270915, w: -0.8743012}
+  m_LocalPosition: {x: -64.414, y: 11.667, z: 121.453}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 15.509, y: -56.18, z: -0.296}
 --- !u!1 &598529434
 GameObject:
   m_ObjectHideFlags: 0
@@ -233914,7 +233914,7 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  seed: 2
+  seed: 3
   offset: {x: 0, y: 0}
   _useFalloff: 1
   _curvePower: 4
@@ -253210,10 +253210,14 @@ PrefabInstance:
       propertyPath: m_IsTrigger
       value: 1
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 64142373399557516, guid: 77e41f978f73ea44d8f28cac5e44b5cc, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 149524, guid: 77e41f978f73ea44d8f28cac5e44b5cc, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1775958577}
     - targetCorrespondingSourceObject: {fileID: 149524, guid: 77e41f978f73ea44d8f28cac5e44b5cc, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1775958575}
@@ -253236,11 +253240,27 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Weapon_Hitbox
   _weaponDmg: 100
---- !u!64 &1775958576 stripped
-MeshCollider:
-  m_CorrespondingSourceObject: {fileID: 64142373399557516, guid: 77e41f978f73ea44d8f28cac5e44b5cc, type: 3}
-  m_PrefabInstance: {fileID: 1775958570}
+--- !u!65 &1775958577
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1588368396}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 0
+  serializedVersion: 3
+  m_Size: {x: 0.19766276, y: 1.1597887, z: 0.16131604}
+  m_Center: {x: 0.0042251362, y: 0.445842, z: 0.0000019072227}
 --- !u!1 &1777049093
 GameObject:
   m_ObjectHideFlags: 0
@@ -258090,7 +258110,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1810038736
 Transform:
   m_ObjectHideFlags: 0
@@ -258789,7 +258809,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1815567491
 Transform:
   m_ObjectHideFlags: 0

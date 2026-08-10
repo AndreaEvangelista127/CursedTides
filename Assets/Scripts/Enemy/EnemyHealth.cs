@@ -13,7 +13,6 @@ public class EnemyHealth : MonoBehaviour, IDamageable
     public void TakeDamage(float damage)
     {
         currentHealth -= damage;
-        Debug.Log($"Ouch i took {damage} damage");
         currentHealth = Mathf.Clamp(currentHealth, 0f, maxHealth); 
 
         if (currentHealth <= 0f)
@@ -31,7 +30,7 @@ public class EnemyHealth : MonoBehaviour, IDamageable
 
     private void Die()
     {
-        Debug.Log("Im dead");
+        AudioManager.Instance.PlayEnemyDeath();
         Destroy(gameObject);
     }
 }

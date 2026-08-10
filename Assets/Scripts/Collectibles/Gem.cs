@@ -38,6 +38,7 @@ public class Gem : MonoBehaviour, IInteractable
         if(_playerGemHolder != null && !_playerGemHolder.HasGem)
         {
             _playerGemHolder.PickUp(_gemType, _gemIcon);
+            AudioManager.Instance?.PlayGemCollect();
             HidePrompt();
             Destroy(gameObject); // Remove the gem from the scene
         }
@@ -45,7 +46,6 @@ public class Gem : MonoBehaviour, IInteractable
 
     public void ShowPrompt()
     {
-        Debug.Log("ShowPrompt called, Instance: " + (InteractionPrompt.Instance != null));
         InteractionPrompt.Instance?.Show("Press E to collect");
     }
 

@@ -48,6 +48,7 @@ public class Tresaures : MonoBehaviour, IInteractable
         if (_isCollected) return;
         _isCollected = true;
         ScoreManager.Instance?.Collect(_scoreValue);
+        AudioManager.Instance?.PlayCollectiblePickup();
         HidePrompt();
 
         StartCoroutine(OpenChest());
@@ -55,17 +56,16 @@ public class Tresaures : MonoBehaviour, IInteractable
 
     IEnumerator OpenChest()
     {
-        Debug.Log("Trigger animation");
-
+        
         if(_animator != null)
         {
             _animator.SetTrigger("Interact");
             yield return new WaitWhile(() => _animator.GetCurrentAnimatorStateInfo(0).IsName("IdleChest"));
 
+            AudioManager.Instance?.PlayChestOpen();
             while (true)
             {
                 float timePassed = _animator.GetCurrentAnimatorStateInfo(0).normalizedTime;
-                Debug.Log(timePassed);
                 if (timePassed >= 1)
                     break;
                 yield return null;

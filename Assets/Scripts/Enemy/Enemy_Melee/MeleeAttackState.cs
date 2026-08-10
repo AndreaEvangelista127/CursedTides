@@ -32,6 +32,7 @@ public class MeleeAttackState : BaseMeleeState
                 {
                     _attackTimer = 0f;
                     _enemy.GetComponent<Animator>().Play("Attack_Horizontal");
+                    AudioManager.Instance?.PlayEnemySwordSlash();
                 }
             }
             else // we are not in the attack range anymore, we should switch back to chase state
@@ -48,4 +49,5 @@ public class MeleeAttackState : BaseMeleeState
     {
     }
 
+    
 }

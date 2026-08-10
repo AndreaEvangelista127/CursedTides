@@ -22,7 +22,6 @@ public class MeleePatrolState : BaseMeleeState
 
         _destination = _enemy.GetRandomPatrolPoint();
         _enemy.SetIfIsPatrolling(true);
-        //Debug.Log("Entering Patrol State, new destination: " + _destination);
     }
 
     public override void OnStateUpdate()
@@ -32,14 +31,12 @@ public class MeleePatrolState : BaseMeleeState
 
         if (_enemy.CheckIfInFOV())
         {
-            Debug.Log("Player in FOV");
             _fsm.SwitchState(EStates.MeleeChase);
             return;
         }
 
         if (_enemy.CheckIfInDetectionRange())
         {
-            Debug.Log("Player is around me");
             _fsm.SwitchState(EStates.MeleeAlert);
             return;
         }

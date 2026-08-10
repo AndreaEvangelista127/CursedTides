@@ -95,6 +95,7 @@ public class EnemyRanged : Enemy
         PlayerHealth playerHealth = PlayerTransform.GetComponent<PlayerHealth>();
         Vector3 aimPoint = playerHealth != null ? playerHealth.ChestBone.position : PlayerTransform.position;
         _launcher.Shoot(aimPoint);
+        AudioManager.Instance?.PlayGunShot();
         _smoke.Play();
         
     }

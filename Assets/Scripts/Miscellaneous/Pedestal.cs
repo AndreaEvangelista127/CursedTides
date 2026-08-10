@@ -51,6 +51,7 @@ public class Pedestal : MonoBehaviour, IInteractable
         _isOccupied = true;
         _playerGemHolder.PlaceGem();
         _pedestalGem.SetActive(true);
+        AudioManager.Instance?.PlayPedestalPlace();
         _pedestalPlaceHolder.SetActive(false);
         HidePrompt();
 

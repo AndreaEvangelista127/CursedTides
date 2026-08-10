@@ -7,7 +7,6 @@ public class RangedShootState : BaseRangedState
 
     public override void OnStateEnter()
     {
-        Debug.Log("Entered Ranged Shoot State");
         _enemyRanged.Rb.linearVelocity = Vector3.zero; // Stop the enemy's movement when entering the shoot state
         _enemyRanged.SetCombatTag(true); // Set the combat tag to true when entering the shoot state
         _enemyRanged.GetComponent<Animator>().Play("Shoot");
@@ -25,6 +24,7 @@ public class RangedShootState : BaseRangedState
                 {
                     _shootTimer = 0f;
                     _enemyRanged.GetComponent<Animator>().Play("Shoot");
+                    //AudioManager.Instance?.PlayGunShot();
                 }
             }
             else
@@ -37,5 +37,7 @@ public class RangedShootState : BaseRangedState
     public override void OnStateExit()
     {
     }
+
+
 
 }

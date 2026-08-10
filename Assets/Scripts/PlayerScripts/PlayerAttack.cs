@@ -23,6 +23,7 @@ public class PlayerAttack : MonoBehaviour
 
         _playerMovement.SetCanMove(false);
         _playerAnimator.SetTrigger("slashAttack");
+        AudioManager.Instance?.PlayPlayerSwordSlash();
         _isAttacking = true;
         _playerMovement.SetIsAttacking(_isAttacking);
     }
