@@ -42,7 +42,7 @@ VisualEffect:
   m_GameObject: {fileID: 609283340705393487}
   m_Enabled: 1
   m_Asset: {fileID: 8926484042661614526, guid: b43cd9acffdea084fb1d912e388cec65, type: 3}
-  m_InitialEventName: OnPlay
+  m_InitialEventName: F
   m_InitialEventNameOverriden: 0
   m_StartSeed: 0
   m_ResetSeedOnPlay: 1
@@ -184,8 +184,53 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 497978, guid: 0f852bd7c039b8543983b5ead3c8548e, type: 3}
       insertIndex: -1
       addedObject: {fileID: 4014816428991311290}
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 111898, guid: 0f852bd7c039b8543983b5ead3c8548e, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8884978433560449216}
+    - targetCorrespondingSourceObject: {fileID: 111898, guid: 0f852bd7c039b8543983b5ead3c8548e, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8924434652400861643}
   m_SourcePrefab: {fileID: 100100000, guid: 0f852bd7c039b8543983b5ead3c8548e, type: 3}
+--- !u!1 &446128762126561046 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 111898, guid: 0f852bd7c039b8543983b5ead3c8548e, type: 3}
+  m_PrefabInstance: {fileID: 446128762126522892}
+  m_PrefabAsset: {fileID: 0}
+--- !u!135 &8884978433560449216
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 446128762126561046}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 1
+  m_Center: {x: 0, y: 0.5, z: -1}
+--- !u!114 &8924434652400861643
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 446128762126561046}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6d4f66481d773604196226555bd40d3f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Cannon
+  _cannonVFX: {fileID: 8965003386817318725}
 --- !u!4 &446128762126680886 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 497978, guid: 0f852bd7c039b8543983b5ead3c8548e, type: 3}

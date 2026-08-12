@@ -29,7 +29,6 @@ public class AudioManager : MonoBehaviour
     [Header("Volume Settings")]
     [Range(0f, 1f)] public float MusicVolume = 1f;
     [Range(0f, 1f)] public float SFXVolume = 1f;
-    [Range(0f, 1f)] public float AmbientVolume = 1f;
 
     [Header("Fade Settings")]
     [SerializeField] private float _fadeDuration = 1f;

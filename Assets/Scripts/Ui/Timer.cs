@@ -4,7 +4,12 @@ using UnityEngine;
 public class Timer : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI _timerText;
-    [SerializeField] private float _timeLimit = 300f; // 5 minutes in seconds
+    private float _timeLimit;
+
+    private void Start()
+    {
+        _timeLimit = GameManager.Instance?.TimeLimit ?? 300f;
+    }
 
     private void Update()
     {

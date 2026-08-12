@@ -3,10 +3,10 @@ using UnityEngine.SceneManagement;
 
 public class GameConditions : MonoBehaviour
 {
-    [SerializeField] private float _timeLimit = 30f;
 
     [SerializeField] private GameObject _victoryPanel;
     [SerializeField] private GameObject _loseScreen;
+    private float _timeLimit;
 
     private bool _gameOver;
 
@@ -18,6 +18,11 @@ public class GameConditions : MonoBehaviour
         {
             ShowLoseScreen();
         }
+    }
+
+    public void SetTimeLimit(float timeLimit)
+    {
+        _timeLimit = timeLimit;
     }
 
     public void ShowLoseScreen()

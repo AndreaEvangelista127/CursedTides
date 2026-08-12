@@ -27,7 +27,6 @@ public class TerrainGenerator : MonoBehaviour
     [SerializeField] private float _curvePower = 3f;
     [SerializeField] private float _curveScale = 2.2f;
     [SerializeField][Range(0f, 1f)] private float _minIslandHeight = 0.3f;
-    //[SerializeField][Range(0f, 1f)] private float _islandBorderThreshold = 0.2f;
 
     [Header("References")]
     [SerializeField] private TextureDisplayer _textureDisplayer;
@@ -42,8 +41,20 @@ public class TerrainGenerator : MonoBehaviour
     [SerializeField] private GameObject _firefliesPrefab;
     [SerializeField] private float _firefliesHeight = 2f;
 
+    [Header("Player Spawn")]
+    [SerializeField] private GameObject _playerPrefab;
+    [SerializeField] private LayerMask _spawnLayer;
+
     [SerializeField] private Gradient _terrainGradient;
     [SerializeField] public TerrainType[] regions;
+
+
+    private void Start()
+    {
+        seed = PlayerPrefs.GetInt("Seed", 0); // Get the seed from PlayerPrefs, default to 0 if not set
+        Generate();
+    }
+
 
     public void Generate()
     {
@@ -146,6 +157,9 @@ public class TerrainGenerator : MonoBehaviour
         {
             _objectSpawner.SpawnObjects(mapInfoGrid, seed, _mf.transform);
         }
+
+        // SPAWN PLAYER
+        SpawnPlayer();
     }
 
     private Color[] GenerateColorMap(float[,] heightMap)
@@ -175,6 +189,24 @@ public class TerrainGenerator : MonoBehaviour
         if(_lacunarity < 1) _lacunarity = 1;
         if(_octaves < 0) _octaves = 0;
         
+    }
+
+    private void SpawnPlayer()
+    {
+        if(_playerPrefab == null) return;
+
+        Vector3 origin = new Vector3(0, 1000f, 0);
+        Ray ray = new Ray(origin, Vector3.down); // Shoot a ray downwards from a high point above the terrain
+
+        if(Physics.Raycast(ray, out RaycastHit hitInfo, Mathf.Infinity, _spawnLayer))
+        {
+            Vector3 spawnPosition = hitInfo.point + Vector3.up * 2f; // Offset the spawn position slightly above the terrain to avoid clipping
+            Instantiate(_playerPrefab, spawnPosition, Quaternion.identity);
+        }
+        else
+        {
+            Debug.LogWarning("No suitable spawn point found for the player.");
+        }
     }
 
     [System.Serializable]

@@ -3,9 +3,12 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
     [SerializeField] private int _totalPedestals;
+    [SerializeField] private float _timeLimit;
     [SerializeField] private GameConditions _gameConditions;
 
     private int _completedPedestals;
+
+    public float TimeLimit => _timeLimit;
 
     public static GameManager Instance { get; private set; }
 
@@ -13,6 +16,8 @@ public class GameManager : MonoBehaviour
     {
         if (Instance == null) Instance = this;
         else Destroy(gameObject);
+
+        _gameConditions.SetTimeLimit(_timeLimit);
     }
 
     public void OnPedestalCompleted()
@@ -27,5 +32,10 @@ public class GameManager : MonoBehaviour
     private void Victory()
     {
         _gameConditions.ShowVictoryScreen();
+    }
+
+    public void OnPlayerDeath()
+    {
+        _gameConditions.ShowLoseScreen();
     }
 }

@@ -45,7 +45,29 @@ public class SettingsManager : MonoBehaviour
     {
         AudioManager.Instance?.PlayButtonClick();
         _settingsPanel.SetActive(false);
+        Time.timeScale = 1f;
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
     }
 
+    public void OpenSettings()
+    {
+        _settingsPanel.SetActive(true);
+    }
+
+    public void CloseSettings()
+    {
+        _settingsPanel.SetActive(false);
+    }
+
+    // This method toggles the settings panel on and off
+    public void ToggleSettings()
+    {
+        bool isActive = !_settingsPanel.activeSelf;
+        _settingsPanel.SetActive(isActive);
+        Time.timeScale = isActive ? 0f : 1f;
+        Cursor.lockState = isActive ? CursorLockMode.None : CursorLockMode.Locked;
+        Cursor.visible = isActive;
+    }
 
 }
