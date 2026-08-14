@@ -24,7 +24,7 @@ public class Cannon : MonoBehaviour, IInteractable
     public void Interact()
     {
         HidePrompt();
-        _cannonVFX?.SendEvent("Fire");
+        _cannonVFX?.Play();
     }
 
     public void ShowPrompt()

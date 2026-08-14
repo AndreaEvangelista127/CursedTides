@@ -13,6 +13,8 @@ public class SettingsManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _valueSfxSlider;
     public static SettingsManager Instance { get; private set; }
 
+    private bool _isIngame;
+
 
     private void Awake()
     {
@@ -25,11 +27,14 @@ public class SettingsManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
+
+
     }
 
     private void Start()
     {
-        _musicSlider.onValueChanged.AddListener((value) => {
+        _musicSlider.onValueChanged.AddListener((value) =>
+        {
             _valueMusicSlider.text = value.ToString("0.00");
             AudioManager.Instance?.SetMusicVolume(value);
         });
@@ -46,9 +51,15 @@ public class SettingsManager : MonoBehaviour
         AudioManager.Instance?.PlayButtonClick();
         _settingsPanel.SetActive(false);
         Time.timeScale = 1f;
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
+
+        if (GameManager.Instance != null)
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+        }
     }
+
+
 
     public void OpenSettings()
     {
