@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
@@ -5,6 +6,9 @@ public class GameManager : MonoBehaviour
     [SerializeField] private int _totalPedestals;
     [SerializeField] private float _timeLimit;
     [SerializeField] private GameConditions _gameConditions;
+
+    [SerializeField] private LoadingScreen _loadingScreen;
+    [SerializeField] private TerrainGenerator _terrainGenerator;
 
     private int _completedPedestals;
 
@@ -16,9 +20,19 @@ public class GameManager : MonoBehaviour
     {
         if (Instance == null) Instance = this;
         else Destroy(gameObject);
-
-        _gameConditions.SetTimeLimit(_timeLimit);
     }
+
+    private void Start()
+    {
+        _gameConditions.SetTimeLimit(_timeLimit);
+
+
+        if (_loadingScreen != null && _terrainGenerator != null)
+            StartCoroutine(StartGameCoroutine());
+
+
+    }
+
 
     public void OnPedestalCompleted()
     {
@@ -38,4 +52,16 @@ public class GameManager : MonoBehaviour
     {
         _gameConditions.ShowLoseScreen();
     }
+
+    public IEnumerator StartGameCoroutine()
+    {
+        _loadingScreen.gameObject.SetActive(true);
+        _loadingScreen.StartAnimation();
+
+        yield return _terrainGenerator.StartCoroutineGenerate();
+        Debug.Log("finally really done");
+
+        _loadingScreen.gameObject.SetActive(false);
+    }
+
 }

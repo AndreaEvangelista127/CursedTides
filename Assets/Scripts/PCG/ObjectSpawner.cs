@@ -1,6 +1,7 @@
-using UnityEngine;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEditor.U2D.Sprites;
+using UnityEngine;
 
 public class ObjectSpawner : MonoBehaviour
 {
@@ -37,19 +38,37 @@ public class ObjectSpawner : MonoBehaviour
     [SerializeField] private SpawnableObject[] _spawnableObjects;
     [SerializeField] private LayerMask _mapMeshLayer; // Used for raycasting to find the terrain surface
 
+    private int _refreshRate = 1;
 
-    public void SpawnObjects(MapGridCellInfo[,] mapInfoGrid, int seed, Transform meshTransform)
+
+    public IEnumerator SpawnObjectsCoroutine(MapGridCellInfo[,] mapInfoGrid, int seed, Transform meshTransform)
     {
         // --- DESTROY OLD CONTAINERS ---
         List<Transform> toDestroy = new List<Transform>();
-        foreach (Transform t in meshTransform)
-            if (t.name.EndsWith("_Container"))
-                toDestroy.Add(t);
-        foreach (Transform t in toDestroy)
-            DestroyImmediate(t.gameObject);
+        //foreach (Transform t in meshTransform)
+        //    if (t.name.EndsWith("_Container"))
+        //        toDestroy.Add(t);
+        //foreach (Transform t in toDestroy)
+        //    DestroyImmediate(t.gameObject);
+
+        // Add all the containers to the toDestroy list 
+        for (int i = 0; i < meshTransform.childCount; i++)
+        {
+            if(meshTransform.GetChild(i).name.EndsWith("_Container"))
+            {
+                toDestroy.Add(meshTransform.GetChild(i));
+            }
+        }
+
+        // Destroy all the containers in the toDestroy list
+        for (int i = 0; i < toDestroy.Count; i++)
+        {
+            Destroy(toDestroy[i].gameObject);
+            if(i % _refreshRate == 0) // yield every 100 destructions to avoid freezing the editor
+                yield return null;
+        }
 
         System.Random rand = new System.Random(seed);
-
 
         // --- CREATE CONTAINERS ---
         Transform[] containers = new Transform[_spawnableObjects.Length];
@@ -67,7 +86,7 @@ public class ObjectSpawner : MonoBehaviour
         List<MapGridCellInfo>[] zoneLists = new List<MapGridCellInfo>[_heightZones.Length]; // Based on the number of height zones, create a list for each zone
         for (int i = 0; i < _heightZones.Length; i++)
         {
-            zoneLists[i] = new List<MapGridCellInfo>();
+            zoneLists[i] = new List<MapGridCellInfo>(); // Create a new list for each height zone
         }
 
         // Iterate through the map grid and assign each cell to its corresponding height zone list
@@ -110,14 +129,14 @@ public class ObjectSpawner : MonoBehaviour
             List<MapGridCellInfo> candidates = zoneLists[(int)obj.spawnZone];
             int spawnedCount = 0;
 
-            foreach (MapGridCellInfo cell in candidates)
+            for (int j = 0; j < candidates.Count; j++)
             {
                 if (spawnedCount >= obj.maxCount) break;
-                if (cell.IsOccupied) continue;
-                if (IsTooClose(cell.Position, obj.minDistance, mapInfoGrid, mapWidth, mapHeight)) continue;
+                if (candidates[j].IsOccupied) continue;
+                if (IsTooClose(candidates[j].Position, obj.minDistance, mapInfoGrid, mapWidth, mapHeight)) continue;
 
                 // Raycast to get exact surface position
-                Vector3 rayOrigin = meshTransform.TransformPoint(cell.Position + Vector3.up * 10f);
+                Vector3 rayOrigin = meshTransform.TransformPoint(candidates[j].Position + Vector3.up * 10f);
                 Ray ray = new Ray(rayOrigin, Vector3.down);
 
                 if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, _mapMeshLayer))
@@ -132,17 +151,160 @@ public class ObjectSpawner : MonoBehaviour
                     spawned.tag = "Environment";
                     spawned.transform.SetParent(containers[i]);
 
-                    MarkOccupied(cell.Position, obj.minDistance, mapInfoGrid, mapWidth, mapHeight);
+                    MarkOccupied(candidates[j].Position, obj.minDistance, mapInfoGrid, mapWidth, mapHeight);
                     spawnedCount++;
+
+                    if (j % _refreshRate == 0)
+                        yield return null;
+
                 }
+                
             }
+
+            //foreach (MapGridCellInfo cell in candidates)
+            //{
+            //    if (spawnedCount >= obj.maxCount) break;
+            //    if (cell.IsOccupied) continue;
+            //    if (IsTooClose(cell.Position, obj.minDistance, mapInfoGrid, mapWidth, mapHeight)) continue;
+
+            //    // Raycast to get exact surface position
+            //    Vector3 rayOrigin = meshTransform.TransformPoint(cell.Position + Vector3.up * 10f);
+            //    Ray ray = new Ray(rayOrigin, Vector3.down);
+
+            //    if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, _mapMeshLayer))
+            //    {
+            //        Vector3 spawnPos = hit.point + Vector3.up * obj.heightOffset;
+            //        Quaternion spawnRotation = Quaternion.identity;
+            //        if (obj.rotationBasedOnNormal == true)
+            //        {
+            //            spawnRotation = Quaternion.FromToRotation(Vector3.up, hit.normal);
+            //        }
+            //        GameObject spawned = Instantiate(obj.prefab, spawnPos, spawnRotation);
+            //        spawned.tag = "Environment";
+            //        spawned.transform.SetParent(containers[i]);
+
+            //        MarkOccupied(cell.Position, obj.minDistance, mapInfoGrid, mapWidth, mapHeight);
+            //        spawnedCount++;
+            //    }
+            //}
         }
+
+
     }
 
-    
+
+
+
+
+
+
+
+
+    //public void SpawnObjects(MapGridCellInfo[,] mapInfoGrid, int seed, Transform meshTransform)
+    //{
+    //    // --- DESTROY OLD CONTAINERS ---
+    //    List<Transform> toDestroy = new List<Transform>();
+    //    foreach (Transform t in meshTransform)
+    //        if (t.name.EndsWith("_Container"))
+    //            toDestroy.Add(t);
+    //    foreach (Transform t in toDestroy)
+    //        DestroyImmediate(t.gameObject);
+
+    //    System.Random rand = new System.Random(seed);
+
+
+    //    // --- CREATE CONTAINERS ---
+    //    Transform[] containers = new Transform[_spawnableObjects.Length];
+    //    for (int i = 0; i < _spawnableObjects.Length; i++)
+    //    {
+    //        if (_spawnableObjects[i].prefab == null) continue;
+    //        containers[i] = new GameObject(_spawnableObjects[i].name + "_Container").transform;
+    //        containers[i].SetParent(meshTransform);
+    //    }
+
+    //    int mapWidth = mapInfoGrid.GetLength(0);
+    //    int mapHeight = mapInfoGrid.GetLength(1);
+
+    //    // --- STEP 1: Build height zone lists ---
+    //    List<MapGridCellInfo>[] zoneLists = new List<MapGridCellInfo>[_heightZones.Length]; // Based on the number of height zones, create a list for each zone
+    //    for (int i = 0; i < _heightZones.Length; i++)
+    //    {
+    //        zoneLists[i] = new List<MapGridCellInfo>();
+    //    }
+
+    //    // Iterate through the map grid and assign each cell to its corresponding height zone list
+    //    for (int y = 0; y < mapHeight; y++)
+    //    {
+    //        for (int x = 0; x < mapWidth; x++)
+    //        {
+    //            float height = mapInfoGrid[x, y].NormalizedHeight;
+    //            for (int z = 0; z < _heightZones.Length; z++) // Loop through height zones to find the right one for this cell, when found, add it to the right list and break the loop
+    //            {
+    //                if (height >= _heightZones[z].minHeight && height <= _heightZones[z].maxHeight) // if this cell's height is within the zone's range, add it to that zone's list
+    //                {
+    //                    zoneLists[z].Add(mapInfoGrid[x, y]);
+    //                    break; // Break from the for loop since a cell can only belong to one height zone
+    //                }
+    //            }
+    //        }
+    //    }
+
+    //    // --- STEP 2: Shuffle each zone list --- (to ensure random distribution of spawn points, without this, objects would spawn in a predictable pattern)
+    //    // Fisher-Yates shuffle algorithm
+    //    for (int z = 0; z < zoneLists.Length; z++)
+    //    {
+    //        for (int j = zoneLists[z].Count - 1; j > 0; j--)
+    //        {
+    //            int k = rand.Next(0, j + 1);
+    //            MapGridCellInfo temp = zoneLists[z][j];
+    //            zoneLists[z][j] = zoneLists[z][k];
+    //            zoneLists[z][k] = temp;
+    //        }
+    //    }
+
+    //    // --- STEP 3: Spawn objects ---
+    //    for (int i = 0; i < _spawnableObjects.Length; i++)
+    //    {
+    //        SpawnableObject obj = _spawnableObjects[i];
+    //        if (obj.prefab == null) continue;
+    //        //if (obj.spawnZone == HeightZoneType.Sea) continue; // Skip sea objects for now
+
+    //        List<MapGridCellInfo> candidates = zoneLists[(int)obj.spawnZone];
+    //        int spawnedCount = 0;
+
+    //        foreach (MapGridCellInfo cell in candidates)
+    //        {
+    //            if (spawnedCount >= obj.maxCount) break;
+    //            if (cell.IsOccupied) continue;
+    //            if (IsTooClose(cell.Position, obj.minDistance, mapInfoGrid, mapWidth, mapHeight)) continue;
+
+    //            // Raycast to get exact surface position
+    //            Vector3 rayOrigin = meshTransform.TransformPoint(cell.Position + Vector3.up * 10f);
+    //            Ray ray = new Ray(rayOrigin, Vector3.down);
+
+    //            if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, _mapMeshLayer))
+    //            {
+    //                Vector3 spawnPos = hit.point + Vector3.up * obj.heightOffset;
+    //                Quaternion spawnRotation = Quaternion.identity;
+    //                if (obj.rotationBasedOnNormal == true)
+    //                {
+    //                    spawnRotation = Quaternion.FromToRotation(Vector3.up, hit.normal);
+    //                }
+    //                GameObject spawned = Instantiate(obj.prefab, spawnPos, spawnRotation);
+    //                spawned.tag = "Environment";
+    //                spawned.transform.SetParent(containers[i]);
+
+    //                MarkOccupied(cell.Position, obj.minDistance, mapInfoGrid, mapWidth, mapHeight);
+    //                spawnedCount++;
+    //            }
+    //        }
+    //    }
+    //}
+
+
     private bool IsTooClose(Vector3 position, float minDistance, MapGridCellInfo[,] grid, int width, int height)
     {
-        for (int y = 0; y < height; y++) 
+        for (int y = 0; y < height; y++)
             for (int x = 0; x < width; x++)
                 if (grid[x, y].IsOccupied)
                     if (Vector3.Distance(position, grid[x, y].Position) < minDistance) // if the distance between the position and an occupied cell is less than the minimum distance, return true

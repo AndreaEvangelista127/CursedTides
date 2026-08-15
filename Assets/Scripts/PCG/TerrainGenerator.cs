@@ -1,14 +1,18 @@
 
 using System;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEditor.SceneManagement;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 
 public class TerrainGenerator : MonoBehaviour
 {
     [Header("Map Settings")]
-    [SerializeField][Range(0,6)] private int _levelOfDetail;
-    [SerializeField][Range(1,4)] private int _mapSizeFactor = 2; // The size of the mesh in world units, the higher the value, the bigger the mesh will be
-    public const int mapChunkSize = 241; // 241 is the maximum size for a mesh with 6 levels of detail (LOD)
+    [SerializeField][Range(0, 6)] private int _levelOfDetail;
+    [SerializeField][Range(1, 4)] private int _mapSizeFactor = 2; // The size of the mesh in world units, the higher the value, the bigger the mesh will be
+    public const int MAP_CHUNK_SIZE = 241; // 241 is the maximum size for a mesh with 6 levels of detail (LOD)
     private float _minTerrainHeight;
     private float _maxTerrainHeight;
 
@@ -46,48 +50,51 @@ public class TerrainGenerator : MonoBehaviour
     [SerializeField] private LayerMask _spawnLayer;
 
     [SerializeField] private Gradient _terrainGradient;
-    [SerializeField] public TerrainType[] regions;
-
+    [SerializeField] public TerrainType[] Regions;
 
     private void Start()
     {
-        seed = PlayerPrefs.GetInt("Seed", 0); // Get the seed from PlayerPrefs, default to 0 if not set
-        Generate();
+        //seed = PlayerPrefs.GetInt("Seed", 0); // Get the seed from PlayerPrefs, default to 0 if not set
+        //Generate();
+        //StartCoroutine(StartCoroutineGenerate());
     }
-
-
-    public void Generate()
+    public void Go()
+    {
+        StartCoroutine(StartCoroutineGenerate());
+    }
+    public IEnumerator StartCoroutineGenerate()
     {
 
-        float[,] heightMap = HeightMapGenerator.GeneratePerlinNoiseMap(mapChunkSize, mapChunkSize, _noiseScale, seed, _octaves, _persistance, _lacunarity, offset);
+        seed = PlayerPrefs.GetInt("Seed", 0); // Get the seed from PlayerPrefs, default to 0 if not set
+
+        float[,] heightMap = HeightMapGenerator.GeneratePerlinNoiseMap(MAP_CHUNK_SIZE, MAP_CHUNK_SIZE, _noiseScale, seed, _octaves, _persistance, _lacunarity, offset);
 
         float[,] baseHeightMap = (float[,])heightMap.Clone(); // Clone the heightMap to keep the original values for the base noise texture
 
-        Texture2D baseNoiseTexture = TextureGenerator.GenerateTextureFromHeightMap(baseHeightMap);
-        _textureDisplayer.DisplayBaseNoiseTexture(baseNoiseTexture);
+        yield return null;
+
 
         if (_useFalloff)
         {
-            float[,] fallOffMap = HeightMapGenerator.GenerateFallOffMap(mapChunkSize, mapChunkSize, _curvePower, _curveScale);
-            for (int y = 0; y < mapChunkSize; y++)
+            float[,] fallOffMap = HeightMapGenerator.GenerateFallOffMap(MAP_CHUNK_SIZE, MAP_CHUNK_SIZE, _curvePower, _curveScale);
+            for (int y = 0; y < MAP_CHUNK_SIZE; y++)
             {
-                for (int x = 0; x < mapChunkSize; x++)
+                for (int x = 0; x < MAP_CHUNK_SIZE; x++)
                 {
                     float result = Mathf.Clamp(heightMap[x, y], _minIslandHeight, 1f) - fallOffMap[x, y];
                     result = Mathf.Clamp01(result);
                     heightMap[x, y] = result;
                 }
             }
-            Texture2D falloffTexture = TextureGenerator.GenerateTextureFromHeightMap(heightMap);
-            _textureDisplayer.DisplayFalloffTexture(falloffTexture);
-        }  
+        }
 
-        // SHOW COLOR MAP ON THE SECOND PLANE
-        Texture2D colorTexture = TextureGenerator.GenerateTextureFromColorMap(GenerateColorMap(heightMap), mapChunkSize, mapChunkSize);
-        _textureDisplayer.DisplayColorTexture(colorTexture);
+        yield return null;
+
 
         // SHOW MESH ON THE THIRD PLANE
-        MeshGenerator.MeshData meshData = MeshGenerator.GenerateMeshFromHeightMap(heightMap, _amplitudeMultiplier, _amplitudeCurveMultiplier, _levelOfDetail,_mapSizeFactor);
+        MeshGenerator.MeshData meshData = MeshGenerator.GenerateMeshFromHeightMap(heightMap, _amplitudeMultiplier, _amplitudeCurveMultiplier, _levelOfDetail, _mapSizeFactor);
+
+        yield return null;
 
         MapGridCellInfo[,] mapInfoGrid = MapInfoGridGenerator.GenerateMapInfoGrid(heightMap, _mapSizeFactor, _amplitudeMultiplier, _amplitudeCurveMultiplier);
 
@@ -100,7 +107,7 @@ public class TerrainGenerator : MonoBehaviour
             if (vertex.y > _maxTerrainHeight) _maxTerrainHeight = vertex.y;
         }
 
-        Debug.Log("Min Terrain height:" + _minTerrainHeight + "," + "Max Terrain Height:" + _maxTerrainHeight);
+        yield return null;
 
         for (int i = 0; i < meshData.vertices.Length; i++)
         {
@@ -108,8 +115,12 @@ public class TerrainGenerator : MonoBehaviour
             meshData.colors[i] = _terrainGradient.Evaluate(normalizedHeight);
         }
 
+        yield return null;
+
         Mesh generatedMesh = meshData.CreateMesh();
         _mf.mesh = generatedMesh;
+
+        yield return null;
 
         // Instantiate water prefab at the center of the mesh with the specified water height
         if (_waterPrefab != null)
@@ -124,7 +135,7 @@ public class TerrainGenerator : MonoBehaviour
             water.transform.SetParent(_mf.transform);
 
             // Scale to cover entire map
-            float mapSize = (mapChunkSize - 1) * _mapSizeFactor;
+            float mapSize = (MAP_CHUNK_SIZE - 1) * _mapSizeFactor;
             water.transform.localScale = new Vector3(mapSize / 10f, 1, mapSize / 10f);
         }
 
@@ -134,7 +145,7 @@ public class TerrainGenerator : MonoBehaviour
             Transform oldFireflies = _mf.transform.Find("Fireflies");
             if (oldFireflies != null) DestroyImmediate(oldFireflies.gameObject);
 
-            float mapSize = (mapChunkSize - 1) * _mapSizeFactor;
+            float mapSize = (MAP_CHUNK_SIZE - 1) * _mapSizeFactor;
 
             GameObject fireflies = Instantiate(_firefliesPrefab,
                 new Vector3(0, _firefliesHeight, 0),
@@ -149,33 +160,144 @@ public class TerrainGenerator : MonoBehaviour
         if (meshCollider != null)
             meshCollider.sharedMesh = generatedMesh;
 
-        _textureDisplayer.DisplayTerrainTexture(colorTexture);
-
 
         // OBJECT SPAWNING
-        if(_objectSpawner != null)
+        if (_objectSpawner != null)
         {
-            _objectSpawner.SpawnObjects(mapInfoGrid, seed, _mf.transform);
+            //_objectSpawner.SpawnObjects(mapInfoGrid, seed, _mf.transform);
+            //yield return _objectSpawner.SpawnObjectsCoroutine(mapInfoGrid, seed, _mf.transform);
+            yield return _objectSpawner.SpawnObjectsCoroutine(mapInfoGrid, seed, _mf.transform);
         }
+
 
         // SPAWN PLAYER
         SpawnPlayer();
+
+        Debug.Log("Generating done");
+
+        yield return null;
     }
+
+    //public void Generate()
+    //{
+
+    //    float[,] heightMap = HeightMapGenerator.GeneratePerlinNoiseMap(MAP_CHUNK_SIZE, MAP_CHUNK_SIZE, _noiseScale, seed, _octaves, _persistance, _lacunarity, offset);
+
+    //    float[,] baseHeightMap = (float[,])heightMap.Clone(); // Clone the heightMap to keep the original values for the base noise texture
+
+    //    Texture2D baseNoiseTexture = TextureGenerator.GenerateTextureFromHeightMap(baseHeightMap);
+    //    _textureDisplayer.DisplayBaseNoiseTexture(baseNoiseTexture);
+
+    //    if (_useFalloff)
+    //    {
+    //        float[,] fallOffMap = HeightMapGenerator.GenerateFallOffMap(MAP_CHUNK_SIZE, MAP_CHUNK_SIZE, _curvePower, _curveScale);
+    //        for (int y = 0; y < MAP_CHUNK_SIZE; y++)
+    //        {
+    //            for (int x = 0; x < MAP_CHUNK_SIZE; x++)
+    //            {
+    //                float result = Mathf.Clamp(heightMap[x, y], _minIslandHeight, 1f) - fallOffMap[x, y];
+    //                result = Mathf.Clamp01(result);
+    //                heightMap[x, y] = result;
+    //            }
+    //        }
+    //        Texture2D falloffTexture = TextureGenerator.GenerateTextureFromHeightMap(heightMap);
+    //        _textureDisplayer.DisplayFalloffTexture(falloffTexture);
+    //    }
+
+    //    // SHOW COLOR MAP ON THE SECOND PLANE
+    //    Texture2D colorTexture = TextureGenerator.GenerateTextureFromColorMap(GenerateColorMap(heightMap), MAP_CHUNK_SIZE, MAP_CHUNK_SIZE);
+    //    _textureDisplayer.DisplayColorTexture(colorTexture);
+
+    //    // SHOW MESH ON THE THIRD PLANE
+    //    MeshGenerator.MeshData meshData = MeshGenerator.GenerateMeshFromHeightMap(heightMap, _amplitudeMultiplier, _amplitudeCurveMultiplier, _levelOfDetail, _mapSizeFactor);
+
+    //    MapGridCellInfo[,] mapInfoGrid = MapInfoGridGenerator.GenerateMapInfoGrid(heightMap, _mapSizeFactor, _amplitudeMultiplier, _amplitudeCurveMultiplier);
+
+    //    _minTerrainHeight = float.MaxValue;
+    //    _maxTerrainHeight = float.MinValue;
+
+    //    foreach (Vector3 vertex in meshData.vertices)
+    //    {
+    //        if (vertex.y < _minTerrainHeight) _minTerrainHeight = vertex.y;
+    //        if (vertex.y > _maxTerrainHeight) _maxTerrainHeight = vertex.y;
+    //    }
+
+    //    Debug.Log("Min Terrain height:" + _minTerrainHeight + "," + "Max Terrain Height:" + _maxTerrainHeight);
+
+    //    for (int i = 0; i < meshData.vertices.Length; i++)
+    //    {
+    //        float normalizedHeight = Mathf.InverseLerp(_minTerrainHeight, _maxTerrainHeight, meshData.vertices[i].y); //returns a value between 0 and 1 that will represent the height color
+    //        meshData.colors[i] = _terrainGradient.Evaluate(normalizedHeight);
+    //    }
+
+    //    Mesh generatedMesh = meshData.CreateMesh();
+    //    _mf.mesh = generatedMesh;
+
+    //    // Instantiate water prefab at the center of the mesh with the specified water height
+    //    if (_waterPrefab != null)
+    //    {
+    //        Transform oldWater = _mf.transform.Find("Water");
+    //        if (oldWater != null) DestroyImmediate(oldWater.gameObject);
+
+    //        GameObject water = Instantiate(_waterPrefab,
+    //            new Vector3(0, _waterHeight, 0),
+    //            Quaternion.identity);
+    //        water.name = "Water";
+    //        water.transform.SetParent(_mf.transform);
+
+    //        // Scale to cover entire map
+    //        float mapSize = (MAP_CHUNK_SIZE - 1) * _mapSizeFactor;
+    //        water.transform.localScale = new Vector3(mapSize / 10f, 1, mapSize / 10f);
+    //    }
+
+    //    // Instantiate fireflies prefab at the center of the mesh with the specified fireflies height
+    //    if (_firefliesPrefab != null)
+    //    {
+    //        Transform oldFireflies = _mf.transform.Find("Fireflies");
+    //        if (oldFireflies != null) DestroyImmediate(oldFireflies.gameObject);
+
+    //        float mapSize = (MAP_CHUNK_SIZE - 1) * _mapSizeFactor;
+
+    //        GameObject fireflies = Instantiate(_firefliesPrefab,
+    //            new Vector3(0, _firefliesHeight, 0),
+    //            Quaternion.identity);
+    //        fireflies.name = "Fireflies";
+    //        fireflies.transform.SetParent(_mf.transform);
+    //        fireflies.transform.localScale = new Vector3(_mapSizeFactor, _mapSizeFactor, _mapSizeFactor);
+    //    }
+
+    //    // Add a MeshCollider to the MeshFilter's GameObject if it doesn't already have one
+    //    MeshCollider meshCollider = _mf.GetComponent<MeshCollider>();
+    //    if (meshCollider != null)
+    //        meshCollider.sharedMesh = generatedMesh;
+
+    //    _textureDisplayer.DisplayTerrainTexture(colorTexture);
+
+
+    //    // OBJECT SPAWNING
+    //    if (_objectSpawner != null)
+    //    {
+    //        _objectSpawner.SpawnObjects(mapInfoGrid, seed, _mf.transform);
+    //    }
+
+    //    // SPAWN PLAYER
+    //    SpawnPlayer();
+    //}
 
     private Color[] GenerateColorMap(float[,] heightMap)
     {
-        Color[] colorMap = new Color[mapChunkSize * mapChunkSize];
-        for (int y = 0; y < mapChunkSize; y++)
+        Color[] colorMap = new Color[MAP_CHUNK_SIZE * MAP_CHUNK_SIZE];
+        for (int y = 0; y < MAP_CHUNK_SIZE; y++)
         {
-            for (int x = 0; x < mapChunkSize; x++)
+            for (int x = 0; x < MAP_CHUNK_SIZE; x++)
             {
                 float currentHeight = heightMap[x, y];
-                for (int i = 0; i < regions.Length; i++)
+                for (int i = 0; i < Regions.Length; i++)
                 {
-                    if (currentHeight <= regions[i].height)
+                    if (currentHeight <= Regions[i].height)
                     {
 
-                        colorMap[y * mapChunkSize + x] = regions[i].color;
+                        colorMap[y * MAP_CHUNK_SIZE + x] = Regions[i].color;
                         break;
                     }
                 }
@@ -186,19 +308,19 @@ public class TerrainGenerator : MonoBehaviour
 
     private void OnValidate() // This method is called when the script is loaded or a value is changed in the inspector (Called in the editor only)
     {
-        if(_lacunarity < 1) _lacunarity = 1;
-        if(_octaves < 0) _octaves = 0;
-        
+        if (_lacunarity < 1) _lacunarity = 1;
+        if (_octaves < 0) _octaves = 0;
+
     }
 
     private void SpawnPlayer()
     {
-        if(_playerPrefab == null) return;
+        if (_playerPrefab == null) return;
 
         Vector3 origin = new Vector3(0, 1000f, 0);
         Ray ray = new Ray(origin, Vector3.down); // Shoot a ray downwards from a high point above the terrain
 
-        if(Physics.Raycast(ray, out RaycastHit hitInfo, Mathf.Infinity, _spawnLayer))
+        if (Physics.Raycast(ray, out RaycastHit hitInfo, Mathf.Infinity, _spawnLayer))
         {
             Vector3 spawnPosition = hitInfo.point + Vector3.up * 2f; // Offset the spawn position slightly above the terrain to avoid clipping
             Instantiate(_playerPrefab, spawnPosition, Quaternion.identity);

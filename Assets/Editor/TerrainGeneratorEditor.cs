@@ -1,5 +1,7 @@
 using UnityEditor;
+using UnityEditor.SceneManagement;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 [CustomEditor(typeof(TerrainGenerator))]
 public class TerrainGeneratorEditor : Editor
@@ -12,14 +14,16 @@ public class TerrainGeneratorEditor : Editor
 
         if (DrawDefaultInspector() && _autoGenerate)
         {
-            terrainGenerator.Generate();
+            //terrainGenerator.Generate();
         }
 
         _autoGenerate = EditorGUILayout.Toggle("Auto Generate", _autoGenerate);
 
         if (GUILayout.Button("Generate"))
         {
-            terrainGenerator.Generate();
+            //terrainGenerator.Generate();
+            terrainGenerator.StartCoroutine(terrainGenerator.StartCoroutineGenerate());
+            EditorSceneManager.MarkSceneDirty(SceneManager.GetSceneByName("GameScene"));
         }
     }
 }
