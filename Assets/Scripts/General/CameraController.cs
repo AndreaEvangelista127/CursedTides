@@ -6,7 +6,7 @@ public class CameraController : MonoBehaviour
 {
     [SerializeField] private float _sensitivity;
     [SerializeField] private float _maxAngleX;
-    [SerializeField] private float _mixAngleX;
+    [SerializeField] private float _minAngleX;
 
     private Vector2 _lookInput;
     private float _xRotation; // Pitch (up/down)
@@ -39,7 +39,7 @@ public class CameraController : MonoBehaviour
         _xRotation -= mouseY; // Minus: mouse up = camera rotates up
         _yRotation += mouseX;
 
-        _xRotation = Mathf.Clamp(_xRotation, _mixAngleX, _maxAngleX); // Clamp the vertical rotation
+        _xRotation = Mathf.Clamp(_xRotation, _minAngleX, _maxAngleX); // Clamp the vertical rotation
 
         // Rotate this object (CameraTarget) — Main Camera follows automatically
         transform.rotation = Quaternion.Euler(_xRotation, _yRotation, 0f);

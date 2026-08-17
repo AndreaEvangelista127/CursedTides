@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(menuName = "Flock/Behaviour/Avoidance")]
-public class NewMonoBehaviourScript : FlockBehaviour
+public class AvoidanceBehaviour : FlockBehaviour
 {
     public override Vector3 CalculateMove(FlockAgent agent, List<Transform> neighbors, Flock flock)
     {

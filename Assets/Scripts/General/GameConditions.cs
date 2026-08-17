@@ -3,7 +3,6 @@ using UnityEngine.SceneManagement;
 
 public class GameConditions : MonoBehaviour
 {
-
     [SerializeField] private GameObject _victoryPanel;
     [SerializeField] private GameObject _loseScreen;
     private float _timeLimit;

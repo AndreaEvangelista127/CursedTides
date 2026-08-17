@@ -3,7 +3,6 @@ using UnityEngine;
 public class BurningVFX : MonoBehaviour
 {
     private ParticleSystem _burningParticles;
-    private Coroutine _stopCoroutine;
 
     private void Awake()
     {

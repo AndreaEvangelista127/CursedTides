@@ -13,8 +13,6 @@ public class SettingsManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _valueSfxSlider;
     public static SettingsManager Instance { get; private set; }
 
-    private bool _isIngame;
-
 
     private void Awake()
     {

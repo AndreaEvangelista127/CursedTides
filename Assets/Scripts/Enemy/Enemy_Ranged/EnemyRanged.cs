@@ -39,7 +39,6 @@ public class EnemyRanged : Enemy
             [EStates.RangedPatrol] = new RangedPatrolState(),
             [EStates.RangedChase] = new RangedChaseState(),
             [EStates.RangedShoot] = new RangedShootState(),
-            [EStates.RangedWalkAway] = new RangedWalkAwayState()
         },
         EStates.RangedIdle);
         _launcher = GetComponent<ProjectileLauncher>();

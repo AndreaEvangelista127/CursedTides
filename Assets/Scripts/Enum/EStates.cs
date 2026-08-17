@@ -14,6 +14,6 @@ public enum EStates
     RangedPatrol,
     RangedChase,
     RangedShoot,
-    RangedWalkAway
+    
 }
     

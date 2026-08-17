@@ -11,10 +11,10 @@ public class Flock : MonoBehaviour
     [Range(10, 500)]
     public int startingCount = 250; // Amount of agents in the scene
     //public const float AgentDensity = 0.08f;
-    public const float AgentDensity = 0.20f;
+    public const float AGENT_DENSITY = 0.20f;
 
     [Range(1f, 100f)]
-    public float driveFactor = 10f; // Factor that will multiply all the different behaviour so that they´re not slow
+    public float driveFactor = 10f; // Factor that will multiply all the different behaviour so that theyï¿½re not slow
     [Range(1f, 100f)]
     public float maxSpeed = 5f; // Speed of every agent
     [Range(1f, 10f)]
@@ -44,7 +44,7 @@ public class Flock : MonoBehaviour
         {
             FlockAgent newAgent = Instantiate(
                 AgentPrefab, 
-                Random.insideUnitSphere * startingCount * AgentDensity,
+                Random.insideUnitSphere * startingCount * AGENT_DENSITY,
                 Random.rotation, 
                 transform);
             newAgent.name = "Agent " + i;
@@ -62,7 +62,7 @@ public class Flock : MonoBehaviour
             move *= driveFactor; // Increase or decrement the intensity of the movement based on the drive factor
 
             // Clamp to max speed using squared magnitude (avoids a sqrt)
-            if (move.sqrMagnitude > squareMaxSpeed) // Check if the current movement speed isn´t higher of the max allowed
+            if (move.sqrMagnitude > squareMaxSpeed) // Check if the current movement speed isnï¿½t higher of the max allowed
             {
                 move = move.normalized * maxSpeed; // Keep the same direction but increase or decrease the move vector so that the speed is maxSpeed
             }

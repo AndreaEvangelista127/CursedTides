@@ -27,7 +27,7 @@ public class RangedPatrolState : BaseRangedState
 
         Vector3 direction = _destination - _enemy.transform.position; // Get the direction from the enemy to the destination
 
-        // Ignore Y difference — if we include Y in the direction, the enemy would fly 
+        // Ignore Y difference ï¿½ if we include Y in the direction, the enemy would fly 
         // towards the player in a straight line instead of following the terrain.
         direction.y = 0;
 

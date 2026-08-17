@@ -21,9 +21,7 @@ public class EnemyMelee : Enemy
 
     public bool IsWeaponDrawn => _isWeaponDrawn;
     public bool IsSheathingComplete => _isSheathingComplete;
-    public float AttackRange => _attackRange;
     public float AttackCooldown => _attackCooldown;
-    public float AttackCommitRange => _attackCommitRange;
 
     private EnemyFSM _fsm; // Reference to the enemy's finite state machine (FSM)
 
@@ -83,9 +81,6 @@ public class EnemyMelee : Enemy
 
     public bool CheckIfPlayerIsInAttackRange() =>
         Vector3.Distance(transform.position, PlayerTransform.position) <= _attackRange;
-
-    public bool CheckIfPlayerIsInAttackCommitRange() =>
-        Vector3.Distance(transform.position, PlayerTransform.position) <= _attackCommitRange;
 
     public void SetIsInAttackRange(bool value) =>
         GetComponent<Animator>().SetBool("isInAttackRange", value);

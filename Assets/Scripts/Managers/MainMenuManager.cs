@@ -14,24 +14,23 @@ public class MainMenuManager : MonoBehaviour
     }
     public void OnPlayButton()
     {
-        //if (string.IsNullOrEmpty(_seedInputField.text))
-        //{
-        //    // Generate a random seed
-        //    int randomSeed = Random.Range(0, int.MaxValue);
-        //    PlayerPrefs.SetInt("Seed", randomSeed);
-        //}
-        //else
-        //{
-        //    // Use the seed from the input field
-        //    PlayerPrefs.SetInt("Seed", int.Parse(_seedInputField.text)); // Convert the string to an integer and store it in PlayerPrefs
-        //}
+        if (string.IsNullOrEmpty(_seedInputField.text))
+        {
+            // Generate a random seed
+            int randomSeed = Random.Range(0, int.MaxValue);
+            PlayerPrefs.SetInt("Seed", randomSeed);
+        }
+        else
+        {
+            // Use the seed from the input field
+            PlayerPrefs.SetInt("Seed", int.Parse(_seedInputField.text)); // Convert the string to an integer and store it in PlayerPrefs
+        }
 
-        //PlayerPrefs.Save(); // Save the PlayerPrefs to ensure the seed is stored
+        PlayerPrefs.Save(); // Save the PlayerPrefs to ensure the seed is stored
 
         AudioManager.Instance?.PlayGameMusic();
         AudioManager.Instance?.PlayButtonClick();
-        //SceneManager.LoadScene("GameScene"); 
-        SceneManager.LoadScene(1); 
+        SceneManager.LoadScene("GameScene"); 
     }
 
     public void OnSettingsButton()

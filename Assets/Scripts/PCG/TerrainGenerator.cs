@@ -284,6 +284,7 @@ public class TerrainGenerator : MonoBehaviour
     //    SpawnPlayer();
     //}
 
+    // USED FOR TESTING IN THE PCG TEST SCENE
     private Color[] GenerateColorMap(float[,] heightMap)
     {
         Color[] colorMap = new Color[MAP_CHUNK_SIZE * MAP_CHUNK_SIZE];
