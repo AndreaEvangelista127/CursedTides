@@ -23,13 +23,11 @@ public class EnemyMelee : Enemy
     public bool IsSheathingComplete => _isSheathingComplete;
     public float AttackCooldown => _attackCooldown;
 
-    private EnemyFSM _fsm; // Reference to the enemy's finite state machine (FSM)
-
     protected override void Awake()
     {
         base.Awake();
-        _fsm = new EnemyFSM();
-        _fsm.Initialize(this, new Dictionary<EStates, BaseState>
+        _enemyFSM = new EnemyFSM();
+        _enemyFSM.Initialize(this, new Dictionary<EStates, BaseState>
         {
             [EStates.MeleeIdle] = new MeleeIdleState(),
             [EStates.MeleeAlert] = new MeleeAlertState(),
@@ -42,7 +40,7 @@ public class EnemyMelee : Enemy
 
     private void Update()
     {
-        _fsm.UpdateFSM(); // Update the FSM each frame
+        _enemyFSM.UpdateFSM(); // Update the FSM each frame
     }
 
     public void ApplyMeleeSettings(MeleeEnemySettings settings)
@@ -87,7 +85,7 @@ public class EnemyMelee : Enemy
 
     protected override void ResetToPatrol()
     {
-        _fsm.SwitchState(EStates.MeleePatrol);
+        _enemyFSM.SwitchState(EStates.MeleePatrol);
     }
 
     protected override void OnDrawGizmos()

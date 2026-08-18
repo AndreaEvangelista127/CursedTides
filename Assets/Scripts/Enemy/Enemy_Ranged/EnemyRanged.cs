@@ -26,13 +26,11 @@ public class EnemyRanged : Enemy
     public float ShootCooldown => _shootCooldown;
     public bool CombatTag => _combatTag;
 
-    private EnemyFSM _fsm;
-
     protected override void Awake()
     {
         base.Awake();
-        _fsm = new EnemyFSM();
-        _fsm.Initialize(this, new Dictionary<EStates, BaseState>
+        _enemyFSM = new EnemyFSM();
+        _enemyFSM.Initialize(this, new Dictionary<EStates, BaseState>
         {
             [EStates.RangedIdle] = new RangedIdleState(),
             [EStates.RangedAlert] = new RangedAlertState(),
@@ -46,7 +44,7 @@ public class EnemyRanged : Enemy
 
     private void Update()
     {
-        _fsm.UpdateFSM(); 
+        _enemyFSM.UpdateFSM(); 
     }
 
     public void ApplyRangedSettings(RangedEnemySettings settings)
@@ -101,7 +99,7 @@ public class EnemyRanged : Enemy
     // When the player dies, we call the ResetToPatrol method because we subsribed to the PlayerHealth.OnPlayerDeath event in the Enemy base class
     protected override void ResetToPatrol() 
     {
-        _fsm.SwitchState(EStates.RangedPatrol);
+        _enemyFSM.SwitchState(EStates.RangedPatrol);
     }
 
     protected override void OnDrawGizmos()
