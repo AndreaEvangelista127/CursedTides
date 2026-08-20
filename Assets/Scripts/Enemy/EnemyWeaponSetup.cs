@@ -2,18 +2,18 @@ using UnityEngine;
 
 public class EnemyWeaponSetup : MonoBehaviour
 {
-    [SerializeField] public GameObject _meleeWeapon; // Hand Dagger reference
-    [SerializeField] public GameObject _rangedWeapon; // Web Pistol reference
+    [SerializeField] public GameObject MeleeWeapon; // Hand Dagger reference
+    [SerializeField] public GameObject RangedWeapon; // Web Pistol reference
 
     public void ActivateMelee()
     {
-        if (_meleeWeapon != null) _meleeWeapon.SetActive(true);
-        if (_rangedWeapon != null) _rangedWeapon.SetActive(false);
+        if (MeleeWeapon != null) MeleeWeapon.SetActive(true);
+        if (RangedWeapon != null) RangedWeapon.SetActive(false);
     }
 
     public void ActivateRanged()
     {
-        if (_meleeWeapon != null) _meleeWeapon.SetActive(false);
-        if (_rangedWeapon != null) _rangedWeapon.SetActive(true);
+        if (MeleeWeapon != null) MeleeWeapon.SetActive(false);
+        if (RangedWeapon != null) RangedWeapon.SetActive(true);
     }
 }

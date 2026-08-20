@@ -46,7 +46,7 @@ public class TerrainGenerator : MonoBehaviour
     [SerializeField] private float _firefliesHeight = 2f;
 
     [Header("Player Spawn")]
-    [SerializeField] private GameObject _playerPrefab;
+    [SerializeField] private GameObject _player;
     [SerializeField] private LayerMask _spawnLayer;
 
     [SerializeField] private Gradient _terrainGradient;
@@ -166,14 +166,11 @@ public class TerrainGenerator : MonoBehaviour
         {
             //_objectSpawner.SpawnObjects(mapInfoGrid, seed, _mf.transform);
             //yield return _objectSpawner.SpawnObjectsCoroutine(mapInfoGrid, seed, _mf.transform);
-            yield return _objectSpawner.SpawnObjectsCoroutine(mapInfoGrid, seed, _mf.transform);
+            yield return StartCoroutine(_objectSpawner.SpawnObjectsCoroutine(mapInfoGrid, seed, _mf.transform));
         }
 
-
         // SPAWN PLAYER
-        SpawnPlayer();
-
-        Debug.Log("Generating done");
+        SetPlayerToCorrectHeightOnTheMap();
 
         yield return null;
     }
@@ -314,22 +311,26 @@ public class TerrainGenerator : MonoBehaviour
 
     }
 
-    private void SpawnPlayer()
+    private void SetPlayerToCorrectHeightOnTheMap()
     {
-        if (_playerPrefab == null) return;
+        if (_player == null) return;
 
-        Vector3 origin = new Vector3(0, 1000f, 0);
-        Ray ray = new Ray(origin, Vector3.down); // Shoot a ray downwards from a high point above the terrain
+        Vector3 spawnPosition = new Vector3(0, 20f, 0);
 
-        if (Physics.Raycast(ray, out RaycastHit hitInfo, Mathf.Infinity, _spawnLayer))
-        {
-            Vector3 spawnPosition = hitInfo.point + Vector3.up * 2f; // Offset the spawn position slightly above the terrain to avoid clipping
-            Instantiate(_playerPrefab, spawnPosition, Quaternion.identity);
-        }
-        else
-        {
-            Debug.LogWarning("No suitable spawn point found for the player.");
-        }
+        _player.transform.position = spawnPosition;
+
+        //Vector3 origin = new Vector3(0, 1000f, 0);
+        //Ray ray = new Ray(origin, Vector3.down); // Shoot a ray downwards from a high point above the terrain
+
+        //if (Physics.Raycast(ray, out RaycastHit hitInfo, Mathf.Infinity, _spawnLayer))
+        //{
+        //    Vector3 spawnPosition = hitInfo.point + Vector3.up * 2f; // Offset the spawn position slightly above the terrain to avoid clipping
+        //    Instantiate(_player, spawnPosition, Quaternion.identity);
+        //}
+        //else
+        //{
+        //    Debug.LogWarning("No suitable spawn point found for the player.");
+        //}
     }
 
     [System.Serializable]

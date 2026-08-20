@@ -6,7 +6,6 @@ public class LoadingScreen : MonoBehaviour
 {
     [SerializeField] private Image _fill;
     [SerializeField] private Slider _slider;
-    [SerializeField] private float _lerpSpeed = 5f;
 
     private Coroutine _animationCoroutine;
 

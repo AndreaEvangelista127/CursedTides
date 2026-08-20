@@ -12,6 +12,7 @@ public class EnemySpawner : MonoBehaviour
     [SerializeField] private float _spawnRadius = 5f;
     [SerializeField] private LayerMask _terrainLayer;
     [SerializeField] private int _maxAttempts = 10;
+    [SerializeField] private float _heightSpawnOffset = 20f;
 
     private List<GameObject> _spawnedEnemies = new List<GameObject>(); // Saving all the enemy that spawned in case we want to eliminate them for specific scenarios
 
@@ -35,21 +36,22 @@ public class EnemySpawner : MonoBehaviour
 
     private void SpawnEnemy(GameObject enemyPrefab)
     {
-        for (int i = 0; i < _maxAttempts; i++)
+        for (int attempt = 0; attempt < _maxAttempts; attempt++)
         {
-            Vector2 randomCircle = UnityEngine.Random.insideUnitSphere * _spawnRadius; 
-            Vector3 spawnOrigin = transform.position + new Vector3(randomCircle.x, 50f, randomCircle.y); // spawnPosition very high to avoid spawning the enemy inside the terrain
-
+            Vector3 randomCircle = transform.position + UnityEngine.Random.insideUnitSphere * _spawnRadius; 
+            Vector3 spawnOrigin = new Vector3(randomCircle.x, 50f, randomCircle.z); // spawnPosition very high to avoid spawning the enemy inside the terrain
+            Debug.Log("Spawn Origin: " + spawnOrigin);
             Ray ray = new Ray(spawnOrigin, Vector3.down);
 
             if(Physics.Raycast(ray,out RaycastHit hit, Mathf.Infinity, _terrainLayer))
             {
-                GameObject enemy = Instantiate(enemyPrefab, hit.point, Quaternion.identity);
+                Vector3 spawnPos = hit.point + Vector3.up * _heightSpawnOffset;
+                GameObject enemy = Instantiate(enemyPrefab, spawnPos, Quaternion.identity);
                 _spawnedEnemies.Add(enemy);
                 return; // Spawned, exit the attempt loop
             }
 
-            //Debug.Log(" Could not find a valid spawn position for the enemy");
+            Debug.Log(" Could not find a valid spawn position for the enemy");
         }
     }
 

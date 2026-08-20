@@ -1236,6 +1236,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 256
   _maxAttempts: 10
+  _heightSpawnOffset: 30
 --- !u!1 &9115239739142380508
 GameObject:
   m_ObjectHideFlags: 0

@@ -11,7 +11,6 @@ public class EnemyMelee : Enemy
     [Header("Attack Settings")]
     [SerializeField] private float _attackRange = 2f;
     [SerializeField] private float _attackCooldown = 1.5f;
-    [SerializeField] private float _attackCommitRange = 3f;
 
     [Header("Gizmos")]
     [SerializeField] private bool _showAttackRange;
@@ -47,7 +46,6 @@ public class EnemyMelee : Enemy
     {
         _attackRange = settings.attackRange;
         _attackCooldown = settings.attackCooldown;
-        _attackCommitRange = settings.attackCommitRange;
     }
 
     public void OnWeaponUnsheathed()
