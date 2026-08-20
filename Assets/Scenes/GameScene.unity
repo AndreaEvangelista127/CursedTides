@@ -85470,6 +85470,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 256
   _maxAttempts: 10
+  _heightSpawnOffset: 20
 --- !u!114 &589515909
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -94524,6 +94525,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 256
   _maxAttempts: 10
+  _heightSpawnOffset: 20
 --- !u!114 &662208595
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -129460,7 +129462,7 @@ MonoBehaviour:
   m_ActionEvents:
   - m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 1604096974}
         m_TargetAssemblyTypeName: PlayerMovement, Assembly-CSharp
         m_MethodName: OnMove
         m_Mode: 0
@@ -129476,7 +129478,7 @@ MonoBehaviour:
     m_ActionName: 'Player/Move[/Keyboard/w,/Keyboard/s,/Keyboard/a,/Keyboard/d]'
   - m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 1604096974}
         m_TargetAssemblyTypeName: PlayerMovement, Assembly-CSharp
         m_MethodName: OnJump
         m_Mode: 0
@@ -129492,7 +129494,7 @@ MonoBehaviour:
     m_ActionName: 'Player/Jump[/Keyboard/space]'
   - m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 1120782939}
         m_TargetAssemblyTypeName: CameraController, Assembly-CSharp
         m_MethodName: OnLook
         m_Mode: 0
@@ -129508,7 +129510,7 @@ MonoBehaviour:
     m_ActionName: 'Player/Look[/Mouse/delta]'
   - m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 1604096972}
         m_TargetAssemblyTypeName: PlayerInteraction, Assembly-CSharp
         m_MethodName: OnInteract
         m_Mode: 0
@@ -129524,7 +129526,7 @@ MonoBehaviour:
     m_ActionName: 'Player/Interact[/Keyboard/e]'
   - m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 1604096974}
         m_TargetAssemblyTypeName: PlayerMovement, Assembly-CSharp
         m_MethodName: OnSprint
         m_Mode: 0
@@ -129540,7 +129542,7 @@ MonoBehaviour:
     m_ActionName: 'Player/Sprint[/Keyboard/leftShift]'
   - m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 1604096971}
         m_TargetAssemblyTypeName: PlayerAttack, Assembly-CSharp
         m_MethodName: OnAttackSlash
         m_Mode: 0
@@ -129556,7 +129558,7 @@ MonoBehaviour:
     m_ActionName: 'Player/Attack[/Mouse/leftButton]'
   - m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 1604096974}
         m_TargetAssemblyTypeName: PlayerMovement, Assembly-CSharp
         m_MethodName: OnDodge
         m_Mode: 0
@@ -138498,6 +138500,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 256
   _maxAttempts: 10
+  _heightSpawnOffset: 20
 --- !u!114 &1005951703
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -153912,6 +153915,17 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1120592880}
   m_Mesh: {fileID: 4300000, guid: 2569ad1106254fb4e8959c25b2a8217f, type: 3}
+--- !u!114 &1120782939 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8111448073893825404, guid: f714d62ef7409824a9e5dc3ee4832877, type: 3}
+  m_PrefabInstance: {fileID: 1604096967}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b5d972efb3b1da45ba8ce70cf4cd24e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CameraController
 --- !u!1 &1120954221
 GameObject:
   m_ObjectHideFlags: 0
@@ -176925,6 +176939,11 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1299819984}
   m_Mesh: {fileID: 4300000, guid: f7093f6667debf04cb8a1d26a47f50ff, type: 3}
+--- !u!1 &1300117007 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1507565446634750263, guid: 665bc7634dc05e449bc7610ac02a4425, type: 3}
+  m_PrefabInstance: {fileID: 5968215335653032345}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1300629630
 GameObject:
   m_ObjectHideFlags: 0
@@ -215157,6 +215176,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 256
   _maxAttempts: 10
+  _heightSpawnOffset: 20
 --- !u!114 &1594656039
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -216093,6 +216113,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 256
   _maxAttempts: 10
+  _heightSpawnOffset: 20
 --- !u!114 &1598887905
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -217175,6 +217196,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
+    - target: {fileID: 5890843707560442411, guid: f714d62ef7409824a9e5dc3ee4832877, type: 3}
+      propertyPath: _gemIconUI
+      value: 
+      objectReference: {fileID: 1300117007}
     - target: {fileID: 8800102641575562227, guid: f714d62ef7409824a9e5dc3ee4832877, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -217236,6 +217261,39 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 986b5bd2222610543aeaea7de8500889, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerHealth
+--- !u!114 &1604096971 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3939410278726193498, guid: f714d62ef7409824a9e5dc3ee4832877, type: 3}
+  m_PrefabInstance: {fileID: 1604096967}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1604096968}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6221c537698ccb047b3582c4424c512e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerAttack
+--- !u!114 &1604096972 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5415917862455920181, guid: f714d62ef7409824a9e5dc3ee4832877, type: 3}
+  m_PrefabInstance: {fileID: 1604096967}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1604096968}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0d653906876e9904ba7c15c1c1705773, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerInteraction
+--- !u!114 &1604096974 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 358001646997202457, guid: f714d62ef7409824a9e5dc3ee4832877, type: 3}
+  m_PrefabInstance: {fileID: 1604096967}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1604096968}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e6fe924bece7b2146971afb9a2cfc58b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerMovement
 --- !u!1 &1604938149
 GameObject:
   m_ObjectHideFlags: 0
