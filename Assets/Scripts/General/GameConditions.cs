@@ -43,10 +43,10 @@ public class GameConditions : MonoBehaviour
         Cursor.visible = true;
     }
 
-    public void OnRestartButton()
+    public void OnMainMenuButton()
     {
         Time.timeScale = 1f;
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        SceneManager.LoadScene("MainMenu");
     }
 
     public void OnQuitButton()

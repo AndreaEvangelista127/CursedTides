@@ -14,7 +14,7 @@ OcclusionCullingSettings:
 RenderSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 10
-  m_Fog: 1
+  m_Fog: 0
   m_FogColor: {r: 0.3490566, g: 0.3490566, b: 0.3490566, a: 1}
   m_FogMode: 3
   m_FogDensity: 0.01
@@ -28913,7 +28913,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Restart
+  m_text: Main Menu
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -59380,7 +59380,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerHealth
   maxHealth: 100
   currentHealth: 0
-  _checkPointManager: {fileID: 0}
   _chestBone: {fileID: 188936475}
 --- !u!114 &410071651
 MonoBehaviour:
@@ -125441,7 +125440,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7d5b4d6200ff04845885ccd820fbd40d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CheckPoint
-  _checkPointManager: {fileID: 0}
 --- !u!1 &858016631
 GameObject:
   m_ObjectHideFlags: 0
@@ -133857,7 +133855,7 @@ GameObject:
   - component: {fileID: 920066101}
   - component: {fileID: 920066100}
   m_Layer: 5
-  m_Name: RestartButton
+  m_Name: MainMenuButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -133929,7 +133927,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1929387132}
         m_TargetAssemblyTypeName: GameConditions, Assembly-CSharp
-        m_MethodName: OnRestartButton
+        m_MethodName: OnMainMenuButton
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -190245,7 +190243,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CameraController
   _sensitivity: 100
   _maxAngleX: 60
-  _mixAngleX: 0
+  _minAngleX: 0
 --- !u!1 &1372015297
 GameObject:
   m_ObjectHideFlags: 0
@@ -227981,7 +227979,7 @@ MonoBehaviour:
     m_ColorSpace: -1
     m_NumColorKeys: 4
     m_NumAlphaKeys: 2
-  regions: []
+  Regions: []
 --- !u!4 &1646148156
 Transform:
   m_ObjectHideFlags: 0
@@ -275735,7 +275733,7 @@ GameObject:
   - component: {fileID: 2021161354}
   - component: {fileID: 2021161353}
   m_Layer: 5
-  m_Name: RestartButton
+  m_Name: MainMenuButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -275807,7 +275805,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1929387132}
         m_TargetAssemblyTypeName: GameConditions, Assembly-CSharp
-        m_MethodName: OnRestartButton
+        m_MethodName: OnMainMenuButton
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -281308,7 +281306,7 @@ Transform:
   m_GameObject: {fileID: 2062332189}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 9, y: 1.086, z: 24.287964}
+  m_LocalPosition: {x: 9, y: 1.086, z: -24.41101}
   m_LocalScale: {x: 3, y: 3, z: 3}
   m_ConstrainProportionsScale: 1
   m_Children:
@@ -291655,7 +291653,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2747098947426051363, guid: 1c7cebf18b00c91429a9346c5c2ce899, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -27.14
+      value: -52.67
       objectReference: {fileID: 0}
     - target: {fileID: 2747098947426051363, guid: 1c7cebf18b00c91429a9346c5c2ce899, type: 3}
       propertyPath: m_LocalPosition.y
@@ -291663,7 +291661,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2747098947426051363, guid: 1c7cebf18b00c91429a9346c5c2ce899, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 16.692963
+      value: -9.25
       objectReference: {fileID: 0}
     - target: {fileID: 2747098947426051363, guid: 1c7cebf18b00c91429a9346c5c2ce899, type: 3}
       propertyPath: m_LocalRotation.w
@@ -291785,7 +291783,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 446128762126685556, guid: af74501c763b0214cb91939dd45bd3f1, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 17.032959
+      value: 5.8
       objectReference: {fileID: 0}
     - target: {fileID: 446128762126685556, guid: af74501c763b0214cb91939dd45bd3f1, type: 3}
       propertyPath: m_LocalRotation.w
@@ -292207,7 +292205,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7017562771511573206, guid: 281860307f870644a9307e9966348176, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 16.688965
+      value: -32.01
       objectReference: {fileID: 0}
     - target: {fileID: 7017562771511573206, guid: 281860307f870644a9307e9966348176, type: 3}
       propertyPath: m_LocalRotation.w
