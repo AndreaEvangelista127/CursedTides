@@ -9,8 +9,6 @@ public class LoadingScreen : MonoBehaviour
 
     private Coroutine _animationCoroutine;
 
-    // starting value
-
 
     private void OnDisable()
     {
@@ -36,10 +34,4 @@ public class LoadingScreen : MonoBehaviour
     }
 
 
-
-
-    //private void Update()
-    //{
-    //    _slider.value = Mathf.Lerp(_slider.value, 1, Time.deltaTime);
-    //}
 }

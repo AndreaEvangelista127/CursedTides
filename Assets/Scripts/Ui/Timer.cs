@@ -13,6 +13,16 @@ public class Timer : MonoBehaviour
 
     private void Update()
     {
+        if(GameManager.Instance != null)
+        {
+            // if the game has not started, do not update the timer
+            if (!GameManager.Instance.IsGameStarted)
+            {
+                return;
+            }
+        }
+
+
         float time = _timeLimit - Time.timeSinceLevelLoad; // Calculate remaining time
         if (time < 0)
             time = 0;

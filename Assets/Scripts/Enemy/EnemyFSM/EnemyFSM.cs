@@ -26,6 +26,18 @@ public class EnemyFSM
     // Method to change the current state of the enemy
     public void UpdateFSM()
     {
+        if (GameManager.Instance != null)
+        {
+            if(!GameManager.Instance.IsGameStarted)
+            {
+                return; // If the game is not started, do not update the FSM
+            }
+            else
+            {
+                Debug.Log("Game has started, updating FSM");
+            }
+        }
+
         _currentState.OnStateUpdate(); // Call the update method of the current state
     }
 

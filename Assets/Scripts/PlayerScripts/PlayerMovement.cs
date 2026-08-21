@@ -82,6 +82,9 @@ public class PlayerMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
+        // If the game has not started, do not update the player movement
+        if (!GameManager.Instance.IsGameStarted) return;
+
         CheckGround();
         Move();
     }

@@ -10,6 +10,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] private LoadingScreen _loadingScreen;
     [SerializeField] private TerrainGenerator _terrainGenerator;
 
+    public bool IsGameStarted { get; private set; }
+
     private int _completedPedestals;
 
     public float TimeLimit => _timeLimit;
@@ -26,13 +28,11 @@ public class GameManager : MonoBehaviour
     {
         _gameConditions.SetTimeLimit(_timeLimit);
 
+        IsGameStarted = false;
 
         if (_loadingScreen != null && _terrainGenerator != null)
             StartCoroutine(StartGameCoroutine());
-
-
     }
-
 
     public void OnPedestalCompleted()
     {
@@ -55,6 +55,8 @@ public class GameManager : MonoBehaviour
 
     public IEnumerator StartGameCoroutine()
     {
+        IsGameStarted = false;
+
         _loadingScreen.gameObject.SetActive(true);
         _loadingScreen.StartAnimation();
 
@@ -62,6 +64,8 @@ public class GameManager : MonoBehaviour
         Debug.Log("finally really done");
 
         _loadingScreen.gameObject.SetActive(false);
+
+        IsGameStarted = true;
     }
 
 }
