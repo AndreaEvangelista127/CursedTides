@@ -47,6 +47,7 @@ public class Pedestal : MonoBehaviour, IInteractable
     public void Interact()
     {
         if (_isOccupied) return;
+        if(_pedestalPlaceHolder == null || _pedestalGem == null) return;
 
         _isOccupied = true;
         _playerGemHolder.PlaceGem();

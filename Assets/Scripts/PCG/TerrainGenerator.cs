@@ -1,10 +1,7 @@
 
 using System;
 using System.Collections;
-using System.Collections.Generic;
-using UnityEditor.SceneManagement;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 
 public class TerrainGenerator : MonoBehaviour
@@ -52,16 +49,15 @@ public class TerrainGenerator : MonoBehaviour
     [SerializeField] private Gradient _terrainGradient;
     [SerializeField] public TerrainType[] Regions;
 
-    private void Start()
-    {
-        //seed = PlayerPrefs.GetInt("Seed", 0); // Get the seed from PlayerPrefs, default to 0 if not set
-        //Generate();
-        //StartCoroutine(StartCoroutineGenerate());
-    }
     public void Go()
     {
         StartCoroutine(StartCoroutineGenerate());
     }
+
+    /// <summary>
+    /// Coroutine that creates all the required data to be ale to generate the island map
+    /// </summary>
+    /// <returns></returns>
     public IEnumerator StartCoroutineGenerate()
     {
 
@@ -164,8 +160,6 @@ public class TerrainGenerator : MonoBehaviour
         // OBJECT SPAWNING
         if (_objectSpawner != null)
         {
-            //_objectSpawner.SpawnObjects(mapInfoGrid, seed, _mf.transform);
-            //yield return _objectSpawner.SpawnObjectsCoroutine(mapInfoGrid, seed, _mf.transform);
             yield return StartCoroutine(_objectSpawner.SpawnObjectsCoroutine(mapInfoGrid, seed, _mf.transform));
         }
 
@@ -175,135 +169,6 @@ public class TerrainGenerator : MonoBehaviour
         yield return null;
     }
 
-    //public void Generate()
-    //{
-
-    //    float[,] heightMap = HeightMapGenerator.GeneratePerlinNoiseMap(MAP_CHUNK_SIZE, MAP_CHUNK_SIZE, _noiseScale, seed, _octaves, _persistance, _lacunarity, offset);
-
-    //    float[,] baseHeightMap = (float[,])heightMap.Clone(); // Clone the heightMap to keep the original values for the base noise texture
-
-    //    Texture2D baseNoiseTexture = TextureGenerator.GenerateTextureFromHeightMap(baseHeightMap);
-    //    _textureDisplayer.DisplayBaseNoiseTexture(baseNoiseTexture);
-
-    //    if (_useFalloff)
-    //    {
-    //        float[,] fallOffMap = HeightMapGenerator.GenerateFallOffMap(MAP_CHUNK_SIZE, MAP_CHUNK_SIZE, _curvePower, _curveScale);
-    //        for (int y = 0; y < MAP_CHUNK_SIZE; y++)
-    //        {
-    //            for (int x = 0; x < MAP_CHUNK_SIZE; x++)
-    //            {
-    //                float result = Mathf.Clamp(heightMap[x, y], _minIslandHeight, 1f) - fallOffMap[x, y];
-    //                result = Mathf.Clamp01(result);
-    //                heightMap[x, y] = result;
-    //            }
-    //        }
-    //        Texture2D falloffTexture = TextureGenerator.GenerateTextureFromHeightMap(heightMap);
-    //        _textureDisplayer.DisplayFalloffTexture(falloffTexture);
-    //    }
-
-    //    // SHOW COLOR MAP ON THE SECOND PLANE
-    //    Texture2D colorTexture = TextureGenerator.GenerateTextureFromColorMap(GenerateColorMap(heightMap), MAP_CHUNK_SIZE, MAP_CHUNK_SIZE);
-    //    _textureDisplayer.DisplayColorTexture(colorTexture);
-
-    //    // SHOW MESH ON THE THIRD PLANE
-    //    MeshGenerator.MeshData meshData = MeshGenerator.GenerateMeshFromHeightMap(heightMap, _amplitudeMultiplier, _amplitudeCurveMultiplier, _levelOfDetail, _mapSizeFactor);
-
-    //    MapGridCellInfo[,] mapInfoGrid = MapInfoGridGenerator.GenerateMapInfoGrid(heightMap, _mapSizeFactor, _amplitudeMultiplier, _amplitudeCurveMultiplier);
-
-    //    _minTerrainHeight = float.MaxValue;
-    //    _maxTerrainHeight = float.MinValue;
-
-    //    foreach (Vector3 vertex in meshData.vertices)
-    //    {
-    //        if (vertex.y < _minTerrainHeight) _minTerrainHeight = vertex.y;
-    //        if (vertex.y > _maxTerrainHeight) _maxTerrainHeight = vertex.y;
-    //    }
-
-    //    Debug.Log("Min Terrain height:" + _minTerrainHeight + "," + "Max Terrain Height:" + _maxTerrainHeight);
-
-    //    for (int i = 0; i < meshData.vertices.Length; i++)
-    //    {
-    //        float normalizedHeight = Mathf.InverseLerp(_minTerrainHeight, _maxTerrainHeight, meshData.vertices[i].y); //returns a value between 0 and 1 that will represent the height color
-    //        meshData.colors[i] = _terrainGradient.Evaluate(normalizedHeight);
-    //    }
-
-    //    Mesh generatedMesh = meshData.CreateMesh();
-    //    _mf.mesh = generatedMesh;
-
-    //    // Instantiate water prefab at the center of the mesh with the specified water height
-    //    if (_waterPrefab != null)
-    //    {
-    //        Transform oldWater = _mf.transform.Find("Water");
-    //        if (oldWater != null) DestroyImmediate(oldWater.gameObject);
-
-    //        GameObject water = Instantiate(_waterPrefab,
-    //            new Vector3(0, _waterHeight, 0),
-    //            Quaternion.identity);
-    //        water.name = "Water";
-    //        water.transform.SetParent(_mf.transform);
-
-    //        // Scale to cover entire map
-    //        float mapSize = (MAP_CHUNK_SIZE - 1) * _mapSizeFactor;
-    //        water.transform.localScale = new Vector3(mapSize / 10f, 1, mapSize / 10f);
-    //    }
-
-    //    // Instantiate fireflies prefab at the center of the mesh with the specified fireflies height
-    //    if (_firefliesPrefab != null)
-    //    {
-    //        Transform oldFireflies = _mf.transform.Find("Fireflies");
-    //        if (oldFireflies != null) DestroyImmediate(oldFireflies.gameObject);
-
-    //        float mapSize = (MAP_CHUNK_SIZE - 1) * _mapSizeFactor;
-
-    //        GameObject fireflies = Instantiate(_firefliesPrefab,
-    //            new Vector3(0, _firefliesHeight, 0),
-    //            Quaternion.identity);
-    //        fireflies.name = "Fireflies";
-    //        fireflies.transform.SetParent(_mf.transform);
-    //        fireflies.transform.localScale = new Vector3(_mapSizeFactor, _mapSizeFactor, _mapSizeFactor);
-    //    }
-
-    //    // Add a MeshCollider to the MeshFilter's GameObject if it doesn't already have one
-    //    MeshCollider meshCollider = _mf.GetComponent<MeshCollider>();
-    //    if (meshCollider != null)
-    //        meshCollider.sharedMesh = generatedMesh;
-
-    //    _textureDisplayer.DisplayTerrainTexture(colorTexture);
-
-
-    //    // OBJECT SPAWNING
-    //    if (_objectSpawner != null)
-    //    {
-    //        _objectSpawner.SpawnObjects(mapInfoGrid, seed, _mf.transform);
-    //    }
-
-    //    // SPAWN PLAYER
-    //    SpawnPlayer();
-    //}
-
-    // USED FOR TESTING IN THE PCG TEST SCENE
-    private Color[] GenerateColorMap(float[,] heightMap)
-    {
-        Color[] colorMap = new Color[MAP_CHUNK_SIZE * MAP_CHUNK_SIZE];
-        for (int y = 0; y < MAP_CHUNK_SIZE; y++)
-        {
-            for (int x = 0; x < MAP_CHUNK_SIZE; x++)
-            {
-                float currentHeight = heightMap[x, y];
-                for (int i = 0; i < Regions.Length; i++)
-                {
-                    if (currentHeight <= Regions[i].height)
-                    {
-
-                        colorMap[y * MAP_CHUNK_SIZE + x] = Regions[i].color;
-                        break;
-                    }
-                }
-            }
-        }
-        return colorMap;
-    }
-
     private void OnValidate() // This method is called when the script is loaded or a value is changed in the inspector (Called in the editor only)
     {
         if (_lacunarity < 1) _lacunarity = 1;
@@ -311,26 +176,16 @@ public class TerrainGenerator : MonoBehaviour
 
     }
 
+    /// <summary>
+    /// Set the player y position to a value that ensures he wont be stuck in the mesh
+    /// </summary>
     private void SetPlayerToCorrectHeightOnTheMap()
     {
         if (_player == null) return;
 
-        Vector3 spawnPosition = new Vector3(0, 20f, 0);
+        Vector3 spawnPosition = new Vector3(0, 5f, 0);
 
         _player.transform.position = spawnPosition;
-
-        //Vector3 origin = new Vector3(0, 1000f, 0);
-        //Ray ray = new Ray(origin, Vector3.down); // Shoot a ray downwards from a high point above the terrain
-
-        //if (Physics.Raycast(ray, out RaycastHit hitInfo, Mathf.Infinity, _spawnLayer))
-        //{
-        //    Vector3 spawnPosition = hitInfo.point + Vector3.up * 2f; // Offset the spawn position slightly above the terrain to avoid clipping
-        //    Instantiate(_player, spawnPosition, Quaternion.identity);
-        //}
-        //else
-        //{
-        //    Debug.LogWarning("No suitable spawn point found for the player.");
-        //}
     }
 
     [System.Serializable]

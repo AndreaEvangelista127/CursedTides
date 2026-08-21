@@ -13,11 +13,13 @@ public class HealthBarUi : MonoBehaviour
     private void Start()
     {
         _targetFill = 1f; // Start with full health
-        _playerHealth.OnHealthChange += UpdateHealthBar; //Subscribe to the health change event
+        if(_playerHealth != null)
+            _playerHealth.OnHealthChange += UpdateHealthBar; //Subscribe to the health change event
     }
 
     private void Update()
     {
+        if(_fill  != null) 
         _fill.fillAmount = Mathf.Lerp(_fill.fillAmount, _targetFill, Time.deltaTime * _lerpSpeed);
     }
 
@@ -28,6 +30,7 @@ public class HealthBarUi : MonoBehaviour
 
     private void OnDestroy()
     {
-        _playerHealth.OnHealthChange -= UpdateHealthBar;
+        if (_playerHealth != null)
+            _playerHealth.OnHealthChange -= UpdateHealthBar;
     }
 }

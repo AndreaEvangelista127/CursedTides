@@ -83,31 +83,41 @@ public abstract class Enemy : MonoBehaviour
         PlayerHealth.OnPlayerDeath += ResetToPatrol; // Add this method to the list of methods to be called when the player dies, so that the enemy can reset its state to patrol
     }
 
+    /// <summary>
+    /// Storing all the required data to pass to the EnemyFactory script
+    /// </summary>
+    /// <param name="settings"></param>
     public void ApplyEnemySettingForFactory(EnemySettings settings)
     {
+        if(settings == null) return;
+
         // General settings
-        _moveSpeed = settings.moveSpeed;
-        _rotationSpeed = settings.rotationSpeed;
+        _moveSpeed = settings.MoveSpeed;
+        _rotationSpeed = settings.RotationSpeed;
         //Idle
-        _idleTime = settings.idleTime;
+        _idleTime = settings.IdleTime;
         //Patrol
-        _patrolRadius = settings.patrolRadius;
-        _distanceBuffer = settings.distanceBuffer;
+        _patrolRadius = settings.PatrolRadius;
+        _distanceBuffer = settings.DistanceBuffer;
         //Alert
-        _alertTime = settings.alertTime;
-        _alertRotationSpeed = settings.alertRotationSpeed;
-        _alertRadius = settings.alertRadius;
-        _minRotation = settings.minRotation;
-        _maxRotation = settings.maxRotation;
+        _alertTime = settings.AlertTime;
+        _alertRotationSpeed = settings.AlertRotationSpeed;
+        _alertRadius = settings.AlertRadius;
+        _minRotation = settings.MinRotation;
+        _maxRotation = settings.MaxRotation;
         //Chase
-        _detectionRange = settings.detectionRange;
-        _maxChaseDistance = settings.maxChaseDistance;
-        _chaseSpeed = settings.chaseSpeed;
+        _detectionRange = settings.DetectionRange;
+        _maxChaseDistance = settings.MaxChaseDistance;
+        _chaseSpeed = settings.ChaseSpeed;
         //Sight
-        _fieldOfView = settings.fieldOfView;
-        _fovRange = settings.fovRange;
+        _fieldOfView = settings.FieldOfView;
+        _fovRange = settings.FovRange;
     }
 
+    /// <summary>
+    /// Check if the player it´s inside of the FOV by using dot product
+    /// </summary>
+    /// <returns></returns>
     public virtual bool CheckIfInFOV()
     {
         Vector3 dirToPlayer = _playerTransform.position - transform.position; // Get the direction from the enemy to the player

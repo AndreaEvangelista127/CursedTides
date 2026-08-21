@@ -47,7 +47,9 @@ public class SettingsManager : MonoBehaviour
     public void OnBackToMainMenuButton()
     {
         AudioManager.Instance?.PlayButtonClick();
-        _settingsPanel.SetActive(false);
+
+        if(_settingsPanel != null) _settingsPanel.SetActive(false);
+
         Time.timeScale = 1f;
 
         if (GameManager.Instance != null)
@@ -61,17 +63,21 @@ public class SettingsManager : MonoBehaviour
 
     public void OpenSettings()
     {
+        if(_settingsPanel == null) return;
         _settingsPanel.SetActive(true);
     }
 
     public void CloseSettings()
     {
+        if (_settingsPanel == null) return;
         _settingsPanel.SetActive(false);
     }
 
     // This method toggles the settings panel on and off
     public void ToggleSettings()
     {
+        if (_settingsPanel == null) return;
+
         bool isActive = !_settingsPanel.activeSelf;
         _settingsPanel.SetActive(isActive);
         Time.timeScale = isActive ? 0f : 1f;

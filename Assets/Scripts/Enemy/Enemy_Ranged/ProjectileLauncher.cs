@@ -7,6 +7,8 @@ public class ProjectileLauncher : MonoBehaviour
 
     public void Shoot(Vector3 target)
     {
+        if (_projectilePrefab == null) return;
+
         Vector3 direction = (target - _spawnPoint.position).normalized;
         GameObject projectile = Instantiate(_projectilePrefab, _spawnPoint.position, Quaternion.identity);
 

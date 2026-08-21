@@ -12,9 +12,11 @@ public class PreviewModelSelector : MonoBehaviour
         if (_selectedSkin != null) 
             _selectedSkin.SetActive(false);
 
-        
-        _selectedSkin = _modelData[skinIndex].Model;
-        _selectedSkin.SetActive(true);
+        if(_modelData != null)
+        {
+            _selectedSkin = _modelData[skinIndex].Model;
+            _selectedSkin.SetActive(true);
+        }
 
     }
 
@@ -23,7 +25,7 @@ public class PreviewModelSelector : MonoBehaviour
     {
         string[] skinNames = null;
 
-        if(_modelData.Length != 0)
+        if(_modelData.Length != 0 && _modelData != null)
         {
             skinNames = new string[_modelData.Length];
             for (int i = 0; i < _modelData.Length; i++)

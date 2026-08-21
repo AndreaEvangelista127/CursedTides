@@ -35,18 +35,24 @@ public class Tresaures : MonoBehaviour, IInteractable
 
     public void ShowPrompt()
     {
+        // Show on screen the text
         InteractionPrompt.Instance?.Show("Press E to steal");
     }
 
     public void HidePrompt()
     {
+        // Hide the text that was previosly shown on screen 
         InteractionPrompt.Instance?.Hide();
     }
 
+    /// <summary>
+    /// Collect the current collectible, if it´s a tresaure, run an animation
+    /// </summary>
     public void Interact()
     {
         if (_isCollected) return;
         _isCollected = true;
+        
         ScoreManager.Instance?.Collect(_scoreValue);
         AudioManager.Instance?.PlayCollectiblePickup();
         HidePrompt();

@@ -21,7 +21,10 @@ public class EnemyHealth : MonoBehaviour, IDamageable
         }
     }
 
-    // Used for setting the health of the enemy when it is spawned in the editor tool
+    /// <summary>
+    /// Used for setting the health of the enemy when it is spawned in the editor tool
+    /// </summary>
+    /// <param name="health"></param>
     public void ApplyHealth(float health)
     {
         maxHealth = health;
@@ -30,7 +33,7 @@ public class EnemyHealth : MonoBehaviour, IDamageable
 
     private void Die()
     {
-        AudioManager.Instance.PlayEnemyDeath();
+        AudioManager.Instance?.PlayEnemyDeath();
         Destroy(gameObject);
     }
 }

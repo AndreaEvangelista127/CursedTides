@@ -255,54 +255,54 @@ public class EnemySpawnerWindow : EditorWindow
     {
         GUILayout.Space(5);
         EditorGUILayout.LabelField("General", _descriptionLabel);
-        settings.moveSpeed = EditorGUILayout.FloatField("Move Speed", settings.moveSpeed);
-        settings.rotationSpeed = EditorGUILayout.FloatField("Rotation Speed", settings.rotationSpeed);
-        settings.health = EditorGUILayout.FloatField("Max Health", settings.health);
+        settings.MoveSpeed = EditorGUILayout.FloatField("Move Speed", settings.MoveSpeed);
+        settings.RotationSpeed = EditorGUILayout.FloatField("Rotation Speed", settings.RotationSpeed);
+        settings.Health = EditorGUILayout.FloatField("Max Health", settings.Health);
 
         GUILayout.Space(5);
         EditorGUILayout.LabelField("Idle", _descriptionLabel);
-        settings.idleTime = EditorGUILayout.FloatField("Idle Time", settings.idleTime);
+        settings.IdleTime = EditorGUILayout.FloatField("Idle Time", settings.IdleTime);
 
         GUILayout.Space(5);
         EditorGUILayout.LabelField("Patrol", _descriptionLabel);
-        settings.patrolRadius = EditorGUILayout.FloatField("Patrol Radius", settings.patrolRadius);
-        settings.distanceBuffer = EditorGUILayout.FloatField("Distance Buffer", settings.distanceBuffer);
+        settings.PatrolRadius = EditorGUILayout.FloatField("Patrol Radius", settings.PatrolRadius);
+        settings.DistanceBuffer = EditorGUILayout.FloatField("Distance Buffer", settings.DistanceBuffer);
 
         GUILayout.Space(5);
         EditorGUILayout.LabelField("Alert", _descriptionLabel);
-        settings.alertTime = EditorGUILayout.FloatField("Alert Time", settings.alertTime);
-        settings.alertRotationSpeed = EditorGUILayout.FloatField("Alert Rotation Speed", settings.alertRotationSpeed);
-        settings.alertRadius = EditorGUILayout.FloatField("Alert Radius", settings.alertRadius);
-        settings.minRotation = EditorGUILayout.FloatField("Min Alert Rotation", settings.minRotation);
-        settings.maxRotation = EditorGUILayout.FloatField("Max Alert Rotation", settings.maxRotation);
+        settings.AlertTime = EditorGUILayout.FloatField("Alert Time", settings.AlertTime);
+        settings.AlertRotationSpeed = EditorGUILayout.FloatField("Alert Rotation Speed", settings.AlertRotationSpeed);
+        settings.AlertRadius = EditorGUILayout.FloatField("Alert Radius", settings.AlertRadius);
+        settings.MinRotation = EditorGUILayout.FloatField("Min Alert Rotation", settings.MinRotation);
+        settings.MaxRotation = EditorGUILayout.FloatField("Max Alert Rotation", settings.MaxRotation);
 
         GUILayout.Space(5);
         EditorGUILayout.LabelField("Chase", _descriptionLabel);
-        settings.detectionRange = EditorGUILayout.FloatField("Detection Range", settings.detectionRange);
-        settings.maxChaseDistance = EditorGUILayout.FloatField("Max Chase Distance", settings.maxChaseDistance);
-        settings.chaseSpeed = EditorGUILayout.FloatField("Chase Speed", settings.chaseSpeed);
+        settings.DetectionRange = EditorGUILayout.FloatField("Detection Range", settings.DetectionRange);
+        settings.MaxChaseDistance = EditorGUILayout.FloatField("Max Chase Distance", settings.MaxChaseDistance);
+        settings.ChaseSpeed = EditorGUILayout.FloatField("Chase Speed", settings.ChaseSpeed);
 
         GUILayout.Space(5);
         EditorGUILayout.LabelField("Sight", _descriptionLabel);
-        settings.fieldOfView = EditorGUILayout.FloatField("Fov Angle", settings.fieldOfView);
-        settings.fovRange = EditorGUILayout.FloatField("Fov Range", settings.fovRange);
+        settings.FieldOfView = EditorGUILayout.FloatField("Fov Angle", settings.FieldOfView);
+        settings.FovRange = EditorGUILayout.FloatField("Fov Range", settings.FovRange);
     }
 
     private void DrawMeleeSettings(MeleeEnemySettings settings)
     {
         GUILayout.Space(5);
         EditorGUILayout.LabelField("Melee Attack Settings", _descriptionLabel);
-        settings.attackRange = EditorGUILayout.FloatField("Attack Range", settings.attackRange);
-        settings.attackCooldown = EditorGUILayout.FloatField("Attack Cooldown", settings.attackCooldown);
+        settings.AttackRange = EditorGUILayout.FloatField("Attack Range", settings.AttackRange);
+        settings.AttackCooldown = EditorGUILayout.FloatField("Attack Cooldown", settings.AttackCooldown);
     }
 
     private void DrawRangedSettings(RangedEnemySettings settings)
     {
         GUILayout.Space(5);
         EditorGUILayout.LabelField("Ranged Attack Settings", _descriptionLabel);
-        settings.shootRange = EditorGUILayout.FloatField("Shoot Range", settings.shootRange);
-        settings.tooCloseRange = EditorGUILayout.FloatField("Too Close Range", settings.tooCloseRange);
-        settings.shootCooldown = EditorGUILayout.FloatField("Shoot Cooldown", settings.shootCooldown);
+        settings.ShootRange = EditorGUILayout.FloatField("Shoot Range", settings.ShootRange);
+        settings.TooCloseRange = EditorGUILayout.FloatField("Too Close Range", settings.TooCloseRange);
+        settings.ShootCooldown = EditorGUILayout.FloatField("Shoot Cooldown", settings.ShootCooldown);
     }
 
 

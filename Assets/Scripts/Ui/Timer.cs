@@ -22,6 +22,7 @@ public class Timer : MonoBehaviour
             }
         }
 
+        if (_timerText == null) return;
 
         float time = _timeLimit - Time.timeSinceLevelLoad; // Calculate remaining time
         if (time < 0)

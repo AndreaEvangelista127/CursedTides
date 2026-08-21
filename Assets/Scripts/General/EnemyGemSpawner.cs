@@ -25,22 +25,23 @@ public class EnemySpawner : MonoBehaviour
     {
         for (int i = 0; i < _enemyMeleeCount; i++)
         {
-            SpawnEnemy(_enemyMeleePrefab);
+            if(_enemyMeleePrefab != null) SpawnEnemy(_enemyMeleePrefab);
         }
 
         for (int i = 0; i < _enemyRangedCount; i++)
         {
-            SpawnEnemy(_enemyRangedPrefab);
+            if(_enemyRangedPrefab != null) SpawnEnemy(_enemyRangedPrefab);
         }
     }
 
     private void SpawnEnemy(GameObject enemyPrefab)
     {
+        if(enemyPrefab == null) return;
+
         for (int attempt = 0; attempt < _maxAttempts; attempt++)
         {
             Vector3 randomCircle = transform.position + UnityEngine.Random.insideUnitSphere * _spawnRadius; 
             Vector3 spawnOrigin = new Vector3(randomCircle.x, 50f, randomCircle.z); // spawnPosition very high to avoid spawning the enemy inside the terrain
-            Debug.Log("Spawn Origin: " + spawnOrigin);
             Ray ray = new Ray(spawnOrigin, Vector3.down);
 
             if(Physics.Raycast(ray,out RaycastHit hit, Mathf.Infinity, _terrainLayer))
@@ -51,7 +52,6 @@ public class EnemySpawner : MonoBehaviour
                 return; // Spawned, exit the attempt loop
             }
 
-            Debug.Log(" Could not find a valid spawn position for the enemy");
         }
     }
 

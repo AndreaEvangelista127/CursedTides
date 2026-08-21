@@ -71,7 +71,7 @@ public class EnemyFactory
 
         // step 5.1: Add EnemyHealth script and apply health
         EnemyHealth healthScript = enemy.AddComponent<EnemyHealth>();
-        healthScript.ApplyHealth(settings.health);
+        healthScript.ApplyHealth(settings.Health);
 
         // step 5.2: Add animator
         Animator animator = enemy.GetComponent<Animator>();

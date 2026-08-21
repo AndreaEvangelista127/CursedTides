@@ -58,7 +58,6 @@ public class GameManager : MonoBehaviour
         IsGameStarted = false;
 
         _loadingScreen.gameObject.SetActive(true);
-        _loadingScreen.StartAnimation();
 
         yield return _terrainGenerator.StartCoroutineGenerate();
         Debug.Log("finally really done");

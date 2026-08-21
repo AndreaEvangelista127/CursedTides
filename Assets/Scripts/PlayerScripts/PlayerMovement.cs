@@ -228,7 +228,6 @@ public class PlayerMovement : MonoBehaviour
             _groundLayer                  // layer to check
         );
 
-        //_isGrounded = boxCheck && _rb.linearVelocity.y <= 0.1f; // Check if the player is grounded and not moving upwards
         _isGrounded = boxCheck;
 
         if (_isGrounded && _jumpCooldownTimer <= 0)
@@ -238,12 +237,6 @@ public class PlayerMovement : MonoBehaviour
             _playerAnimator.ResetTrigger("jump");
             _playerAnimator.SetBool("isJumping", false);
         }
-    }
-
-    public void SetCanMove(bool canMove)
-    {
-        //_canMove = canMove;
-        //if (!canMove) _rb.linearVelocity = new Vector3(0, _rb.linearVelocity.y, 0);
     }
 
     public void SetIsAttacking(bool isAttacking)

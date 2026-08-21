@@ -9,12 +9,15 @@ public class VideoBackground : MonoBehaviour
 
     private void Start()
     {
-        // Create render texture
-        RenderTexture renderTexture = new RenderTexture(1920, 1080, 0);
-        _videoPlayer.targetTexture = renderTexture;
-        _rawImage.texture = renderTexture;
+        if( _videoPlayer != null && _rawImage != null)
+        {
+            // Create render texture
+            RenderTexture renderTexture = new RenderTexture(1920, 1080, 0);
+            _videoPlayer.targetTexture = renderTexture;
+            _rawImage.texture = renderTexture;
 
-        _videoPlayer.isLooping = true;
-        _videoPlayer.Play();
+            _videoPlayer.isLooping = true;
+            _videoPlayer.Play();
+        }
     }
 }

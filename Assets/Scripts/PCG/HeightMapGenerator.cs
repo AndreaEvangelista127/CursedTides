@@ -22,6 +22,7 @@ public static class HeightMapGenerator
         return fallOffMap;
     }
 
+    
     private static float EvaluateFallOffValue(float fallOffValue, float curvePower, float curveScale)
     {
         return Mathf.Pow(fallOffValue, curvePower) / (Mathf.Pow(fallOffValue, curvePower) + Mathf.Pow(curveScale - curveScale * fallOffValue, curvePower)); //wtf is this, study!

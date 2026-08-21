@@ -9,10 +9,8 @@ public class EnemyRanged : Enemy
     [SerializeField] private float _shootCooldown = 2f;
     [SerializeField] private ParticleSystem _smoke;
     
-
     [Header("Alarm State settings")]
     private bool _hasFinishedLookingAround = false;
-    private bool _hasShrugFinished = false;
 
     private bool _combatTag = false;
     private ProjectileLauncher _launcher;
@@ -20,7 +18,6 @@ public class EnemyRanged : Enemy
 
     // --- PUBLIC PROPERTIES ---
     public bool HasFinishedLookingAround => _hasFinishedLookingAround;
-    public bool HasShrugFinished => _hasShrugFinished;
     public float ShootRange => _shootRange;
     public float TooCloseRange => _tooCloseRange;
     public float ShootCooldown => _shootCooldown;
@@ -49,9 +46,9 @@ public class EnemyRanged : Enemy
 
     public void ApplyRangedSettings(RangedEnemySettings settings)
     {
-        _shootRange = settings.shootRange;
-        _shootCooldown = settings.shootCooldown;
-        _tooCloseRange = settings.tooCloseRange;
+        _shootRange = settings.ShootRange;
+        _shootCooldown = settings.ShootCooldown;
+        _tooCloseRange = settings.TooCloseRange;
     }
 
     public bool CheckIfPlayerIsInShootRange() =>
@@ -69,17 +66,6 @@ public class EnemyRanged : Enemy
     public void ResetLookAroundFinished()
     {
         _hasFinishedLookingAround = false;
-    }
-
-    public void OnShrugFinished()
-    {
-        _hasShrugFinished = true;
-        Debug.Log("Shrugging finished");
-    }
-
-    public void ResetShrugFinished()
-    {
-        _hasShrugFinished = false;
     }
 
     public void SetCombatTag(bool value)

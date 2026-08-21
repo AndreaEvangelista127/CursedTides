@@ -6,6 +6,8 @@ public class AttachmentSelector : MonoBehaviour
 
     public string[] GetAttachmentNames()
     {
+        if (_attachments == null) return null;
+
         string[] names = new string[_attachments.Length];
         for (int i = 0; i < _attachments.Length; i++)
             names[i] = _attachments[i].attachmentName;

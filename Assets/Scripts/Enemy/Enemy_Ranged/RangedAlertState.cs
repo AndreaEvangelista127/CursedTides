@@ -15,7 +15,6 @@ public class RangedAlertState : BaseRangedState
         _hasReachedPosition = false;
         _isShrugStarted = false;
         _enemyRanged.ResetLookAroundFinished();
-        _enemyRanged.ResetShrugFinished();
         _enemy.Rb.linearVelocity = Vector3.zero; // Stop the enemy's movement when entering the alert state
         _enemy.GetComponent<Animator>().SetTrigger("alert");
         Debug.Log("Entering Alert State, trigger sent");
@@ -83,8 +82,6 @@ public class RangedAlertState : BaseRangedState
                 _enemy.GetComponent<Animator>().SetTrigger("shrug");
             }
 
-            if (!_enemyRanged.HasShrugFinished) return; // NEW — wait for shrug to finish
-
             _fsm.SwitchState(EStates.RangedPatrol);
         }
 
@@ -96,7 +93,6 @@ public class RangedAlertState : BaseRangedState
         _enemy.SetIfIsPatrolling(false);
         _enemy.Rb.linearVelocity = Vector3.zero;
         _enemyRanged.ResetLookAroundFinished();
-        _enemyRanged.ResetShrugFinished(); 
         _enemy.GetComponent<Animator>().ResetTrigger("alert");
         _enemy.GetComponent<Animator>().ResetTrigger("shrug"); 
     }

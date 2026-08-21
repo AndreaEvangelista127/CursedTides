@@ -14,8 +14,12 @@ public class BonfireBurning : MonoBehaviour
         if (!other.CompareTag("Player")) return;
         _playerHealth = other.GetComponent<PlayerHealth>();
         _playerInFire = true;
-        PlayerHealth.TriggerBurning();
-        _playerHealth.SetBurningState(true);
+
+        if( _playerHealth != null)
+        {
+            PlayerHealth.TriggerBurning();
+            _playerHealth.SetBurningState(true);
+        }
     }
 
     private void OnTriggerExit(Collider other)
@@ -23,8 +27,6 @@ public class BonfireBurning : MonoBehaviour
         if (!other.CompareTag("Player")) return;
         _playerInFire = false;
         _burnTimer = _burnDuration;
-        //PlayerHealth.TriggerStopBurning();
-        //_playerHealth = null;
     }
 
     private void Update()

@@ -34,6 +34,10 @@ public class WaveManager : MonoBehaviour
         SpawnGrid();
     }
 
+    /// <summary>
+    /// Show on screen the simulation via Main Thread if the useJobs if false
+    /// otherwise us the job systsem to increase performance
+    /// </summary>
     private void Update()
     {
         if (_useJobs)
@@ -63,6 +67,10 @@ public class WaveManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Spawn all the objects in a grid based shape and save all of them in a TransforAccessArray
+    /// to be able to access their transform throught jobs
+    /// </summary>
     private void SpawnGrid()
     {
         int total = _gridWidth * _gridHeight;

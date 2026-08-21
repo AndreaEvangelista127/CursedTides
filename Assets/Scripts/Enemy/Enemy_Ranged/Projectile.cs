@@ -7,14 +7,11 @@ public class Projectile : MonoBehaviour
     [SerializeField] private float _projectileSpeed;
     [SerializeField] private float _lifetime = 5f;
 
-    private Rigidbody _rb;
     // --- PUBLIC PROPERTIES ---
     public float Speed => _projectileSpeed;
 
     private void Start()
-    {
-        _rb = GetComponent<Rigidbody>();
-        
+    {        
         Destroy(gameObject, _lifetime); // Destroy the projectile after its lifetime expires to prevent it from existing indefinitely
     }
 

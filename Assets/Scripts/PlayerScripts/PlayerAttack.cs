@@ -21,7 +21,6 @@ public class PlayerAttack : MonoBehaviour
         if (_playerMovement.CurrentState == PlayerMovement.PlayerState.Jumping) return;
         if (_playerMovement.CurrentState == PlayerMovement.PlayerState.Dodging) return;
 
-        _playerMovement.SetCanMove(false);
         _playerAnimator.SetTrigger("slashAttack");
         AudioManager.Instance?.PlayPlayerSwordSlash();
         _isAttacking = true;
@@ -31,16 +30,17 @@ public class PlayerAttack : MonoBehaviour
     public void OnAttackFinished()
     {
         _isAttacking = false;
-        _playerMovement.SetCanMove(true);
     }
 
     public void EnableSwordHitbox()
     {
+        if(_swordCollider != null)
         _swordCollider.enabled = true;
     }
 
     public void DisableSwordHitbox()
     {
+        if(_swordCollider != null) 
         _swordCollider.enabled = false;
     }
 }

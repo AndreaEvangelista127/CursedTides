@@ -16,9 +16,10 @@ public class InteractionPrompt : MonoBehaviour
 
     public void Show(string message)
     {
+        if (_text == null) return;
         _text.text = message;
         _promptObject.SetActive(true);
     }
 
-    public void Hide() => _promptObject.SetActive(false);
+    public void Hide() => _promptObject?.SetActive(false);
 }

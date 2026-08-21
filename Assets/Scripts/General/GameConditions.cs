@@ -26,6 +26,7 @@ public class GameConditions : MonoBehaviour
 
     public void ShowLoseScreen()
     {
+        if(_loseScreen == null) return;
         _gameOver = true;
         _loseScreen.SetActive(true);
         Time.timeScale = 0f;
@@ -36,6 +37,8 @@ public class GameConditions : MonoBehaviour
 
     public void ShowVictoryScreen()
     {
+        if(_victoryPanel == null) return;
+
         _victoryPanel.SetActive(true);
         Time.timeScale = 0f;
 

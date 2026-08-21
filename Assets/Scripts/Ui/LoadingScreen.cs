@@ -4,11 +4,18 @@ using UnityEngine.UI;
 
 public class LoadingScreen : MonoBehaviour
 {
-    [SerializeField] private Image _fill;
-    [SerializeField] private Slider _slider;
+    [SerializeField] private RectTransform _sterringWheel;
+    [SerializeField] private float _sterringSpeed = 180f;
 
     private Coroutine _animationCoroutine;
 
+    private void Update()
+    {
+        if(_sterringWheel != null)
+        {
+            _sterringWheel.Rotate(0, 0, -_sterringSpeed * Time.unscaledDeltaTime);
+        }
+    }
 
     private void OnDisable()
     {
@@ -19,19 +26,6 @@ public class LoadingScreen : MonoBehaviour
         }
     }
 
-    public IEnumerator LoadingAnimationCoroutine()
-    {
-        while (true) 
-        {
-            _slider.value = Mathf.Lerp(_slider.value, 1, Time.deltaTime);
-            yield return null;
-        }
-    }
-
-    public void StartAnimation()
-    {
-        _animationCoroutine ??= StartCoroutine(LoadingAnimationCoroutine());
-    }
 
 
 }

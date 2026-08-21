@@ -4,7 +4,6 @@ using UnityEngine.SceneManagement;
 
 public class MainMenuManager : MonoBehaviour
 {
-    [SerializeField] private GameObject _settingsPanel;
     [SerializeField] private TMP_InputField _seedInputField;
 
 
@@ -43,6 +42,5 @@ public class MainMenuManager : MonoBehaviour
     {
         AudioManager.Instance?.PlayButtonClick();
         Application.Quit();
-        Debug.Log("Quit Game");
     }
 }

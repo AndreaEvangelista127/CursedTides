@@ -16,7 +16,6 @@ public class Hurtbox : MonoBehaviour
         float finalDmg = dmg * _multiplier;
 
         _health.TakeDamage(finalDmg); //This calls the TakeDamage method in PlayerHealth, which reduces the player's health and updates the health bar
-        Debug.Log("Final damage calculated");
     }
 
     

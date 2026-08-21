@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections;
 
+// Mainly used in the pcg test scene for showing the result of each step required for the generation of the map
 public class TextureDisplayer : MonoBehaviour
 {
     [SerializeField] private MeshRenderer _baseMeshR;

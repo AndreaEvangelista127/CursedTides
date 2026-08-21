@@ -2,6 +2,15 @@ using UnityEngine;
 
 public static class MapInfoGridGenerator
 {
+    /// <summary>
+    /// Generate a cell map where every value has specific data that will be used
+    /// for the object spawner
+    /// </summary>
+    /// <param name="heightMap"></param>
+    /// <param name="mapSizeFactor"></param>
+    /// <param name="heightMultiplier"></param>
+    /// <param name="heightCurveMultiplier"></param>
+    /// <returns></returns>
     public static MapGridCellInfo[,] GenerateMapInfoGrid(float[,] heightMap, int mapSizeFactor,float heightMultiplier, AnimationCurve heightCurveMultiplier)
     {
 
@@ -18,7 +27,7 @@ public static class MapInfoGridGenerator
         {
             for (int x = 0; x < width; x++)
             {
-                //if error here then you need to create an object of MapGridCellInfo first and put it into the array
+                
                 infoGrid[x, y] = new MapGridCellInfo
                 {
                     Position = new Vector3(topLeftX + (x * mapSizeFactor), heightCurveMultiplier.Evaluate(heightMap[x, y]) * heightMultiplier, topLeftZ - (y * mapSizeFactor)), // The position of the cell in world space, with the height adjusted by the height curve and multiplier

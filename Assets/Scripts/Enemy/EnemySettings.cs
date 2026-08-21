@@ -4,49 +4,49 @@ using UnityEngine;
 public class EnemySettings 
 {
     [Header("General")]
-    public GameObject prefab;
-    public float moveSpeed = 3f;
-    public float rotationSpeed = 0.8f;
-    public float health = 100f;
+    public GameObject Prefab;
+    public float MoveSpeed = 3f;
+    public float RotationSpeed = 0.8f;
+    public float Health = 100f;
 
     [Header("Idle")]
-    public float idleTime = 3f;
+    public float IdleTime = 3f;
 
     [Header("Patrol")]
-    public float patrolRadius = 20f;
-    public float distanceBuffer = 1f;
+    public float PatrolRadius = 20f;
+    public float DistanceBuffer = 1f;
 
     [Header("Alert")]
-    public float alertTime = 6f;
-    public float alertRotationSpeed = 120f;
-    public float alertRadius = 7f;
-    public float minRotation = 30f;
-    public float maxRotation = 180f;
+    public float AlertTime = 6f;
+    public float AlertRotationSpeed = 120f;
+    public float AlertRadius = 7f;
+    public float MinRotation = 30f;
+    public float MaxRotation = 180f;
 
     [Header("Chase")]
-    public float detectionRange = 10f;
-    public float maxChaseDistance = 20f;
-    public float chaseSpeed = 5f;
+    public float DetectionRange = 10f;
+    public float MaxChaseDistance = 20f;
+    public float ChaseSpeed = 5f;
 
     [Header("Sight")]
-    public float fieldOfView = 120f;
-    public float fovRange = 8f;
+    public float FieldOfView = 120f;
+    public float FovRange = 8f;
 }
 
 [System.Serializable]
 public class MeleeEnemySettings : EnemySettings
 {
     [Header("Melee Attack")]
-    public float attackRange = 2f;
-    public float attackCooldown = 1.5f;
-    public float attackCommitRange = 3f;
+    public float AttackRange = 2f;
+    public float AttackCooldown = 1.5f;
+    public float AttackCommitRange = 3f;
 }
 
 [System.Serializable]
 public class RangedEnemySettings : EnemySettings
 {
     [Header("Ranged Attack")]
-    public float shootRange = 10f;
-    public float shootCooldown = 2f;
-    public float tooCloseRange = 3f;
+    public float ShootRange = 10f;
+    public float ShootCooldown = 2f;
+    public float TooCloseRange = 3f;
 }

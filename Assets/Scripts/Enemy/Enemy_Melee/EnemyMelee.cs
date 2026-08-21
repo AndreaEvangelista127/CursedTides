@@ -44,8 +44,8 @@ public class EnemyMelee : Enemy
 
     public void ApplyMeleeSettings(MeleeEnemySettings settings)
     {
-        _attackRange = settings.attackRange;
-        _attackCooldown = settings.attackCooldown;
+        _attackRange = settings.AttackRange;
+        _attackCooldown = settings.AttackCooldown;
     }
 
     public void OnWeaponUnsheathed()

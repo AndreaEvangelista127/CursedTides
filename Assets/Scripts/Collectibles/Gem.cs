@@ -33,6 +33,10 @@ public class Gem : MonoBehaviour, IInteractable
         }
     }
 
+    /// <summary>
+    /// Pick up the gem in front of the player, activate the UI to show which one he collected
+    /// and then destroy the gem in the scene
+    /// </summary>
     public void Interact()
     {
         if(_playerGemHolder != null && !_playerGemHolder.HasGem)
